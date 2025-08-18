@@ -1,0 +1,899 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RefCell&lt;T&gt; and the Interior Mutability Pattern RefCell&lt;T&gt; 和内部可变性模式 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="refcellt-and-the-interior-mutability-pattern-refcellt-和内部可变性模式"><a class="header" href="#refcellt-and-the-interior-mutability-pattern-refcellt-和内部可变性模式"><code>RefCell&lt;T&gt;</code> and the Interior Mutability Pattern <code>RefCell&lt;T&gt;</code> 和内部可变性模式</a></h2>
+<p><em>Interior mutability</em> is a design pattern in Rust that allows you to mutate
+data even when there are immutable references to that data; normally, this
+action is disallowed by the borrowing rules. To mutate data, the pattern uses
+<code>unsafe</code> code inside a data structure to bend Rust’s usual rules that govern
+mutation and borrowing. Unsafe code indicates to the compiler that we’re
+checking the rules manually instead of relying on the compiler to check them
+for us; we will discuss unsafe code more in Chapter 20.</p>
+<p><strong>内部可变性</strong>（Interior mutability）是 Rust 中的一种设计模式，允许你在存在对该数据的不可变引用时改变数据；通常，借用规则不允许此操作。为了改变数据，该模式在数据结构内部使用 <code>unsafe</code> 代码来规避 Rust 管理可变性和借用的常规规则。不安全代码向编译器表明我们正在手动检查规则，而不是依赖编译器为我们检查；我们将在第 20 章更详细地讨论不安全代码。</p>
+<p>We can use types that use the interior mutability pattern only when we can
+ensure that the borrowing rules will be followed at runtime, even though the
+compiler can’t guarantee that. The <code>unsafe</code> code involved is then wrapped in a
+safe API, and the outer type is still immutable.</p>
+<p>仅当我们能确保在运行时遵循借用规则时，才可以使用采用内部可变性模式的类型，即使编译器无法保证这一点。所涉及的 <code>unsafe</code> 代码随后被包装在安全的 API 中，外部类型仍然是不可变的。</p>
+<p>Let’s explore this concept by looking at the <code>RefCell&lt;T&gt;</code> type that follows the
+interior mutability pattern.</p>
+<p>让我们通过遵循内部可变性模式的 <code>RefCell&lt;T&gt;</code> 类型来探索这一概念。</p>
+<h3 id="enforcing-borrowing-rules-at-runtime-with-refcellt-使用-refcellt-在运行时强制执行借用规则"><a class="header" href="#enforcing-borrowing-rules-at-runtime-with-refcellt-使用-refcellt-在运行时强制执行借用规则">Enforcing Borrowing Rules at Runtime with <code>RefCell&lt;T&gt;</code> 使用 <code>RefCell&lt;T&gt;</code> 在运行时强制执行借用规则</a></h3>
+<p>Unlike <code>Rc&lt;T&gt;</code>, the <code>RefCell&lt;T&gt;</code> type represents single ownership over the data
+it holds. So what makes <code>RefCell&lt;T&gt;</code> different from a type like <code>Box&lt;T&gt;</code>?
+Recall the borrowing rules you learned in Chapter 4:</p>
+<p>与 <code>Rc&lt;T&gt;</code> 不同，<code>RefCell&lt;T&gt;</code> 类型对其持有的数据表示单一所有权。那么 <code>RefCell&lt;T&gt;</code> 与 <code>Box&lt;T&gt;</code> 等类型有何不同？回顾第 4 章学到的借用规则：</p>
+<ul>
+<li>At any given time, you can have <em>either</em> one mutable reference or any number
+of immutable references (but not both).</li>
+<li>References must always be valid.</li>
+<li>在任何给定时间，你可以拥有<strong>一个</strong>可变引用或任意数量的不可变引用（但不能同时拥有两者）。</li>
+<li>引用必须始终有效。</li>
+</ul>
+<p>With references and <code>Box&lt;T&gt;</code>, the borrowing rules’ invariants are enforced at
+compile time. With <code>RefCell&lt;T&gt;</code>, these invariants are enforced <em>at runtime</em>.
+With references, if you break these rules, you’ll get a compiler error. With
+<code>RefCell&lt;T&gt;</code>, if you break these rules, your program will panic and exit.</p>
+<p>对于引用和 <code>Box&lt;T&gt;</code>，借用规则的不变性在编译时强制执行。<span class="highlight">[note]对于 <code>RefCell&lt;T&gt;</code>，这些不变性在<strong>运行时</strong>强制执行。使用引用时，如果违反这些规则，将得到编译器错误。使用 <code>RefCell&lt;T&gt;</code> 时，如果违反这些规则，程序将恐慌退出。</span></p>
+<p>The advantages of checking the borrowing rules at compile time are that errors
+will be caught sooner in the development process, and there is no impact on
+runtime performance because all the analysis is completed beforehand. For those
+reasons, checking the borrowing rules at compile time is the best choice in the
+majority of cases, which is why this is Rust’s default.</p>
+<p>在编译时检查借用规则的优势在于，错误会在开发过程中更早被发现，并且对运行时性能没有影响，因为所有分析都是预先完成的。因此，在大多数情况下，在编译时检查借用规则是最佳选择，这也是 Rust 的默认行为。</p>
+<p>The advantage of checking the borrowing rules at runtime instead is that
+certain memory-safe scenarios are then allowed, where they would’ve been
+disallowed by the compile-time checks. Static analysis, like the Rust compiler,
+is inherently conservative. Some properties of code are impossible to detect by
+analyzing the code: the most famous example is the Halting Problem, which is
+beyond the scope of this book but is an interesting topic to research.</p>
+<p>在运行时检查借用规则的优势在于，某些内存安全的场景因此被允许，而这些场景在编译时检查中是被禁止的。静态分析（如 Rust 编译器）本质上是保守的。代码的某些属性无法通过分析代码来检测：最著名的例子是停机问题，这超出了本书的范围，但值得研究。</p>
+<p>Because some analysis is impossible, if the Rust compiler can’t be sure the
+code complies with the ownership rules, it might reject a correct program; in
+this way, it’s conservative. If Rust accepted an incorrect program, users
+wouldn’t be able to trust the guarantees Rust makes. However, if Rust rejects a
+correct program, the programmer will be inconvenienced, but nothing
+catastrophic can occur. The <code>RefCell&lt;T&gt;</code> type is useful when you’re sure your
+code follows the borrowing rules but the compiler is unable to understand and
+guarantee that.</p>
+<p>因为某些分析是不可能的，如果 Rust 编译器无法确定代码符合所有权规则，它可能会拒绝正确的程序；从这种意义上说，它是保守的。如果 Rust 接受了不正确的程序，用户将无法信任 Rust 提供的保证。然而，如果 Rust 拒绝了正确的程序，程序员会感到不便，但不会发生灾难性后果。当你确信代码遵循借用规则但编译器无法理解和保证时，<code>RefCell&lt;T&gt;</code> 类型非常有用。</p>
+<p>Similar to <code>Rc&lt;T&gt;</code>, <code>RefCell&lt;T&gt;</code> is only for use in single-threaded scenarios
+and will give you a compile-time error if you try using it in a multithreaded
+context. We’ll talk about how to get the functionality of <code>RefCell&lt;T&gt;</code> in a
+multithreaded program in Chapter 16.</p>
+<p><span class="highlight">[note]与 <code>Rc&lt;T&gt;</code> 类似，<code>RefCell&lt;T&gt;</code> 仅用于单线程场景</span>，如果尝试在多线程上下文中使用，将给出编译时错误。我们将在第 16 章讨论如何在多线程程序中获得 <code>RefCell&lt;T&gt;</code> 的功能。</p>
+<p>Here is a recap of the reasons to choose <code>Box&lt;T&gt;</code>, <code>Rc&lt;T&gt;</code>, or <code>RefCell&lt;T&gt;</code>:</p>
+<p>以下是选择 <code>Box&lt;T&gt;</code>、<code>Rc&lt;T&gt;</code> 或 <code>RefCell&lt;T&gt;</code> 的原因总结：</p>
+<ul>
+<li>
+<p><code>Rc&lt;T&gt;</code> enables multiple owners of the same data; <code>Box&lt;T&gt;</code> and <code>RefCell&lt;T&gt;</code>
+have single owners.</p>
+</li>
+<li>
+<p><code>Box&lt;T&gt;</code> allows immutable or mutable borrows checked at compile time; <code>Rc&lt;T&gt;</code>
+allows only immutable borrows checked at compile time; <code>RefCell&lt;T&gt;</code> allows
+immutable or mutable borrows checked at runtime.</p>
+</li>
+<li>
+<p>Because <code>RefCell&lt;T&gt;</code> allows mutable borrows checked at runtime, you can
+mutate the value inside the <code>RefCell&lt;T&gt;</code> even when the <code>RefCell&lt;T&gt;</code> is
+immutable.</p>
+</li>
+<li>
+<p><span class="highlight">[note]<code>Rc&lt;T&gt;</code> 支持相同数据的多个所有者；<code>Box&lt;T&gt;</code> 和 <code>RefCell&lt;T&gt;</code> 具有单一所有者。</span></p>
+</li>
+<li>
+<p><span class="highlight">[note]<code>Box&lt;T&gt;</code> 允许在编译时检查的不可变或可变借用；<code>Rc&lt;T&gt;</code> 仅允许在编译时检查的不可变借用；<code>RefCell&lt;T&gt;</code> 允许在运行时检查的不可变或可变借用。</span></p>
+</li>
+<li>
+<p><span class="highlight">[note]因为 <code>RefCell&lt;T&gt;</code> 允许在运行时检查的可变借用，即使 <code>RefCell&lt;T&gt;</code> 是不可变的，你仍然可以改变其内部的值。</span></p>
+</li>
+</ul>
+<p>Mutating the value inside an immutable value is the <em>interior mutability</em>
+pattern. Let’s look at a situation in which interior mutability is useful and
+examine how it’s possible.</p>
+<p>改变不可变值内部的值就是<strong>内部可变性</strong>模式。让我们看一个内部可变性有用的场景，并探讨它是如何实现的。</p>
+<h3 id="interior-mutability-a-mutable-borrow-to-an-immutable-value-内部可变性对不可变值的可变借用"><a class="header" href="#interior-mutability-a-mutable-borrow-to-an-immutable-value-内部可变性对不可变值的可变借用">Interior Mutability: A Mutable Borrow to an Immutable Value 内部可变性：对不可变值的可变借用</a></h3>
+<p>A consequence of the borrowing rules is that when you have an immutable value,
+you can’t borrow it mutably. For example, this code won’t compile:</p>
+<p>借用规则的一个结果是，当你拥有一个不可变值时，无法可变地借用它。例如，此代码无法编译：</p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let x = 5;
+    let y = &amp;mut x;
+}</code></pre>
+<p>If you tried to compile this code, you’d get the following error:</p>
+<p>如果尝试编译此代码，将得到以下错误：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling borrowing v0.1.0 (file:///projects/borrowing)
+error[E0596]: cannot borrow `x` as mutable, as it is not declared as mutable
+ --&gt; src/main.rs:3:13
+  |
+3 |     let y = &amp;mut x;
+  |             ^^^^^^ cannot borrow as mutable
+  |
+help: consider changing this to be mutable
+  |
+2 |     let mut x = 5;
+  |         +++
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `borrowing` (bin "borrowing") due to 1 previous error
+</code></pre>
+<p>However, there are situations in which it would be useful for a value to mutate
+itself in its methods but appear immutable to other code. Code outside the
+value’s methods would not be able to mutate the value. Using <code>RefCell&lt;T&gt;</code> is
+one way to get the ability to have interior mutability, but <code>RefCell&lt;T&gt;</code>
+doesn’t get around the borrowing rules completely: the borrow checker in the
+compiler allows this interior mutability, and the borrowing rules are checked
+at runtime instead. If you violate the rules, you’ll get a <code>panic!</code> instead of
+a compiler error.</p>
+<p>然而，在某些情况下，值在其方法中改变自身但对其他代码显示为不可变是有用的。值方法之外的代码无法改变该值。使用 <code>RefCell&lt;T&gt;</code> 是获得内部可变性能力的一种方式，但 <code>RefCell&lt;T&gt;</code> 并未完全绕过借用规则：编译器中的借用检查器允许这种内部可变性，而借用规则在运行时检查。如果违反规则，你将得到 <code>panic!</code> 而不是编译器错误。</p>
+<p>Let’s work through a practical example where we can use <code>RefCell&lt;T&gt;</code> to mutate
+an immutable value and see why that is useful.</p>
+<p>让我们通过一个实际示例来使用 <code>RefCell&lt;T&gt;</code> 改变不可变值，并了解其用途。</p>
+<h4 id="a-use-case-for-interior-mutability-mock-objects-内部可变性的用例模拟对象"><a class="header" href="#a-use-case-for-interior-mutability-mock-objects-内部可变性的用例模拟对象">A Use Case for Interior Mutability: Mock Objects 内部可变性的用例：模拟对象</a></h4>
+<p>Sometimes during testing a programmer will use a type in place of another type,
+in order to observe particular behavior and assert that it’s implemented
+correctly. This placeholder type is called a <em>test double</em>. Think of it in the
+sense of a stunt double in filmmaking, where a person steps in and substitutes
+for an actor to do a particularly tricky scene. Test doubles stand in for other
+types when we’re running tests. <em>Mock objects</em> are specific types of test
+doubles that record what happens during a test so you can assert that the
+correct actions took place.</p>
+<p>在测试期间，程序员有时会用一种类型替代另一种类型，以观察特定行为并断言其正确实现。这种占位类型称为<strong>测试替身</strong>（test double）。可以类比电影中的特技替身，一个人介入并替代演员完成特别棘手的场景。测试替身在我们运行测试时代表其他类型。<strong>模拟对象</strong>（Mock objects）是特定类型的测试替身，记录测试期间发生的情况，以便断言执行了正确的操作。</p>
+<p>Rust doesn’t have objects in the same sense as other languages have objects,
+and Rust doesn’t have mock object functionality built into the standard library
+as some other languages do. However, you can definitely create a struct that
+will serve the same purposes as a mock object.</p>
+<p>Rust 没有其他语言意义上的对象，标准库中也没有像某些语言那样内置模拟对象功能。但是，你绝对可以创建一个结构体来达到与模拟对象相同的目的。</p>
+<p>Here’s the scenario we’ll test: we’ll create a library that tracks a value
+against a maximum value and sends messages based on how close to the maximum
+value the current value is. This library could be used to keep track of a
+user’s quota for the number of API calls they’re allowed to make, for example.</p>
+<p>这是我们将测试的场景：创建一个库，用于跟踪值相对于最大值的状态，并根据当前值接近最大值的程度发送消息。例如，此库可用于跟踪用户允许的 API 调用次数配额。</p>
+<p>Our library will only provide the functionality of tracking how close to the
+maximum a value is and what the messages should be at what times. Applications
+that use our library will be expected to provide the mechanism for sending the
+messages: the application could put a message in the application, send an email,
+send a text message, or do something else. The library doesn’t need to know that
+detail. All it needs is something that implements a trait we’ll provide called
+<code>Messenger</code>. Listing 15-20 shows the library code.</p>
+<p>我们的库仅提供跟踪值接近最大值的程度以及在何时发送何种消息的功能。使用我们库的应用程序需要提供发送消息的机制：应用程序可以将消息放入应用程序、发送电子邮件、发送短信或其他操作。库不需要知道这些细节。它只需要实现我们将提供的名为 <code>Messenger</code> 的 trait 的内容。代码清单 15-20 显示了库代码。</p>
+<figure class="listing" id="listing-15-20">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">pub trait Messenger {
+    fn send(&amp;self, msg: &amp;str);
+}
+
+pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+    messenger: &amp;'a T,
+    value: usize,
+    max: usize,
+}
+
+impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+where
+    T: Messenger,
+{
+    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+        LimitTracker {
+            messenger,
+            value: 0,
+            max,
+        }
+    }
+
+    pub fn set_value(&amp;mut self, value: usize) {
+        self.value = value;
+
+        let percentage_of_max = self.value as f64 / self.max as f64;
+
+        if percentage_of_max &gt;= 1.0 {
+            self.messenger.send("Error: You are over your quota!");
+        } else if percentage_of_max &gt;= 0.9 {
+            self.messenger
+                .send("Urgent warning: You've used up over 90% of your quota!");
+        } else if percentage_of_max &gt;= 0.75 {
+            self.messenger
+                .send("Warning: You've used up over 75% of your quota!");
+        }
+    }
+}</code></pre>
+<figcaption><a href="#listing-15-20">Listing 15-20</a>: A library to keep track of how close a value is to a maximum value and warn when the value is at certain levels 一个用于跟踪值接近最大值的程度并在值达到特定级别时发出警告的库</figcaption>
+</figure>
+<p>One important part of this code is that the <code>Messenger</code> trait has one method
+called <code>send</code> that takes an immutable reference to <code>self</code> and the text of the
+message. This trait is the interface our mock object needs to implement so that
+the mock can be used in the same way a real object is. The other important part
+is that we want to test the behavior of the <code>set_value</code> method on the
+<code>LimitTracker</code>. We can change what we pass in for the <code>value</code> parameter, but
+<code>set_value</code> doesn’t return anything for us to make assertions on. We want to be
+able to say that if we create a <code>LimitTracker</code> with something that implements
+the <code>Messenger</code> trait and a particular value for <code>max</code>, when we pass different
+numbers for <code>value</code> the messenger is told to send the appropriate messages.</p>
+<p>这段代码的一个重要部分是 <code>Messenger</code> trait 有一个名为 <code>send</code> 的方法，该方法接受对 <code>self</code> 的不可变引用和消息文本。这个 trait 是我们的模拟对象需要实现的接口，以便模拟对象可以像真实对象一样使用。另一个重要部分是我们希望测试 <code>LimitTracker</code> 上的 <code>set_value</code> 方法的行为。我们可以改变传递给 <code>value</code> 参数的内容，但 <code>set_value</code> 不返回任何内容供我们断言。我们希望能够断言：如果我们创建一个使用实现 <code>Messenger</code> trait 的对象的 <code>LimitTracker</code> 和一个特定的 <code>max</code> 值，当我们为 <code>value</code> 传递不同的数字时，模拟对象被告知发送了适当的消息。</p>
+<p>We need a mock object that, instead of sending an email or text message when we
+call <code>send</code>, will only keep track of the messages it’s told to send. We can
+create a new instance of the mock object, create a <code>LimitTracker</code> that uses the
+mock object, call the <code>set_value</code> method on <code>LimitTracker</code>, and then check that
+the mock object has the messages we expect. Listing 15-21 shows an attempt to
+implement a mock object to do just that, but the borrow checker won’t allow it.</p>
+<p>我们需要一个模拟对象，在调用 <code>send</code> 时不发送电子邮件或短信，而仅跟踪它被告知要发送的消息。我们可以创建模拟对象的新实例，创建使用该模拟对象的 <code>LimitTracker</code>，调用 <code>LimitTracker</code> 的 <code>set_value</code> 方法，然后检查模拟对象是否包含我们期望的消息。代码清单 15-21 展示了实现模拟对象的尝试，但借用检查器不允许。</p>
+<figure class="listing" id="listing-15-21">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct MockMessenger {
+        sent_messages: Vec&lt;String&gt;,
+    }
+
+    impl MockMessenger {
+        fn new() -&gt; MockMessenger {
+            MockMessenger {
+                sent_messages: vec![],
+            }
+        }
+    }
+
+    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            self.sent_messages.push(String::from(message));
+        }
+    }
+
+    #[test]
+    fn it_sends_an_over_75_percent_warning_message() {
+        let mock_messenger = MockMessenger::new();
+        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+
+        limit_tracker.set_value(80);
+
+        assert_eq!(mock_messenger.sent_messages.len(), 1);
+    }
+}</code></pre>
+<figcaption><a href="#listing-15-21">Listing 15-21</a>: An attempt to implement a <code>MockMessenger</code> that isn’t allowed by the borrow checker 尝试实现 <code>MockMessenger</code>，但借用检查器不允许</figcaption>
+</figure>
+<p>This test code defines a <code>MockMessenger</code> struct that has a <code>sent_messages</code>
+field with a <code>Vec</code> of <code>String</code> values to keep track of the messages it’s told
+to send. We also define an associated function <code>new</code> to make it convenient to
+create new <code>MockMessenger</code> values that start with an empty list of messages. We
+then implement the <code>Messenger</code> trait for <code>MockMessenger</code> so we can give a
+<code>MockMessenger</code> to a <code>LimitTracker</code>. In the definition of the <code>send</code> method, we
+take the message passed in as a parameter and store it in the <code>MockMessenger</code>
+list of <code>sent_messages</code>.</p>
+<p>这段测试代码定义了一个 <code>MockMessenger</code> 结构体，其中包含一个 <code>String</code> 值的 <code>Vec</code> 字段 <code>sent_messages</code>，用于跟踪它被告知要发送的消息。我们还定义了一个关联函数 <code>new</code>，以便于创建以空消息列表开头的新 <code>MockMessenger</code> 值。然后我们为 <code>MockMessenger</code> 实现 <code>Messenger</code> trait，以便可以将 <code>MockMessenger</code> 提供给 <code>LimitTracker</code>。在 <code>send</code> 方法的定义中，我们将传入的消息作为参数并存储在 <code>MockMessenger</code> 的 <code>sent_messages</code> 列表中。</p>
+<p>In the test, we’re testing what happens when the <code>LimitTracker</code> is told to set
+<code>value</code> to something that is more than 75 percent of the <code>max</code> value. First we
+create a new <code>MockMessenger</code>, which will start with an empty list of messages.
+Then we create a new <code>LimitTracker</code> and give it a reference to the new
+<code>MockMessenger</code> and a <code>max</code> value of <code>100</code>. We call the <code>set_value</code> method on
+the <code>LimitTracker</code> with a value of <code>80</code>, which is more than 75 percent of 100.
+Then we assert that the list of messages that the <code>MockMessenger</code> is keeping
+track of should now have one message in it.</p>
+<p>在测试中，我们测试当 <code>LimitTracker</code> 被告知将 <code>value</code> 设置为超过 <code>max</code> 值 75% 的值时会发生什么。首先创建一个新的 <code>MockMessenger</code>，它将从空消息列表开始。然后创建一个新的 <code>LimitTracker</code>，并为其提供对新 <code>MockMessenger</code> 的引用和 <code>max</code> 值 <code>100</code>。我们使用值 <code>80</code> 调用 <code>LimitTracker</code> 的 <code>set_value</code> 方法，该值超过 100 的 75%。然后我们断言 <code>MockMessenger</code> 正在跟踪的消息列表现在应该包含一条消息。</p>
+<p>However, there’s one problem with this test, as shown here:</p>
+<p>然而，这个测试有一个问题，如下所示：</p>
+<pre><code class="language-console">$ cargo test
+   Compiling limit-tracker v0.1.0 (file:///projects/limit-tracker)
+error[E0596]: cannot borrow `self.sent_messages` as mutable, as it is behind a `&amp;` reference
+  --&gt; src/lib.rs:58:13
+   |
+58 |             self.sent_messages.push(String::from(message));
+   |             ^^^^^^^^^^^^^^^^^^ `self` is a `&amp;` reference, so the data it refers to cannot be borrowed as mutable
+   |
+help: consider changing this to be a mutable reference in the `impl` method and the `trait` definition
+   |
+2  ~     fn send(&amp;mut self, msg: &amp;str);
+3  | }
+...
+56 |     impl Messenger for MockMessenger {
+57 ~         fn send(&amp;mut self, message: &amp;str) {
+   |
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `limit-tracker` (lib test) due to 1 previous error
+</code></pre>
+<p>We can’t modify the <code>MockMessenger</code> to keep track of the messages because the
+<code>send</code> method takes an immutable reference to <code>self</code>. We also can’t take the
+suggestion from the error text to use <code>&amp;mut self</code> in both the <code>impl</code> method and
+the trait definition. We do not want to change the <code>Messenger</code> trait solely for
+the sake of testing. Instead, we need to find a way to make our test code work
+correctly with our existing design.</p>
+<p>我们无法修改 <code>MockMessenger</code> 来跟踪消息，因为 <code>send</code> 方法接受对 <code>self</code> 的不可变引用。我们也不能按照错误文本的建议在 <code>impl</code> 方法和 trait 定义中都使用 <code>&amp;mut self</code>。我们不想仅仅为了测试而更改 <code>Messenger</code> trait。相反，我们需要找到一种方法使测试代码在现有设计下正常工作。</p>
+<p>This is a situation in which interior mutability can help! We’ll store the
+<code>sent_messages</code> within a <code>RefCell&lt;T&gt;</code>, and then the <code>send</code> method will be
+able to modify <code>sent_messages</code> to store the messages we’ve seen. Listing 15-22
+shows what that looks like.</p>
+<p>这就是内部可变性可以提供帮助的情况！我们将 <code>sent_messages</code> 存储在 <code>RefCell&lt;T&gt;</code> 中，然后 <code>send</code> 方法将能够修改 <code>sent_messages</code> 以存储我们看到的消息。代码清单 15-22 展示了具体实现。</p>
+<figure class="listing" id="listing-15-22">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::cell::RefCell;
+
+    struct MockMessenger {
+        sent_messages: RefCell&lt;Vec&lt;String&gt;&gt;,
+    }
+
+    impl MockMessenger {
+        fn new() -&gt; MockMessenger {
+            MockMessenger {
+                sent_messages: RefCell::new(vec![]),
+            }
+        }
+    }
+
+    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            self.sent_messages.borrow_mut().push(String::from(message));
+        }
+    }
+
+    #[test]
+    fn it_sends_an_over_75_percent_warning_message() {
+        // --snip--
+<span class="boring">        let mock_messenger = MockMessenger::new();
+</span><span class="boring">        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+</span><span class="boring">
+</span><span class="boring">        limit_tracker.set_value(80);
+</span>
+        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
+    }
+}</code></pre>
+<figcaption><a href="#listing-15-22">Listing 15-22</a>: Using <code>RefCell&lt;T&gt;</code> to mutate an inner value while the outer value is considered immutable 使用 <code>RefCell&lt;T&gt;</code> 在外部值被视为不可变时改变内部值</figcaption>
+</figure>
+<p>The <code>sent_messages</code> field is now of type <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> instead of
+<code>Vec&lt;String&gt;</code>. In the <code>new</code> function, we create a new <code>RefCell&lt;Vec&lt;String&gt;&gt;</code>
+instance around the empty vector.</p>
+<p><code>sent_messages</code> 字段现在的类型是 <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> 而不是 <code>Vec&lt;String&gt;</code>。在 <code>new</code> 函数中，我们创建一个围绕空向量的新 <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> 实例。</p>
+<p>For the implementation of the <code>send</code> method, the first parameter is still an
+immutable borrow of <code>self</code>, which matches the trait definition. We call
+<code>borrow_mut</code> on the <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> in <code>self.sent_messages</code> to get a
+mutable reference to the value inside the <code>RefCell&lt;Vec&lt;String&gt;&gt;</code>, which is the
+vector. Then we can call <code>push</code> on the mutable reference to the vector to keep
+track of the messages sent during the test.</p>
+<p>对于 <code>send</code> 方法的实现，第一个参数仍然是对 <code>self</code> 的不可变引用，这与 trait 定义一致。我们在 <code>self.sent_messages</code> 中的 <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> 上<span class="highlight">[note]调用 <code>borrow_mut</code>，以获取对 <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> 内部值的可变引用，即向量。然后我们可以对向量的可变引用调用 <code>push</code> 来跟踪测试期间发送的消息。</span></p>
+<p>The last change we have to make is in the assertion: to see how many items are
+in the inner vector, we call <code>borrow</code> on the <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> to get an
+immutable reference to the vector.</p>
+<p>我们必须做的最后一个更改是在断言中：为了查看内部向量中有多少项，我们在 <code>RefCell&lt;Vec&lt;String&gt;&gt;</code> 上<span class="highlight">[note]调用 <code>borrow</code> 以获取对向量的不可变引用。</span></p>
+<p>Now that you’ve seen how to use <code>RefCell&lt;T&gt;</code>, let’s dig into how it works!</p>
+<p>现在你已了解如何使用 <code>RefCell&lt;T&gt;</code>，让我们深入探讨它的工作原理！</p>
+<h4 id="keeping-track-of-borrows-at-runtime-with-refcellt-使用-refcellt-在运行时跟踪借用"><a class="header" href="#keeping-track-of-borrows-at-runtime-with-refcellt-使用-refcellt-在运行时跟踪借用">Keeping Track of Borrows at Runtime with <code>RefCell&lt;T&gt;</code> 使用 <code>RefCell&lt;T&gt;</code> 在运行时跟踪借用</a></h4>
+<p>When creating immutable and mutable references, we use the <code>&amp;</code> and <code>&amp;mut</code>
+syntax, respectively. With <code>RefCell&lt;T&gt;</code>, we use the <code>borrow</code> and <code>borrow_mut</code>
+methods, which are part of the safe API that belongs to <code>RefCell&lt;T&gt;</code>. The
+<code>borrow</code> method returns the smart pointer type <code>Ref&lt;T&gt;</code>, and <code>borrow_mut</code>
+returns the smart pointer type <code>RefMut&lt;T&gt;</code>. Both types implement <code>Deref</code>, so we
+can treat them like regular references.</p>
+<p>创建不可变和可变引用时，我们分别使用 <code>&amp;</code> 和 <code>&amp;mut</code> 语法。对于 <code>RefCell&lt;T&gt;</code>，我们使用 <code>borrow</code> 和 <code>borrow_mut</code> 方法，它们是属于 <code>RefCell&lt;T&gt;</code> 的安全 API 的一部分。<span class="highlight">[note]<code>borrow</code> 方法返回智能指针类型 <code>Ref&lt;T&gt;</code>，而 <code>borrow_mut</code> 返回智能指针类型 <code>RefMut&lt;T&gt;</code>。两种类型都实现了 <code>Deref</code>，因此我们可以像常规引用一样对待它们。</span></p>
+<p>The <code>RefCell&lt;T&gt;</code> keeps track of how many <code>Ref&lt;T&gt;</code> and <code>RefMut&lt;T&gt;</code> smart
+pointers are currently active. Every time we call <code>borrow</code>, the <code>RefCell&lt;T&gt;</code>
+increases its count of how many immutable borrows are active. When a <code>Ref&lt;T&gt;</code>
+value goes out of scope, the count of immutable borrows goes down by 1. Just
+like the compile-time borrowing rules, <code>RefCell&lt;T&gt;</code> lets us have many immutable
+borrows or one mutable borrow at any point in time.</p>
+<p><span class="highlight">[note]<code>RefCell&lt;T&gt;</code> 跟踪当前有多少 <code>Ref&lt;T&gt;</code> 和 <code>RefMut&lt;T&gt;</code> 智能指针处于活动状态。每次调用 <code>borrow</code> 时，<code>RefCell&lt;T&gt;</code> 会增加其不可变借用活动计数。当 <code>Ref&lt;T&gt;</code> 值离开作用域时，不可变借用计数减少 1。</span>就像编译时借用规则一样，<code>RefCell&lt;T&gt;</code> 允许我们在任何时候拥有多个不可变借用或一个可变借用。</p>
+<p>If we try to violate these rules, rather than getting a compiler error as we
+would with references, the implementation of <code>RefCell&lt;T&gt;</code> will panic at
+runtime. Listing 15-23 shows a modification of the implementation of <code>send</code> in
+Listing 15-22. We’re deliberately trying to create two mutable borrows active
+for the same scope to illustrate that <code>RefCell&lt;T&gt;</code> prevents us from doing this
+at runtime.</p>
+<p>如果我们试图违反这些规则，不会像使用引用那样得到编译器错误，<code>RefCell&lt;T&gt;</code> 的实现将在运行时恐慌。代码清单 15-23 展示了代码清单 15-22 中 <code>send</code> 实现的修改版本。我们故意尝试为同一作用域创建两个活动的可变借用，以说明 <code>RefCell&lt;T&gt;</code> 在运行时阻止我们这样做。</p>
+<figure class="listing" id="listing-15-23">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust ignore panics"><span class="boring">pub trait Messenger {
+</span><span class="boring">    fn send(&amp;self, msg: &amp;str);
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct LimitTracker&lt;'a, T: Messenger&gt; {
+</span><span class="boring">    messenger: &amp;'a T,
+</span><span class="boring">    value: usize,
+</span><span class="boring">    max: usize,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl&lt;'a, T&gt; LimitTracker&lt;'a, T&gt;
+</span><span class="boring">where
+</span><span class="boring">    T: Messenger,
+</span><span class="boring">{
+</span><span class="boring">    pub fn new(messenger: &amp;'a T, max: usize) -&gt; LimitTracker&lt;'a, T&gt; {
+</span><span class="boring">        LimitTracker {
+</span><span class="boring">            messenger,
+</span><span class="boring">            value: 0,
+</span><span class="boring">            max,
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn set_value(&amp;mut self, value: usize) {
+</span><span class="boring">        self.value = value;
+</span><span class="boring">
+</span><span class="boring">        let percentage_of_max = self.value as f64 / self.max as f64;
+</span><span class="boring">
+</span><span class="boring">        if percentage_of_max &gt;= 1.0 {
+</span><span class="boring">            self.messenger.send("Error: You are over your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.9 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Urgent warning: You've used up over 90% of your quota!");
+</span><span class="boring">        } else if percentage_of_max &gt;= 0.75 {
+</span><span class="boring">            self.messenger
+</span><span class="boring">                .send("Warning: You've used up over 75% of your quota!");
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">    use std::cell::RefCell;
+</span><span class="boring">
+</span><span class="boring">    struct MockMessenger {
+</span><span class="boring">        sent_messages: RefCell&lt;Vec&lt;String&gt;&gt;,
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    impl MockMessenger {
+</span><span class="boring">        fn new() -&gt; MockMessenger {
+</span><span class="boring">            MockMessenger {
+</span><span class="boring">                sent_messages: RefCell::new(vec![]),
+</span><span class="boring">            }
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    impl Messenger for MockMessenger {
+        fn send(&amp;self, message: &amp;str) {
+            let mut one_borrow = self.sent_messages.borrow_mut();
+            let mut two_borrow = self.sent_messages.borrow_mut();
+
+            one_borrow.push(String::from(message));
+            two_borrow.push(String::from(message));
+        }
+    }
+<span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn it_sends_an_over_75_percent_warning_message() {
+</span><span class="boring">        let mock_messenger = MockMessenger::new();
+</span><span class="boring">        let mut limit_tracker = LimitTracker::new(&amp;mock_messenger, 100);
+</span><span class="boring">
+</span><span class="boring">        limit_tracker.set_value(80);
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(mock_messenger.sent_messages.borrow().len(), 1);
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-15-23">Listing 15-23</a>: Creating two mutable references in the same scope to see that <code>RefCell&lt;T&gt;</code> will panic 在同一作用域中创建两个可变引用以观察 <code>RefCell&lt;T&gt;</code> 将恐慌</figcaption>
+</figure>
+<p>We create a variable <code>one_borrow</code> for the <code>RefMut&lt;T&gt;</code> smart pointer returned
+from <code>borrow_mut</code>. Then we create another mutable borrow in the same way in the
+variable <code>two_borrow</code>. This makes two mutable references in the same scope,
+which isn’t allowed. When we run the tests for our library, the code in Listing
+15-23 will compile without any errors, but the test will fail:</p>
+<p>我们为 <code>borrow_mut</code> 返回的 <code>RefMut&lt;T&gt;</code> 智能指针创建变量 <code>one_borrow</code>。然后以相同方式在变量 <code>two_borrow</code> 中创建另一个可变借用。这导致在同一作用域中存在两个可变引用，这是不允许的。当我们运行库的测试时，代码清单 15-23 中的代码将编译而不会出现任何错误，但测试会失败：</p>
+<pre><code class="language-console">$ cargo test
+   Compiling limit-tracker v0.1.0 (file:///projects/limit-tracker)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+     Running unittests src/lib.rs (target/debug/deps/limit_tracker-e599811fa246dbde)
+
+running 1 test
+test tests::it_sends_an_over_75_percent_warning_message ... FAILED
+
+failures:
+
+---- tests::it_sends_an_over_75_percent_warning_message stdout ----
+
+thread 'tests::it_sends_an_over_75_percent_warning_message' panicked at src/lib.rs:60:53:
+already borrowed: BorrowMutError
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::it_sends_an_over_75_percent_warning_message
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`
+</code></pre>
+<p>Notice that the code panicked with the message <code>already borrowed:  BorrowMutError</code>. This is how <code>RefCell&lt;T&gt;</code> handles violations of the borrowing
+rules at runtime.</p>
+<p>注意代码因消息 <code>already borrowed: BorrowMutError</code> 而恐慌。这就是 <code>RefCell&lt;T&gt;</code> 在运行时处理违反借用规则的方式。</p>
+<p>Choosing to catch borrowing errors at runtime rather than compile time, as
+we’ve done here, means you’d potentially be finding mistakes in your code later
+in the development process: possibly not until your code was deployed to
+production. Also, your code would incur a small runtime performance penalty as
+a result of keeping track of the borrows at runtime rather than compile time.
+However, using <code>RefCell&lt;T&gt;</code> makes it possible to write a mock object that can
+modify itself to keep track of the messages it has seen while you’re using it
+in a context where only immutable values are allowed. You can use <code>RefCell&lt;T&gt;</code>
+despite its trade-offs to get more functionality than regular references
+provide.</p>
+<p>选择在运行时捕获借用错误而不是编译时（如此处所做），意味着你可能在开发过程后期才发现代码中的错误：甚至可能直到代码部署到生产环境。此外，由于在运行时而不是编译时跟踪借用，你的代码<span class="highlight">[note]会遭受轻微的性能损失</span>。然而，使用 <code>RefCell&lt;T&gt;</code> 可以在仅允许不可变值的上下文中编写可以修改自身以跟踪所见消息的模拟对象。尽管存在这些权衡，你仍然可以使用 <code>RefCell&lt;T&gt;</code> 来获得比常规引用提供的更多功能。</p>
+<h3 id="allowing-multiple-owners-of-mutable-data-with-rct-and-refcellt-通过-rct-和-refcellt-允许多个所有者持有可变数据"><a class="header" href="#allowing-multiple-owners-of-mutable-data-with-rct-and-refcellt-通过-rct-和-refcellt-允许多个所有者持有可变数据">Allowing Multiple Owners of Mutable Data with <code>Rc&lt;T&gt;</code> and <code>RefCell&lt;T&gt;</code> 通过 <code>Rc&lt;T&gt;</code> 和 <code>RefCell&lt;T&gt;</code> 允许多个所有者持有可变数据</a></h3>
+<p>A common way to use <code>RefCell&lt;T&gt;</code> is in combination with <code>Rc&lt;T&gt;</code>. Recall that
+<code>Rc&lt;T&gt;</code> lets you have multiple owners of some data, but it only gives immutable
+access to that data. If you have an <code>Rc&lt;T&gt;</code> that holds a <code>RefCell&lt;T&gt;</code>, you can
+get a value that can have multiple owners <em>and</em> that you can mutate!</p>
+<p><span class="highlight">[note]使用 <code>RefCell&lt;T&gt;</code> 的常见方式是与 <code>Rc&lt;T&gt;</code> 结合。</span>回想一下，<code>Rc&lt;T&gt;</code> 让你拥有某些数据的多个所有者，但它仅提供对该数据的不可变访问。如果你有一个持有 <code>RefCell&lt;T&gt;</code> 的 <code>Rc&lt;T&gt;</code>，你可以获得一个可以拥有多个所有者<strong>并且</strong>可以改变的值！</p>
+<p>For example, recall the cons list example in Listing 15-18 where we used <code>Rc&lt;T&gt;</code>
+to allow multiple lists to share ownership of another list. Because <code>Rc&lt;T&gt;</code>
+holds only immutable values, we can’t change any of the values in the list once
+we’ve created them. Let’s add in <code>RefCell&lt;T&gt;</code> for its ability to change the
+values in the lists. Listing 15-24 shows that by using a <code>RefCell&lt;T&gt;</code> in the
+<code>Cons</code> definition, we can modify the value stored in all the lists.</p>
+<p>例如，回顾代码清单 15-18 中的 cons 列表示例，我们使用 <code>Rc&lt;T&gt;</code> 允许多个列表共享另一个列表的所有权。因为 <code>Rc&lt;T&gt;</code> 仅持有不可变值，一旦创建列表，我们就无法更改其中的任何值。让我们添加 <code>RefCell&lt;T&gt;</code> 以改变列表中的值。代码清单 15-24 显示，通过在 <code>Cons</code> 定义中使用 <code>RefCell&lt;T&gt;</code>，我们可以修改所有列表中的值。</p>
+<figure class="listing" id="listing-15-24">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+enum List {
+    Cons(Rc&lt;RefCell&lt;i32&gt;&gt;, Rc&lt;List&gt;),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+use std::cell::RefCell;
+use std::rc::Rc;
+
+fn main() {
+    let value = Rc::new(RefCell::new(5));
+
+    let a = Rc::new(Cons(Rc::clone(&amp;value), Rc::new(Nil)));
+
+    let b = Cons(Rc::new(RefCell::new(3)), Rc::clone(&amp;a));
+    let c = Cons(Rc::new(RefCell::new(4)), Rc::clone(&amp;a));
+
+    *value.borrow_mut() += 10;
+
+    println!("a after = {a:?}");
+    println!("b after = {b:?}");
+    println!("c after = {c:?}");
+}</code></pre></pre>
+<figcaption><a href="#listing-15-24">Listing 15-24</a>: Using <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code> to create a <code>List</code> that we can mutate 使用 <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code> 创建可变的 <code>List</code></figcaption>
+</figure>
+<p>We create a value that is an instance of <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code> and store it in a
+variable named <code>value</code> so we can access it directly later. Then we create a
+<code>List</code> in <code>a</code> with a <code>Cons</code> variant that holds <code>value</code>. We need to clone
+<code>value</code> so both <code>a</code> and <code>value</code> have ownership of the inner <code>5</code> value rather
+than transferring ownership from <code>value</code> to <code>a</code> or having <code>a</code> borrow from
+<code>value</code>.</p>
+<p>我们创建一个 <code>Rc&lt;RefCell&lt;i32&gt;&gt;</code> 实例并将其存储在名为 <code>value</code> 的变量中，以便稍后直接访问。然后我们在 <code>a</code> 中创建一个 <code>List</code>，其 <code>Cons</code> 变体持有 <code>value</code>。我们需要克隆 <code>value</code>，以便 <code>a</code> 和 <code>value</code> 都拥有内部值 <code>5</code> 的所有权，而不是将所有权从 <code>value</code> 转移给 <code>a</code> 或让 <code>a</code> 从 <code>value</code> 借用。</p>
+<p>We wrap the list <code>a</code> in an <code>Rc&lt;T&gt;</code> so that when we create lists <code>b</code> and <code>c</code>,
+they can both refer to <code>a</code>, which is what we did in Listing 15-18.</p>
+<p>我们将列表 <code>a</code> 包装在 <code>Rc&lt;T&gt;</code> 中，这样在创建列表 <code>b</code> 和 <code>c</code> 时，它们都可以引用 <code>a</code>，正如我们在代码清单 15-18 中所做的那样。</p>
+<p>After we’ve created the lists in <code>a</code>, <code>b</code>, and <code>c</code>, we want to add 10 to the
+value in <code>value</code>. We do this by calling <code>borrow_mut</code> on <code>value</code>, which uses the
+automatic dereferencing feature we discussed in “Where’s the <code>-&gt;</code>
+Operator?”) in Chapter 5 to dereference
+the <code>Rc&lt;T&gt;</code> to the inner <code>RefCell&lt;T&gt;</code> value. The <code>borrow_mut</code> method returns a
+<code>RefMut&lt;T&gt;</code> smart pointer, and we use the dereference operator on it and change
+the inner value.</p>
+<p>创建 <code>a</code>、<code>b</code> 和 <code>c</code> 中的列表后，我们希望将 <code>value</code> 中的值增加 10。我们通过对 <code>value</code> 调用 <code>borrow_mut</code> 来实现这一点，该函数使用第 5 章“<code>-&gt;</code> 运算符在哪？”中讨论的自动解引用功能，将 <code>Rc&lt;T&gt;</code> 解引用为内部的 <code>RefCell&lt;T&gt;</code> 值。<code>borrow_mut</code> 方法返回一个 <code>RefMut&lt;T&gt;</code> 智能指针，我们在其上使用解引用运算符来更改内部值。</p>
+<p>When we print <code>a</code>, <code>b</code>, and <code>c</code>, we can see that they all have the modified
+value of <code>15</code> rather than <code>5</code>:</p>
+<p>当我们打印 <code>a</code>、<code>b</code> 和 <code>c</code> 时，可以看到它们都具有修改后的值 <code>15</code> 而不是 <code>5</code>：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling cons-list v0.1.0 (file:///projects/cons-list)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.63s
+     Running `target/debug/cons-list`
+a after = Cons(RefCell { value: 15 }, Nil)
+b after = Cons(RefCell { value: 3 }, Cons(RefCell { value: 15 }, Nil))
+c after = Cons(RefCell { value: 4 }, Cons(RefCell { value: 15 }, Nil))
+</code></pre>
+<p>This technique is pretty neat! By using <code>RefCell&lt;T&gt;</code>, we have an outwardly
+immutable <code>List</code> value. But we can use the methods on <code>RefCell&lt;T&gt;</code> that provide
+access to its interior mutability so we can modify our data when we need to.
+The runtime checks of the borrowing rules protect us from data races, and it’s
+sometimes worth trading a bit of speed for this flexibility in our data
+structures. Note that <code>RefCell&lt;T&gt;</code> does not work for multithreaded code!
+<code>Mutex&lt;T&gt;</code> is the thread-safe version of <code>RefCell&lt;T&gt;</code>, and we’ll discuss
+<code>Mutex&lt;T&gt;</code> in Chapter 16.</p>
+<p>这种技术相当巧妙！通过使用 <code>RefCell&lt;T&gt;</code>，我们获得了一个表面上不可变的 <code>List</code> 值。但我们可以使用 <code>RefCell&lt;T&gt;</code> 上的方法来访问其内部可变性，以便在需要时修改数据。借用规则的运行时检查保护我们免受数据竞争，有时为了数据结构的这种灵活性而牺牲一点速度是值得的。注意 <code>RefCell&lt;T&gt;</code> 不适用于多线程代码！<code>Mutex&lt;T&gt;</code> 是 <code>RefCell&lt;T&gt;</code> 的线程安全版本，我们将在第 16 章讨论 <code>Mutex&lt;T&gt;</code>。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch15-04-rc.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch15-06-reference-cycles.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch15-04-rc.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch15-06-reference-cycles.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

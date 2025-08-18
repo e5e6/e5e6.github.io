@@ -1,0 +1,833 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Applying Concurrency with Async 应用异步实现并发 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="applying-concurrency-with-async-应用异步实现并发"><a class="header" href="#applying-concurrency-with-async-应用异步实现并发">Applying Concurrency with Async 应用异步实现并发</a></h2>
+<p>In this section, we’ll apply async to some of the same concurrency challenges
+we tackled with threads in chapter 16. Because we already talked about a lot of
+the key ideas there, in this section we’ll focus on what’s different between
+threads and futures.</p>
+<p>本节将异步应用于第16章用线程解决的并发挑战。因已讨论许多关键思想，本节聚焦线程与 Future 的差异。</p>
+<p>In many cases, the APIs for working with concurrency using async are very
+similar to those for using threads. In other cases, they end up being quite
+different. Even when the APIs <em>look</em> similar between threads and async, they
+often have different behavior—and they nearly always have different performance
+characteristics.</p>
+<p>许多情况下，异步并发的 API 与线程非常相似，但有时差异显著。即使 API <strong>看似</strong>相似，它们的行为通常不同，且几乎总有不同的性能特征。</p>
+<h3 id="creating-a-new-task-with-spawn_task-用-spawn_task-创建新任务"><a class="header" href="#creating-a-new-task-with-spawn_task-用-spawn_task-创建新任务">Creating a New Task with <code>spawn_task</code> 用 <code>spawn_task</code> 创建新任务</a></h3>
+<p>The first operation we tackled in Creating a New Thread with
+Spawn was counting up on two separate threads.
+Let’s do the same using async. The <code>trpl</code> crate supplies a <code>spawn_task</code> function
+that looks very similar to the <code>thread::spawn</code> API, and a <code>sleep</code> function
+that is an async version of the <code>thread::sleep</code> API. We can use these together
+to implement the counting example, as shown in Listing 17-6.</p>
+<p>在“用 spawn 创建新线程“中，我们在两个独立线程上计数。现在用异步实现相同功能。<code>trpl</code> crate 提供与 <code>thread::spawn</code> API 非常相似的 <code>spawn_task</code> 函数，以及异步版的 <code>sleep</code> 函数。结合两者可实现计数示例（见示例17-6）。</p>
+<p><span class="highlight">[note]注：<code>use tokio::task::spawn; use tokio::time::sleep;</code></span></p>
+<figure class="listing" id="listing-17-6">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span>use std::time::Duration;
+
+fn main() {
+    trpl::run(async {
+        trpl::spawn_task(async {
+            for i in 1..10 {
+                println!("hi number {i} from the first task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        });
+
+        for i in 1..5 {
+            println!("hi number {i} from the second task!");
+            trpl::sleep(Duration::from_millis(500)).await;
+        }
+    });
+}</code></pre></pre>
+<figcaption><a href="#listing-17-6">Listing 17-6</a>: Creating a new task to print one thing while the main task prints something else 创建新任务：主任务打印内容时另一任务打印其他内容</figcaption>
+</figure>
+<p>As our starting point, we set up our <code>main</code> function with <code>trpl::run</code> so that
+our top-level function can be async.</p>
+<p>首先在 <code>main</code> 中设置 <code>trpl::run</code>，使顶层函数可为异步。</p>
+<section class="note" aria-role="note">
+<p>Note: From this point forward in the chapter, every example will include this
+exact same wrapping code with <code>trpl::run</code> in <code>main</code>, so we’ll often skip it
+just as we do with <code>main</code>. Don’t forget to include it in your code!</p>
+<p>注意：本章后续示例均包含 <code>trpl::run</code> 的相同包装代码，因此常会省略（类似 <code>main</code>）。但你的代码中勿忘包含！</p>
+</section>
+<p>Then we write two loops within that block, each containing a <code>trpl::sleep</code> call,
+which waits for half a second (500 milliseconds) before sending the next
+message. We put one loop in the body of a <code>trpl::spawn_task</code> and the other in a
+top-level <code>for</code> loop. We also add an <code>await</code> after the <code>sleep</code> calls.</p>
+<p>然后在异步块内编写两个循环，每个循环含 <code>trpl::sleep</code> 调用（等待半秒后发送下条消息）。一个循环放在 <code>trpl::spawn_task</code> 体内，另一个放在顶层 <code>for</code> 循环中。还在 <code>sleep</code> 调用后添加 <code>await</code>。</p>
+<p>This code behaves similarly to the thread-based implementation—including the
+fact that you may see the messages appear in a different order in your own
+terminal when you run it:</p>
+<p>此代码行为类似于基于线程的实现（包括终端中消息顺序可能不同）：</p>
+<pre><code class="language-text">hi number 1 from the second task!
+hi number 1 from the first task!
+hi number 2 from the first task!
+hi number 2 from the second task!
+hi number 3 from the first task!
+hi number 3 from the second task!
+hi number 4 from the first task!
+hi number 4 from the second task!
+hi number 5 from the first task!
+</code></pre>
+<p>This version stops as soon as the <code>for</code> loop in the body of the main async block
+finishes, because the task spawned by <code>spawn_task</code> is shut down when the <code>main</code>
+function ends. If you want it to run all the way to the task’s completion, you
+will need to use a join handle to wait for the first task to complete. With
+threads, we used the <code>join</code> method to “block” until the thread was done running.
+In Listing 17-7, we can use <code>await</code> to do the same thing, because the task
+handle itself is a future. Its <code>Output</code> type is a <code>Result</code>, so we also unwrap it
+after awaiting it.</p>
+<p>主异步块中的 <code>for</code> 循环结束后立即停止（因 <code>spawn_task</code> 生成的任务在 <code>main</code> 结束时关闭）。若要让任务完全完成，需使用 join 句柄<span class="highlight">[note]等待第一个任务完成</span>。线程中我们用 <code>join</code> 方法“阻塞“至线程完成。在示例17-7中，因<span class="highlight">[note]任务句柄本身是 Future，可用 <code>await</code></span> 实现相同功能。其 <code>Output</code> 类型是 <code>Result</code>，因此在等待后解包它。</p>
+<figure class="listing" id="listing-17-7">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let handle = trpl::spawn_task(async {
+            for i in 1..10 {
+                println!("hi number {i} from the first task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        });
+
+        for i in 1..5 {
+            println!("hi number {i} from the second task!");
+            trpl::sleep(Duration::from_millis(500)).await;
+        }
+
+        handle.await.unwrap();
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-17-7">Listing 17-7</a>: Using <code>await</code> with a join handle to run a task to completion 对 join 句柄使用 <code>await</code> 使任务运行至完成</figcaption>
+</figure>
+<p>This updated version runs until <em>both</em> loops finish.</p>
+<p>此更新版本将运行至<strong>两个</strong>循环均完成。</p>
+<pre><code class="language-text">hi number 1 from the second task!
+hi number 1 from the first task!
+hi number 2 from the first task!
+hi number 2 from the second task!
+hi number 3 from the first task!
+hi number 3 from the second task!
+hi number 4 from the first task!
+hi number 4 from the second task!
+hi number 5 from the first task!
+hi number 6 from the first task!
+hi number 7 from the first task!
+hi number 8 from the first task!
+hi number 9 from the first task!
+</code></pre>
+<p>So far, it looks like async and threads give us the same basic outcomes, just
+with different syntax: using <code>await</code> instead of calling <code>join</code> on the join
+handle, and awaiting the <code>sleep</code> calls.</p>
+<p>目前看来，异步和线程提供了相同的基本结果（仅语法不同）：用 <code>await</code> 替代对 join 句柄调用 <code>join</code>，并等待 <code>sleep</code> 调用。</p>
+<p>The bigger difference is that we didn’t need to spawn another operating system
+thread to do this. In fact, we don’t even need to spawn a task here. Because
+async blocks compile to anonymous futures, we can put each loop in an async
+block and have the runtime run them both to completion using the <code>trpl::join</code>
+function.</p>
+<p>更大区别在于我们无需生成另一个操作系统线程。实际上甚至无需生成任务。因异步块编译为匿名 Future，可将每个循环放入异步块，并用 <code>trpl::join</code> 函数让运行时运行两者至完成。</p>
+<p>In the section Waiting for All Threads to Finishing Using <code>join</code>
+Handles, we showed how to use the <code>join</code> method on
+the <code>JoinHandle</code> type returned when you call <code>std::thread::spawn</code>. The
+<code>trpl::join</code> function is similar, but for futures. When you give it two futures,
+it produces a single new future whose output is a tuple containing the output of
+each future you passed in once they <em>both</em> complete. Thus, in Listing 17-8, we
+use <code>trpl::join</code> to wait for both <code>fut1</code> and <code>fut2</code> to finish. We do <em>not</em> await
+<code>fut1</code> and <code>fut2</code> but instead the new future produced by <code>trpl::join</code>. We ignore
+the output, because it’s just a tuple containing two unit values.</p>
+<p><span class="highlight">[note]注：<code>use futures::future::join</code></span></p>
+<p>在“使用 join 句柄等待所有线程完成“中，我们展示了如何对 <code>std::thread::spawn</code> 返回的 <code>JoinHandle</code> 类型使用 <code>join</code> 方法。<code>trpl::join</code> 函数类似（但用于 Future）。<span class="highlight">[note]传入两个 Future 时，它生成新的 Future（其输出是包含两个 Future 输出的元组</span>，当它们<strong>均</strong>完成后）。因此在示例17-8中，用 <code>trpl::join</code> 等待 <code>fut1</code> 和 <code>fut2</code> 完成。我们<strong>不</strong>等待 <code>fut1</code> 和 <code>fut2</code>，而是等待 <code>trpl::join</code> 产生的新 Future。因输出仅为包含两个单元值的元组，故忽略它。</p>
+<figure class="listing" id="listing-17-8">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let fut1 = async {
+            for i in 1..10 {
+                println!("hi number {i} from the first task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let fut2 = async {
+            for i in 1..5 {
+                println!("hi number {i} from the second task!");
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        trpl::join(fut1, fut2).await;
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-17-8">Listing 17-8</a>: Using <code>trpl::join</code> to await two anonymous futures 用 <code>trpl::join</code> 等待两个匿名 Future</figcaption>
+</figure>
+<p>When we run this, we see both futures run to completion:</p>
+<p>运行后将看到两个 Future 均运行至完成：</p>
+<pre><code class="language-text">hi number 1 from the first task!
+hi number 1 from the second task!
+hi number 2 from the first task!
+hi number 2 from the second task!
+hi number 3 from the first task!
+hi number 3 from the second task!
+hi number 4 from the first task!
+hi number 4 from the second task!
+hi number 5 from the first task!
+hi number 6 from the first task!
+hi number 7 from the first task!
+hi number 8 from the first task!
+hi number 9 from the first task!
+</code></pre>
+<p>Now, you’ll see the exact same order every time, which is very different from
+what we saw with threads. That is because the <code>trpl::join</code> function is <em>fair</em>,
+meaning it checks each future equally often, alternating between them, and never
+lets one race ahead if the other is ready. With threads, the operating system
+decides which thread to check and how long to let it run. With async Rust, the
+runtime decides which task to check. (In practice, the details get complicated
+because an async runtime might use operating system threads under the hood as
+part of how it manages concurrency, so guaranteeing fairness can be more work
+for a runtime—but it’s still possible!) Runtimes don’t have to guarantee
+fairness for any given operation, and they often offer different APIs to let you
+choose whether or not you want fairness.</p>
+<p>现在每次看到的顺序完全相同（与线程方式截然不同）。这是因为 <span class="highlight">[note]<code>trpl::join</code> 函数是<strong>公平的</strong>——它平等检查每个 Future，在它们之间交替</span>，且若另一个已就绪则不让一个超前。使用线程时，操作系统决定检查哪个线程及允许其运行多久。使用异步 Rust 时，运行时决定检查哪个任务（实践中，因异步运行时可能在底层使用操作系统线程管理并发，保证公平性可能需要更多工作，但仍有可能）。<span class="highlight">[note]运行时不必保证给定操作的公平性，且通常提供不同 API 供选择是否要求公平性。</span></p>
+<p>Try some of these variations on awaiting the futures and see what they do:</p>
+<p>尝试以下变体并观察行为：</p>
+<ul>
+<li>
+<p>Remove the async block from around either or both of the loops.</p>
+</li>
+<li>
+<p>Await each async block immediately after defining it.</p>
+</li>
+<li>
+<p>Wrap only the first loop in an async block, and await the resulting future
+after the body of second loop.</p>
+</li>
+<li>
+<p>移除任一或两个循环的 async 块</p>
+</li>
+<li>
+<p>定义后立即等待每个 async 块</p>
+</li>
+<li>
+<p>仅将第一个循环包装在 async 块中，并在第二个循环体后等待生成的 Future</p>
+</li>
+</ul>
+<p>For an extra challenge, see if you can figure out what the output will be in
+each case <em>before</em> running the code!</p>
+<p>进阶挑战：在运行代码前预测每种情况的输出！</p>
+<h3 id="counting-up-on-two-tasks-using-message-passing-通过消息传递在两个任务上计数"><a class="header" href="#counting-up-on-two-tasks-using-message-passing-通过消息传递在两个任务上计数">Counting Up on Two Tasks Using Message Passing 通过消息传递在两个任务上计数</a></h3>
+<p>Sharing data between futures will also be familiar: we’ll use message passing
+again, but this time with async versions of the types and functions. We’ll take
+a slightly different path than we did in Using Message Passing to Transfer Data
+Between Threads to illustrate some of
+the key differences between thread-based and futures-based concurrency. In
+Listing 17-9, we’ll begin with just a single async block—<em>not</em> spawning a
+separate task as we spawned a separate thread.</p>
+<p>Future 间共享数据的方式也类似：再次使用消息传递，但这次用异步版本的类型和函数。我们将采取与“使用消息传递在线程间传输数据“略有不同的路径，以说明线程与 Future 并发的关键差异。在示例17-9中，我们仅从一个异步块开始（<strong>不</strong>生成单独任务）。</p>
+<p><span class="highlight">[note]注：<code>use tokio::sync::mpsc::unbounded_channel;</code></span></p>
+<figure class="listing" id="listing-17-9">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+
+        let received = rx.recv().await.unwrap();
+        println!("received '{received}'");
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-17-9">Listing 17-9</a>: Creating an async channel and assigning the two halves to <code>tx</code> and <code>rx</code> 创建异步通道并将两端分配给 <code>tx</code> 和 <code>rx</code></figcaption>
+</figure>
+<p>Here, we use <code>trpl::channel</code>, an async version of the multiple-producer,
+single-consumer channel API we used with threads back in Chapter 16. The async
+version of the API is only a little different from the thread-based version: it
+uses a mutable rather than an immutable receiver <code>rx</code>, and its <code>recv</code> method
+produces a future we need to await rather than producing the value directly. Now
+we can send messages from the sender to the receiver. Notice that we don’t have
+to spawn a separate thread or even a task; we merely need to await the <code>rx.recv</code>
+call.</p>
+<p>这里使用 <code>trpl::channel</code>（第16章所用多生产者单消费者通道 API 的异步版本）。异步 API 与线程版略有不同：<span class="highlight">[note]接收端 <code>rx</code> 需可变而非不可变，且其 <code>recv</code> 方法生成需等待的 Future</span>（而非直接生成值）。现在可通过发送端向接收端发送消息。注意：我们无需生成单独线程甚至任务，仅需等待 <code>rx.recv</code> 调用。</p>
+<p>The synchronous <code>Receiver::recv</code> method in <code>std::mpsc::channel</code> blocks until
+it receives a message. The <code>trpl::Receiver::recv</code> method does not, because it
+is async. Instead of blocking, it hands control back to the runtime until either
+a message is received or the send side of the channel closes. By contrast, we
+don’t await the <code>send</code> call, because it doesn’t block. It doesn’t need to,
+because the channel we’re sending it into is unbounded.</p>
+<p>同步的 <code>std::mpsc::channel</code> 中的 <code>Receiver::recv</code> 方法阻塞直至收到消息。而 <code>trpl::Receiver::recv</code> 方法是异步的（不阻塞），它将控制权交还运行时（直到消息到达或通道发送端关闭）。相反，我们<span class="highlight">[note]不等待 <code>send</code> 调用（因其不阻塞）。这是因为它发送到的通道是无界的。</span></p>
+<section class="note" aria-role="note">
+<p>Note: Because all of this async code runs in an async block in a <code>trpl::run</code>
+call, everything within it can avoid blocking. However, the code <em>outside</em> it
+will block on the <code>run</code> function returning. That’s the whole point of the
+<code>trpl::run</code> function: it lets you <em>choose</em> where to block on some set of async
+code, and thus where to transition between sync and async code. In most async
+runtimes, <code>run</code> is actually named <code>block_on</code> for exactly this reason.</p>
+<p>注意：因所有异步代码在 <code>trpl::run</code> 调用的异步块中运行，其内部可避免阻塞。但<strong>外部</strong>代码将在 <code>run</code> 函数返回时阻塞。这正是 <code>trpl::run</code> 函数的意义：让你<strong>选择</strong>在何处阻塞一组异步代码，从而在同步与异步代码间过渡。多数异步运行时中，<code>run</code> 实际名为 <code>block_on</code>（原因即此）。</p>
+</section>
+<p>Notice two things about this example. First, the message will arrive right away.
+Second, although we use a future here, there’s no concurrency yet. Everything
+in the listing happens in sequence, just as it would if there were no futures
+involved.</p>
+<p>注意此例两点：消息立即到达；虽有 Future 但尚无并发性。该示例中的一切都是顺序发生的（如同未涉及 Future）。</p>
+<p>Let’s address the first part by sending a series of messages and sleeping in
+between them, as shown in Listing 17-10.</p>
+<p>通过发送多条消息并在其间休眠来解决第一点（见示例17-10）。</p>
+<figure class="listing" id="listing-17-10">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("future"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            trpl::sleep(Duration::from_millis(500)).await;
+        }
+
+        while let Some(value) = rx.recv().await {
+            println!("received '{value}'");
+        }
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-17-10">Listing 17-10</a>: Sending and receiving multiple messages over the async channel and sleeping with an <code>await</code> between each message 通过异步通道发送/接收多条消息，每条消息间用 <code>await</code> 休眠</figcaption>
+</figure>
+<p>In addition to sending the messages, we need to receive them. In this case,
+because we know how many messages are coming in, we could do that manually by
+calling <code>rx.recv().await</code> four times. In the real world, though, we’ll generally
+be waiting on some <em>unknown</em> number of messages, so we need to keep waiting
+until we determine that there are no more messages.</p>
+<p>除发送消息外，还需接收它们。已知消息数量时可手动调用 <code>rx.recv().await</code> 四次。但现实中通常等待<strong>未知</strong>数量的消息，因此需持续等待直至确认无更多消息。</p>
+<p>In Listing 16-10, we used a <code>for</code> loop to process all the items received from a
+synchronous channel. Rust doesn’t yet have a way to write a <code>for</code> loop over an
+<em>asynchronous</em> series of items, however, so we need to use a loop we haven’t
+seen before: the <code>while let</code> conditional loop. This is the loop version of the
+<code>if let</code> construct we saw back in the section Concise Control Flow with <code>if  let</code> and <code>let else</code>. The loop will continue executing as
+long as the pattern it specifies continues to match the value.</p>
+<p>在示例16-10中，我们用 <code>for</code> 循环处理同步通道的所有接收项。但 Rust 尚无对<strong>异步</strong>序列项写 <code>for</code> 循环的方式，因此<span class="highlight">[note]需使用 <code>while let</code> 条件循环</span>（这是第6章“用 <code>if let</code> 和 <code>let else</code> 简洁控制流“中 <code>if let</code> 的循环版）。只要指定模式继续匹配值，循环就会持续执行。</p>
+<p>The <code>rx.recv</code> call produces a future, which we await. The runtime will pause the
+future until it is ready. Once a message arrives, the future will resolve to
+<code>Some(message)</code> as many times as a message arrives. When the channel closes,
+regardless of whether <em>any</em> messages have arrived, the future will instead
+resolve to <code>None</code> to indicate that there are no more values and thus we should
+stop polling—that is, stop awaiting.</p>
+<p><code>rx.recv</code> 调用生成 Future（我们等待它）。运行时将暂停该 Future 直至其就绪。消息到达后，Future 将解析为 <code>Some(message)</code>（多次到达则多次解析）。通道关闭时（无论是否到达消息），Future 将解析为 <code>None</code>（表示无更多值且应停止轮询——即停止等待）。</p>
+<p>The <code>while let</code> loop pulls all of this together. If the result of calling
+<code>rx.recv().await</code> is <code>Some(message)</code>, we get access to the message and we can
+use it in the loop body, just as we could with <code>if let</code>. If the result is
+<code>None</code>, the loop ends. Every time the loop completes, it hits the await point
+again, so the runtime pauses it again until another message arrives.</p>
+<p><code>while let</code> 循环整合了这些：若 <code>rx.recv().await</code> 结果是 <code>Some(message)</code>，则在循环体内访问消息；若为 <code>None</code> 则循环结束。每次循环完成时，会再次到达等待点，因此运行时再次暂停它直到下条消息到达。</p>
+<p>The code now successfully sends and receives all of the messages. Unfortunately,
+there are still a couple of problems. For one thing, the messages do not arrive
+at half-second intervals. They arrive all at once, 2 seconds (2,000
+milliseconds) after we start the program. For another, this program never exits!
+Instead, it waits forever for new messages. You will need to shut it down using
+<span class="keystroke">ctrl-c</span>.</p>
+<p>此代码成功发送并接收所有消息。但仍有几个问题：消息非半秒间隔到达（启动程序2秒后同时到达）；程序永不退出（永远等待新消息，需按 <span class="keystroke">ctrl-c</span> 关闭）。</p>
+<p>Let’s start by examining why the messages come in all at once after the full
+delay, rather than coming in with delays between each one. Within a given async
+block, the order in which <code>await</code> keywords appear in the code is also the order
+in which they’re executed when the program runs.</p>
+<p>首先，我们来探究一下为什么消息会在整个延迟之后一次性全部收到，而不是在每个消息之间产生延迟。在给定的异步块中，代码中<code>await</code>关键字出现的顺序，也是它们在程序运行时执行的顺序。</p>
+<p>There’s only one async block in Listing 17-10, so everything in it runs
+linearly. There’s still no concurrency. All the <code>tx.send</code> calls happen,
+interspersed with all of the <code>trpl::sleep</code> calls and their associated await
+points. Only then does the <code>while let</code> loop get to go through any of the <code>await</code>
+points on the <code>recv</code> calls.</p>
+<p>在代码清单17-10中只有一个异步块，因此其中的所有内容都是线性运行的。这仍然没有并发性。所有的<code>tx.send</code>调用都会发生，其间夹杂着所有的<code>trpl::sleep</code>调用及其相关的等待点。只有在此之后，<code>while let</code>循环才能开始处理<code>recv</code>调用上的任何等待点。</p>
+<p>To get the behavior we want, where the sleep delay happens between each message,
+we need to put the <code>tx</code> and <code>rx</code> operations in their own async blocks, as shown
+in Listing 17-11. Then the runtime can execute each of them separately using
+<code>trpl::join</code>, just as in the counting example. Once again, we await the result
+of calling <code>trpl::join</code>, not the individual futures. If we awaited the
+individual futures in sequence, we would just end up back in a sequential
+flow—exactly what we’re trying <em>not</em> to do.</p>
+<p>为了实现我们期望的行为，即每个消息之间产生睡眠延迟，我们需要将<code>tx</code>和<code>rx</code>操作放入它们各自的异步块中，如代码清单17-11所示。这样，运行时就可以像在计数示例中一样，使用<code>trpl::join</code>分别执行它们。再次强调，我们等待的是调用<code>trpl::join</code>的结果，而不是各个Future本身。如果我们按顺序等待各个Future，最终只会回到顺序流程——而这正是我们<strong>试图避免</strong>的做法。</p>
+<figure class="listing" id="listing-17-11">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span><span class="boring">        let (tx, mut rx) = trpl::channel();
+</span><span class="boring">
+</span>        let tx_fut = async {
+            let vals = vec![
+                String::from("hi"),
+                String::from("from"),
+                String::from("the"),
+                String::from("future"),
+            ];
+
+            for val in vals {
+                tx.send(val).unwrap();
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let rx_fut = async {
+            while let Some(value) = rx.recv().await {
+                println!("received '{value}'");
+            }
+        };
+
+        trpl::join(tx_fut, rx_fut).await;
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-17-11">Listing 17-11</a>: Separating <code>send</code> and <code>recv</code> into their own <code>async</code> blocks and awaiting the futures for those blocks 将 <code>send</code> 和 <code>recv</code> 分离到各自的 <code>async</code> 块并等待这些块的 Future</figcaption>
+</figure>
+<p>With the updated code in Listing 17-11, the messages get printed at
+500-millisecond intervals, rather than all in a rush after 2 seconds.</p>
+<p>更新后（示例17-11）的消息以500毫秒间隔打印（而非2秒后集中到达）。</p>
+<p>The program still never exits, though, because of the way the <code>while let</code> loop
+interacts with <code>trpl::join</code>:</p>
+<p>程序仍不退出（因 <code>while let</code> 循环与 <code>trpl::join</code> 的交互方式）：</p>
+<ul>
+<li>
+<p>The future returned from <code>trpl::join</code> completes only once <em>both</em> futures
+passed to it have completed.</p>
+</li>
+<li>
+<p>The <code>tx</code> future completes once it finishes sleeping after sending the last
+message in <code>vals</code>.</p>
+</li>
+<li>
+<p>The <code>rx</code> future won’t complete until the <code>while let</code> loop ends.</p>
+</li>
+<li>
+<p>The <code>while let</code> loop won’t end until awaiting <code>rx.recv</code> produces <code>None</code>.</p>
+</li>
+<li>
+<p>Awaiting <code>rx.recv</code> will return <code>None</code> only once the other end of the channel
+is closed.</p>
+</li>
+<li>
+<p>The channel will close only if we call <code>rx.close</code> or when the sender side,
+<code>tx</code>, is dropped.</p>
+</li>
+<li>
+<p>We don’t call <code>rx.close</code> anywhere, and <code>tx</code> won’t be dropped until the
+outermost async block passed to <code>trpl::run</code> ends.</p>
+</li>
+<li>
+<p>The block can’t end because it is blocked on <code>trpl::join</code> completing, which
+takes us back to the top of this list.</p>
+</li>
+<li>
+<p><code>trpl::join</code> 返回的 Future 仅在传入的两个 Future <strong>均</strong>完成后完成</p>
+</li>
+<li>
+<p><code>tx</code> Future 在 <code>vals</code> 中发送最后一条消息并休眠后完成</p>
+</li>
+<li>
+<p><code>rx</code> Future 在 <code>while let</code> 循环结束前不会完成</p>
+</li>
+<li>
+<p><code>while let</code> 循环仅在等待 <code>rx.recv</code> 产生 <code>None</code> 时结束</p>
+</li>
+<li>
+<p>仅当通道另一端关闭时，等待 <code>rx.recv</code> 才会返回 <code>None</code></p>
+</li>
+<li>
+<p><span class="highlight">[note]仅当调用 <code>rx.close</code> 或发送端 <code>tx</code> 被丢弃时通道才关闭</span></p>
+</li>
+<li>
+<p>我们未调用 <code>rx.close</code>，且 <code>tx</code> 在最外层异步块结束前不会被丢弃</p>
+</li>
+<li>
+<p>该块因阻塞在 <code>trpl::join</code> 完成上而无法结束（回到本列表开头）</p>
+</li>
+</ul>
+<p>We could manually close <code>rx</code> by calling <code>rx.close</code> somewhere, but that doesn’t
+make much sense. Stopping after handling some arbitrary number of messages would
+make the program shut down, but we could miss messages. We need some other way
+to make sure that <code>tx</code> gets dropped <em>before</em> the end of the function.</p>
+<p>可手动调用 <code>rx.close</code> 关闭，但这不合理（处理任意数量消息后停止程序可能遗漏消息）。需要其他方式确保 <code>tx</code> 在函数结束<strong>前</strong>被丢弃。</p>
+<p>Right now, the async block where we send the messages only borrows <code>tx</code> because
+sending a message doesn’t require ownership, but if we could move <code>tx</code> into that
+async block, it would be dropped once that block ends. In the Chapter 13 section
+Capturing References or Moving Ownership, you
+learned how to use the <code>move</code> keyword with closures, and, as discussed in the
+Chapter 16 section Using <code>move</code> Closures with Threads, we often need to move data into closures when working with threads. The
+same basic dynamics apply to async blocks, so the <code>move</code> keyword works with
+async blocks just as it does with closures.</p>
+<p>当前发送消息的异步块仅借用 <code>tx</code>（因发送消息不需所有权）。若能将 <code>tx</code> 移入该异步块，它将在块结束时被丢弃。第13章“捕获引用或移动所有权“中学习了对闭包使用 <code>move</code> 关键字（如第16章“对线程使用 <code>move</code> 闭包“所述，使用线程时经常需将数据移入闭包）。相同原理适用于异步块，因此 <code>move</code> 关键字对异步块的作用与闭包相同。</p>
+<p>In Listing 17-12, we change the block used to send messages from <code>async</code> to
+<code>async move</code>. When we run <em>this</em> version of the code, it shuts down gracefully
+after the last message is sent and received.</p>
+<p>在示例17-12中，将发送消息的块从 <code>async</code> 改为 <code>async move</code>。运行此版本代码时，最后一条消息发送和接收后将正常关闭。</p>
+<figure class="listing" id="listing-17-12">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let tx_fut = async move {
+            let vals = vec![
+                String::from("hi"),
+                String::from("from"),
+                String::from("the"),
+                String::from("future"),
+            ];
+
+            for val in vals {
+                tx.send(val).unwrap();
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let rx_fut = async {
+            while let Some(value) = rx.recv().await {
+                println!("received '{value}'");
+            }
+        };
+
+        trpl::join(tx_fut, rx_fut).await;
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-17-12">Listing 17-12</a>: A  revision of the code from Listing 17-11 that correctly shuts down when complete 示例17-11的修正版（完成后正确关闭）</figcaption>
+</figure>
+<p>This async channel is also a multiple-producer channel, so we can call <code>clone</code>
+on <code>tx</code> if we want to send messages from multiple futures, as shown in Listing
+17-13.</p>
+<p>此异步通道也是多生产者通道，因此若要从多个 Future 发送消息<span class="highlight">[note]可对 <code>tx</code> 调用 <code>clone</code></span>（见示例17-13）。</p>
+<figure class="listing" id="listing-17-13">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">extern crate trpl; // required for mdbook test
+</span><span class="boring">
+</span><span class="boring">use std::time::Duration;
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    trpl::run(async {
+</span>        let (tx, mut rx) = trpl::channel();
+
+        let tx1 = tx.clone();
+        let tx1_fut = async move {
+            let vals = vec![
+                String::from("hi"),
+                String::from("from"),
+                String::from("the"),
+                String::from("future"),
+            ];
+
+            for val in vals {
+                tx1.send(val).unwrap();
+                trpl::sleep(Duration::from_millis(500)).await;
+            }
+        };
+
+        let rx_fut = async {
+            while let Some(value) = rx.recv().await {
+                println!("received '{value}'");
+            }
+        };
+
+        let tx_fut = async move {
+            let vals = vec![
+                String::from("more"),
+                String::from("messages"),
+                String::from("for"),
+                String::from("you"),
+            ];
+
+            for val in vals {
+                tx.send(val).unwrap();
+                trpl::sleep(Duration::from_millis(1500)).await;
+            }
+        };
+
+        trpl::join3(tx1_fut, tx_fut, rx_fut).await;
+<span class="boring">    });
+</span><span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-17-13">Listing 17-13</a>: Using multiple producers with async blocks 在异步块中使用多生产者</figcaption>
+</figure>
+<p>First, we clone <code>tx</code>, creating <code>tx1</code> outside the first async block. We move
+<code>tx1</code> into that block just as we did before with <code>tx</code>. Then, later, we move the
+original <code>tx</code> into a <em>new</em> async block, where we send more messages on a
+slightly slower delay. We happen to put this new async block after the async
+block for receiving messages, but it could go before it just as well. The key is
+the order in which the futures are awaited, not in which they’re created.</p>
+<p>首先在第一个异步块外克隆 <code>tx</code> 创建 <code>tx1</code>，并将 <code>tx1</code> 移入该块（如前处理 <code>tx</code>）。然后将原始的 <code>tx</code> 移入<strong>新</strong>异步块（以较慢延迟发送更多消息）。新异步块恰好在接收消息块之后，但其位置无关紧要（关键是 Future 的等待顺序而非创建顺序）。</p>
+<p>Both of the async blocks for sending messages need to be <code>async move</code> blocks so
+that both <code>tx</code> and <code>tx1</code> get dropped when those blocks finish. Otherwise, we’ll
+end up back in the same infinite loop we started out in. Finally, we switch from
+<code>trpl::join</code> to <code>trpl::join3</code> to handle the additional future.</p>
+<p>两个发送消息的异步块需为 <code>async move</code> 块（以便 <code>tx</code> 和 <code>tx1</code> 在块结束时被丢弃），否则会陷入之前的无限循环。最后从 <code>trpl::join</code> 切换到 <code>trpl::join3</code> 以处理额外的 Future。</p>
+<p><span class="highlight">[note]注：<code>use futures::future::join3;</code></span></p>
+<p>Now we see all the messages from both sending futures, and because the sending
+futures use slightly different delays after sending, the messages are also
+received at those different intervals.</p>
+<p>现在我们将看到来自两个发送 Future 的所有消息（因发送 Future 使用略有不同的发送后延迟，消息也以不同间隔接收）。</p>
+<pre><code class="language-text">received 'hi'
+received 'more'
+received 'from'
+received 'the'
+received 'messages'
+received 'future'
+received 'for'
+received 'you'
+</code></pre>
+<p>This is a good start, but it limits us to just a handful of futures: two with
+<code>join</code>, or three with <code>join3</code>. Let’s see how we might work with more futures.</p>
+<p>这是良好的开端，但仅限于少量 Future（<code>join</code> 处理两个，<code>join3</code> 处理三个）。接下来探讨如何处理更多 Future。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch17-01-futures-and-syntax.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch17-03-more-futures.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch17-01-futures-and-syntax.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch17-03-more-futures.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

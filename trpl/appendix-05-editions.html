@@ -1,0 +1,299 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>E - Editions 版本 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="appendix-e---editions-版本"><a class="header" href="#appendix-e---editions-版本">Appendix E - Editions 版本</a></h2>
+<p>In Chapter 1, you saw that <code>cargo new</code> adds a bit of metadata to your
+<em>Cargo.toml</em> file about an edition. This appendix talks about what that means!</p>
+<p>在第 1 章中，你看到 <code>cargo new</code> 会在 <em>Cargo.toml</em> 中添加关于版本的元数据。本附录将解释其含义！</p>
+<p>The Rust language and compiler have a six-week release cycle, meaning users get
+a constant stream of new features. Other programming languages release larger
+changes less often; Rust releases smaller updates more frequently. After a
+while, all of these tiny changes add up. But from release to release, it can be
+difficult to look back and say, “Wow, between Rust 1.10 and Rust 1.31, Rust has
+changed a lot!”</p>
+<p>Rust 语言和编译器采用六周发布周期，意味着用户能持续获得新功能。其他编程语言发布大更新的频率较低；而 Rust 更频繁地发布小更新。久而久之，这些微小变化会累积成显著改进。但逐版本回顾时，可能难以察觉变化幅度（例如“Rust 1.10 到 1.31 的变化真大！”）。</p>
+<p>Every three years or so, the Rust team produces a new Rust <em>edition</em>. Each
+edition brings together the features that have landed into a clear package with
+fully updated documentation and tooling. New editions ship as part of the usual
+six-week release process.</p>
+<p>大约每三年，Rust 团队会推出新的 Rust 版本(edition)。每个版本汇集已实现的功能，整合成包含完整更新文档和工具链的清晰套件。新版本会按常规六周发布流程推出。</p>
+<p>Editions serve different purposes for different people:</p>
+<p>版本对不同人群有不同意义：</p>
+<ul>
+<li>For active Rust users, a new edition brings together incremental changes into
+an easy-to-understand package.</li>
+<li>For non-users, a new edition signals that some major advancements have
+landed, which might make Rust worth another look.</li>
+<li>For those developing Rust, a new edition provides a rallying point for the
+project as a whole.</li>
+</ul>
+<!-- -->
+<ul>
+<li>对活跃的 Rust 用户：新版本将增量变更整合为易于理解的套件</li>
+<li>对非用户：新版本标志着重大进展，可能值得重新关注 Rust</li>
+<li>对 Rust 开发者：新版本为整个项目提供统一的发力点</li>
+</ul>
+<p>At the time of this writing, four Rust editions are available: Rust 2015, Rust
+2018, Rust 2021, and Rust 2024. This book is written using Rust 2024 edition
+idioms.</p>
+<p>截至本文撰写时，已有四个 Rust 版本：Rust 2015、Rust 2018、Rust 2021 和 Rust 2024。本书采用 Rust 2024 版本的惯用写法。</p>
+<p>The <code>edition</code> key in <em>Cargo.toml</em> indicates which edition the compiler should
+use for your code. If the key doesn’t exist, Rust uses <code>2015</code> as the edition
+value for backward compatibility reasons.</p>
+<p><em>Cargo.toml</em> 中的 <code>edition</code> 键指明编译器应使用的版本。若未指定，出于向后兼容考虑，Rust 默认使用 <code>2015</code> 版本。</p>
+<p>Each project can opt in to an edition other than the default 2015 edition.
+Editions can contain incompatible changes, such as including a new keyword that
+conflicts with identifiers in code. However, unless you opt in to those
+changes, your code will continue to compile even as you upgrade the Rust
+compiler version you use.</p>
+<p>每个项目可选择非默认的 2015 版本。版本可能包含不兼容变更（例如引入与现有标识符冲突的新关键字）。但除非你主动选择这些变更，否则即使升级 Rust 编译器版本，代码仍可编译。</p>
+<p>All Rust compiler versions support any edition that existed prior to that
+compiler’s release, and they can link crates of any supported editions
+together. Edition changes only affect the way the compiler initially parses
+code. Therefore, if you’re using Rust 2015 and one of your dependencies uses
+Rust 2018, your project will compile and be able to use that dependency. The
+opposite situation, where your project uses Rust 2018 and a dependency uses
+Rust 2015, works as well.</p>
+<p>所有 Rust 编译器版本均支持早于该编译器发布的任何版本，并能链接不同版本的 crate。版本变更仅影响编译器初始解析代码的方式。因此，若你使用 Rust 2015 而某个依赖使用 Rust 2018，你的项目仍能编译并使用该依赖。反之亦然（项目用 2018，依赖用 2015）。</p>
+<p>To be clear: most features will be available on all editions. Developers using
+any Rust edition will continue to see improvements as new stable releases are
+made. However, in some cases, mainly when new keywords are added, some new
+features might only be available in later editions. You will need to switch
+editions if you want to take advantage of such features.</p>
+<p>需明确：大多数功能在所有版本中都可用。使用任何 Rust 版本的开发者在新稳定版发布时都将持续获得改进。但在某些情况下（主要是新增关键字时），部分新功能可能仅限后期版本使用。要利用这些功能，你需要切换版本。</p>
+<p>For more details, the <a href="https://doc.rust-lang.org/stable/edition-guide/"><em>Edition Guide</em></a> is a complete book
+about editions that enumerates the differences between editions and explains
+how to automatically upgrade your code to a new edition via <code>cargo fix</code>.</p>
+<p>更多细节请参阅《版本指南》——这是专门介绍版本的完整书籍，列举了版本间的差异，并说明如何通过 <code>cargo fix</code> 自动将代码升级到新版本。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="appendix-04-useful-development-tools.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="appendix-06-translation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="appendix-04-useful-development-tools.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="appendix-06-translation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

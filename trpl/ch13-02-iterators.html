@@ -1,0 +1,544 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Processing a Series of Items with Iterators 使用迭代器处理序列 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="processing-a-series-of-items-with-iterators-使用迭代器处理序列"><a class="header" href="#processing-a-series-of-items-with-iterators-使用迭代器处理序列">Processing a Series of Items with Iterators 使用迭代器处理序列</a></h2>
+<p>The iterator pattern allows you to perform some task on a sequence of items in
+turn. An iterator is responsible for the logic of iterating over each item and
+determining when the sequence has finished. When you use iterators, you don’t
+have to reimplement that logic yourself.</p>
+<p>迭代器模式允许你依次对序列中的每个元素执行任务。迭代器负责遍历每个元素的逻辑，并判断序列何时终止。使用迭代器时，你无需自行重新实现这些逻辑。</p>
+<p>In Rust, iterators are <em>lazy</em>, meaning they have no effect until you call
+methods that consume the iterator to use it up. For example, the code in
+Listing 13-10 creates an iterator over the items in the vector <code>v1</code> by calling
+the <code>iter</code> method defined on <code>Vec&lt;T&gt;</code>. This code by itself doesn’t do anything
+useful.</p>
+<p>在 Rust 中，迭代器是<strong>惰性</strong>的，这意味着除非调用消耗迭代器的方法，否则它们不会产生任何效果。例如，示例 13-10 中的代码通过在 <code>Vec&lt;T&gt;</code> 上调用 <code>iter</code> 方法，创建了一个针对向量 <code>v1</code> 元素的迭代器。这段代码本身并不执行任何有效操作。</p>
+<figure class="listing" id="listing-13-10">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-13-10">Listing 13-10</a>: Creating an iterator 创建迭代器</figcaption>
+</figure>
+<p>The iterator is stored in the <code>v1_iter</code> variable. Once we’ve created an
+iterator, we can use it in a variety of ways. In Listing 3-5, we iterated over
+an array using a <code>for</code> loop to execute some code on each of its items. Under
+the hood, this implicitly created and then consumed an iterator, but we glossed
+over how exactly that works until now.</p>
+<p>迭代器存储在变量 <code>v1_iter</code> 中。创建迭代器后，可以通过多种方式使用它。在示例 3-5 中，我们使<span class="highlight">[note]用 <code>for</code> 循环遍历数组，对每个元素执行代码。其底层机制隐式创建并消耗了迭代器</span>，但直到现在才深入探讨其工作原理。</p>
+<p>In the example in Listing 13-11, we separate the creation of the iterator from
+the use of the iterator in the <code>for</code> loop. When the <code>for</code> loop is called using
+the iterator in <code>v1_iter</code>, each element in the iterator is used in one
+iteration of the loop, which prints out each value.</p>
+<p>在示例 13-11 中，我们将迭代器的创建与 <code>for</code> 循环中的使用分离。当使用 <code>v1_iter</code> 中的迭代器调用 <code>for</code> 循环时，迭代器的每个元素会在循环的一次迭代中被使用，打印出每个值。</p>
+<figure class="listing" id="listing-13-11">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1 = vec![1, 2, 3];
+
+    let v1_iter = v1.iter();
+
+    for val in v1_iter {
+        println!("Got: {val}");
+    }
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-13-11">Listing 13-11</a>: Using an iterator in a <code>for</code> loop 在 <code>for</code> 循环中使用迭代器</figcaption>
+</figure>
+<p>In languages that don’t have iterators provided by their standard libraries,
+you would likely write this same functionality by starting a variable at index
+0, using that variable to index into the vector to get a value, and
+incrementing the variable value in a loop until it reached the total number of
+items in the vector.</p>
+<p>在标准库未提供迭代器的语言中，你可能需要通过以下方式实现相同功能：初始化一个索引变量为 0，用该变量索引向量获取值，并在循环中递增该变量值，直至达到向量元素总数。</p>
+<p>Iterators handle all of that logic for you, cutting down on repetitive code you
+could potentially mess up. Iterators give you more flexibility to use the same
+logic with many different kinds of sequences, not just data structures you can
+index into, like vectors. Let’s examine how iterators do that.</p>
+<p>迭代器为你处理了所有这些逻辑，减少了可能出错的重复代码。迭代器提供了更灵活的通用逻辑，可应用于多种序列（不仅限于向量等可通过索引访问的数据结构）。下面我们探究迭代器如何实现这一点。</p>
+<h3 id="the-iterator-trait-and-the-next-method-iterator-特质与-next-方法"><a class="header" href="#the-iterator-trait-and-the-next-method-iterator-特质与-next-方法">The <code>Iterator</code> Trait and the <code>next</code> Method <code>Iterator</code> 特质与 <code>next</code> 方法</a></h3>
+<p>All iterators implement a trait named <code>Iterator</code> that is defined in the
+standard library. The definition of the trait looks like this:</p>
+<p><span class="highlight">[note]所有迭代器均实现了标准库中定义的 <code>Iterator</code> 特质。该特质的定义如下：</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait Iterator {
+    type Item;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;
+
+    // methods with default implementations elided
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Notice that this definition uses some new syntax: <code>type Item</code> and <code>Self::Item</code>,
+which are defining an <em>associated type</em> with this trait. We’ll talk about
+associated types in depth in Chapter 20. For now, all you need to know is that
+this code says implementing the <code>Iterator</code> trait requires that you also define
+an <code>Item</code> type, and this <code>Item</code> type is used in the return type of the <code>next</code>
+method. In other words, the <code>Item</code> type will be the type returned from the
+iterator.</p>
+<p>注意此定义使用了新语法：<code>type Item</code> 和 <code>Self::Item</code>，它们通过此特质定义了<strong>关联类型</strong>。我们将在第 20 章深入讨论关联类型。目前只需知道：实现 <code>Iterator</code> 特质要求同时定义 <code>Item</code> 类型，且该 <code>Item</code> 类型用于 <code>next</code> 方法的返回类型。换言之，<code>Item</code> 类型是迭代器返回的元素类型。</p>
+<p>The <code>Iterator</code> trait only requires implementors to define one method: the
+<code>next</code> method, which returns one item of the iterator at a time, wrapped in
+<code>Some</code>, and, when iteration is over, returns <code>None</code>.</p>
+<p><code>Iterator</code> 特质仅要求实现者定义一个方法：<code>next</code> 方法。该方法每次返回一个包裹在 <code>Some</code> 中的迭代器元素，迭代结束后返回 <code>None</code>。</p>
+<p>We can call the <code>next</code> method on iterators directly; Listing 13-12 demonstrates
+what values are returned from repeated calls to <code>next</code> on the iterator created
+from the vector.</p>
+<p>可直接在迭代器上调用 <code>next</code> 方法。示例 13-12 展示了从向量创建的迭代器上重复调用 <code>next</code> 的返回值。</p>
+<figure class="listing" id="listing-13-12">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span>    #[test]
+    fn iterator_demonstration() {
+        let v1 = vec![1, 2, 3];
+
+        let mut v1_iter = v1.iter();
+
+        assert_eq!(v1_iter.next(), Some(&amp;1));
+        assert_eq!(v1_iter.next(), Some(&amp;2));
+        assert_eq!(v1_iter.next(), Some(&amp;3));
+        assert_eq!(v1_iter.next(), None);
+    }
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-13-12">Listing 13-12</a>: Calling the <code>next</code> method on an iterator 在迭代器上调用 <code>next</code> 方法</figcaption>
+</figure>
+<p>Note that we needed to make <code>v1_iter</code> mutable: calling the <code>next</code> method on an
+iterator changes internal state that the iterator uses to keep track of where
+it is in the sequence. In other words, this code <em>consumes</em>, or uses up, the
+iterator. Each call to <code>next</code> eats up an item from the iterator. We didn’t need
+to make <code>v1_iter</code> mutable when we used a <code>for</code> loop because the loop took
+ownership of <code>v1_iter</code> and made it mutable behind the scenes.</p>
+<p>注意需将 <code>v1_iter</code> 声明为可变：调用迭代器的 <code>next</code> 方法会改变其内部状态（用于跟踪序列中的位置）。换言之，此代码会<strong>消耗</strong>迭代器。每次调用 <code>next</code> 会消耗迭代器中的一个元素。使用 <code>for</code> 循环时无需将 <code>v1_iter</code> 设为可变，因为<span class="highlight">[note]循环会获取 <code>v1_iter</code> 的所有权</span>并在幕后将其变为可变。</p>
+<p>Also note that the values we get from the calls to <code>next</code> are immutable
+references to the values in the vector. The <code>iter</code> method produces an iterator
+over immutable references. If we want to create an iterator that takes
+ownership of <code>v1</code> and returns owned values, we can call <code>into_iter</code> instead of
+<code>iter</code>. Similarly, if we want to iterate over mutable references, we can call
+<code>iter_mut</code> instead of <code>iter</code>.</p>
+<p>还需注意：从 <code>next</code> 调用获取的值是对向量中值的不可变引用。<span class="highlight">[note]<code>iter</code> 方法生成的是针对不可变引用的迭代器。若需创建获取 <code>v1</code> 所有权并返回自有值的迭代器，可调用 <code>into_iter</code> 替代 <code>iter</code>。类似地，若需遍历可变引用，可调用 <code>iter_mut</code> 替代 <code>iter</code>。</span></p>
+<h3 id="methods-that-consume-the-iterator-消耗迭代器的方法"><a class="header" href="#methods-that-consume-the-iterator-消耗迭代器的方法">Methods That Consume the Iterator 消耗迭代器的方法</a></h3>
+<p>The <code>Iterator</code> trait has a number of different methods with default
+implementations provided by the standard library; you can find out about these
+methods by looking in the standard library API documentation for the <code>Iterator</code>
+trait. Some of these methods call the <code>next</code> method in their definition, which
+is why you’re required to implement the <code>next</code> method when implementing the
+<code>Iterator</code> trait.</p>
+<p><code>Iterator</code> 特质包含多个标准库提供默认实现的方法；可通过查阅标准库 API 文档了解这些方法。其中部分方法在其定义中调用了 <code>next</code> 方法，因此在实现 <code>Iterator</code> 特质时必须实现 <code>next</code> 方法。</p>
+<p>Methods that call <code>next</code> are called <em>consuming adapters</em>, because calling them
+uses up the iterator. One example is the <code>sum</code> method, which takes ownership of
+the iterator and iterates through the items by repeatedly calling <code>next</code>, thus
+consuming the iterator. As it iterates through, it adds each item to a running
+total and returns the total when iteration is complete. Listing 13-13 has a
+test illustrating a use of the <code>sum</code> method.</p>
+<p>调用 <code>next</code> 的方法称为<strong>消费型适配器</strong>，因为调用它们会消耗迭代器。例如 <code>sum</code> 方法：它获取迭代器所有权，通过重复调用 <code>next</code> 遍历元素从而消耗迭代器。遍历过程中，它累加每个元素到运行总和，并在迭代完成后返回总和。示例 13-13 的测试展示了 <code>sum</code> 方法的使用。</p>
+<figure class="listing" id="listing-13-13">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span>    #[test]
+    fn iterator_sum() {
+        let v1 = vec![1, 2, 3];
+
+        let v1_iter = v1.iter();
+
+        let total: i32 = v1_iter.sum();
+
+        assert_eq!(total, 6);
+    }
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-13-13">Listing 13-13</a>: Calling the <code>sum</code> method to get the total of all items in the iterator 调用 <code>sum</code> 方法获取迭代器所有元素的总和</figcaption>
+</figure>
+<p>We aren’t allowed to use <code>v1_iter</code> after the call to <code>sum</code> because <code>sum</code> takes
+ownership of the iterator we call it on.</p>
+<p>调用 <code>sum</code> 后不允许再使用 <code>v1_iter</code>，因为 <code>sum</code> 获取了我们所调用迭代器的所有权。</p>
+<h3 id="methods-that-produce-other-iterators-生成其他迭代器的方法"><a class="header" href="#methods-that-produce-other-iterators-生成其他迭代器的方法">Methods That Produce Other Iterators 生成其他迭代器的方法</a></h3>
+<p><em>Iterator adapters</em> are methods defined on the <code>Iterator</code> trait that don’t
+consume the iterator. Instead, they produce different iterators by changing
+some aspect of the original iterator.</p>
+<p><strong>迭代器适配器</strong>是定义在 <code>Iterator</code> 特质上不消耗迭代器的方法。它们通过改变原始迭代器的某些方面来生成不同的迭代器。</p>
+<p>Listing 13-14 shows an example of calling the iterator adapter method <code>map</code>,
+which takes a closure to call on each item as the items are iterated through.
+The <code>map</code> method returns a new iterator that produces the modified items. The
+closure here creates a new iterator in which each item from the vector will be
+incremented by 1.</p>
+<p>示例 13-14 展示了调用迭代器适配器方法 <code>map</code> 的示例，该方法接受一个闭包，在遍历每个元素时调用。<code>map</code> 方法返回生成修改后元素的新迭代器。此处的闭包创建了一个新迭代器，其中向量的每个元素将增加 1。</p>
+<figure class="listing" id="listing-13-14">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust not_desired_behavior"><span class="boring">fn main() {
+</span>    let v1: Vec&lt;i32&gt; = vec![1, 2, 3];
+
+    v1.iter().map(|x| x + 1);
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-13-14">Listing 13-14</a>: Calling the iterator adapter <code>map</code> to create a new iterator 调用迭代器适配器 <code>map</code> 创建新迭代器</figcaption>
+</figure>
+<p>However, this code produces a warning:</p>
+<p>但此代码会产生警告：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling iterators v0.1.0 (file:///projects/iterators)
+warning: unused `Map` that must be used
+ --&gt; src/main.rs:4:5
+  |
+4 |     v1.iter().map(|x| x + 1);
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: iterators are lazy and do nothing unless consumed
+  = note: `#[warn(unused_must_use)]` on by default
+help: use `let _ = ...` to ignore the resulting value
+  |
+4 |     let _ = v1.iter().map(|x| x + 1);
+  |     +++++++
+
+warning: `iterators` (bin "iterators") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.47s
+     Running `target/debug/iterators`
+</code></pre>
+<p>The code in Listing 13-14 doesn’t do anything; the closure we’ve specified
+never gets called. The warning reminds us why: iterator adapters are lazy, and
+we need to consume the iterator here.</p>
+<p>示例 13-14 的代码未执行任何操作，因为我们指定的闭包从未被调用。该警告提示了原因：迭代器适配器是惰性的，此处需要消耗迭代器。</p>
+<p>To fix this warning and consume the iterator, we’ll use the <code>collect</code> method,
+which we used with <code>env::args</code> in Listing 12-1. This method consumes the
+iterator and collects the resultant values into a collection data type.</p>
+<p>为消除此警告并消耗迭代器，我们使用 <code>collect</code> 方法（曾在示例 12-1 的 <code>env::args</code> 中使用过）。此方法消耗迭代器并将结果值收集到集合数据类型中。</p>
+<p>In Listing 13-15, we collect the results of iterating over the iterator that’s
+returned from the call to <code>map</code> into a vector. This vector will end up
+containing each item from the original vector, incremented by 1.</p>
+<p>在示例 13-15 中，我们将调用 <code>map</code> 返回的迭代器结果收集到向量中。该向量最终包含原始向量中每个元素加 1 后的值。</p>
+<figure class="listing" id="listing-13-15">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let v1: Vec&lt;i32&gt; = vec![1, 2, 3];
+
+    let v2: Vec&lt;_&gt; = v1.iter().map(|x| x + 1).collect();
+
+    assert_eq!(v2, vec![2, 3, 4]);
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-13-15">Listing 13-15</a>: Calling the <code>map</code> method to create a new iterator, and then calling the <code>collect</code> method to consume the new iterator and create a vector 调用 <code>map</code> 方法创建新迭代器，再调用 <code>collect</code> 方法消耗新迭代器并创建向量</figcaption>
+</figure>
+<p>Because <code>map</code> takes a closure, we can specify any operation we want to perform
+on each item. This is a great example of how closures let you customize some
+behavior while reusing the iteration behavior that the <code>Iterator</code> trait
+provides.</p>
+<p>由于 <code>map</code> 接受闭包，因此可指定对每个元素执行的任意操作。这充分展示了闭包如何让你在复用 <code>Iterator</code> 特质的迭代行为的同时，定制特定行为。</p>
+<p>You can chain multiple calls to iterator adapters to perform complex actions in
+a readable way. But because all iterators are lazy, you have to call one of the
+consuming adapter methods to get results from calls to iterator adapters.</p>
+<p>可通过链式调用多个迭代器适配器来执行复杂操作，保持代码可读性。但由于所有迭代器都是惰性的，必须调用一个消费型适配器方法才能从迭代器适配器调用中获取结果。</p>
+<h3 id="using-closures-that-capture-their-environment-使用捕获环境的闭包"><a class="header" href="#using-closures-that-capture-their-environment-使用捕获环境的闭包">Using Closures That Capture Their Environment 使用捕获环境的闭包</a></h3>
+<p>Many iterator adapters take closures as arguments, and commonly the closures
+we’ll specify as arguments to iterator adapters will be closures that capture
+their environment.</p>
+<p>许多迭代器适配器以闭包为参数，通常这些闭包会捕获它们所在的环境。</p>
+<p>For this example, we’ll use the <code>filter</code> method that takes a closure. The
+closure gets an item from the iterator and returns a <code>bool</code>. If the closure
+returns <code>true</code>, the value will be included in the iteration produced by
+<code>filter</code>. If the closure returns <code>false</code>, the value won’t be included.</p>
+<p>在此示例中，我们将使用接受闭包的 <code>filter</code> 方法。该闭包从迭代器中获取元素并返回 <code>bool</code>。若闭包返回 <code>true</code>，该值将包含在 <code>filter</code> 生成的迭代中；若返回 <code>false</code>，则排除该值。</p>
+<p>In Listing 13-16, we use <code>filter</code> with a closure that captures the <code>shoe_size</code>
+variable from its environment to iterate over a collection of <code>Shoe</code> struct
+instances. It will return only shoes that are the specified size.</p>
+<p>在示例 13-16 中，我们结合 <code>filter</code> 与捕获环境变量 <code>shoe_size</code> 的闭包，遍历 <code>Shoe</code> 结构体实例的集合。它将仅返回指定尺码的鞋子。</p>
+<figure class="listing" id="listing-13-16">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">#[derive(PartialEq, Debug)]
+struct Shoe {
+    size: u32,
+    style: String,
+}
+
+fn shoes_in_size(shoes: Vec&lt;Shoe&gt;, shoe_size: u32) -&gt; Vec&lt;Shoe&gt; {
+    shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn filters_by_size() {
+        let shoes = vec![
+            Shoe {
+                size: 10,
+                style: String::from("sneaker"),
+            },
+            Shoe {
+                size: 13,
+                style: String::from("sandal"),
+            },
+            Shoe {
+                size: 10,
+                style: String::from("boot"),
+            },
+        ];
+
+        let in_my_size = shoes_in_size(shoes, 10);
+
+        assert_eq!(
+            in_my_size,
+            vec![
+                Shoe {
+                    size: 10,
+                    style: String::from("sneaker")
+                },
+                Shoe {
+                    size: 10,
+                    style: String::from("boot")
+                },
+            ]
+        );
+    }
+}</code></pre>
+<figcaption><a href="#listing-13-16">Listing 13-16</a>: Using the <code>filter</code> method with a closure that captures <code>shoe_size</code> 将 <code>filter</code> 方法与捕获 <code>shoe_size</code> 的闭包结合使用</figcaption>
+</figure>
+<p>The <code>shoes_in_size</code> function takes ownership of a vector of shoes and a shoe
+size as parameters. It returns a vector containing only shoes of the specified
+size.</p>
+<p>函数 <code>shoes_in_size</code> 获取鞋子向量和鞋码作为参数，返回仅包含指定尺码鞋子的向量。</p>
+<p>In the body of <code>shoes_in_size</code>, we call <code>into_iter</code> to create an iterator
+that takes ownership of the vector. Then we call <code>filter</code> to adapt that
+iterator into a new iterator that only contains elements for which the closure
+returns <code>true</code>.</p>
+<p>在 <code>shoes_in_size</code> 函数体中，调用 <code>into_iter</code> 创建获取向量所有权的迭代器。接着调用 <code>filter</code> 将该迭代器适配为新迭代器，仅保留闭包返回 <code>true</code> 的元素。</p>
+<p>The closure captures the <code>shoe_size</code> parameter from the environment and
+compares the value with each shoe’s size, keeping only shoes of the size
+specified. Finally, calling <code>collect</code> gathers the values returned by the
+adapted iterator into a vector that’s returned by the function.</p>
+<p>闭包从环境中捕获 <code>shoe_size</code> 参数，并将其与每只鞋的尺码比较，仅保留指定尺码的鞋。最后，调用 <code>collect</code> 收集适配后迭代器的返回值到向量中并返回。</p>
+<p>The test shows that when we call <code>shoes_in_size</code>, we get back only shoes
+that have the same size as the value we specified.</p>
+<p>测试表明：调用 <code>shoes_in_size</code> 时，仅返回与我们指定值相同尺码的鞋子。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch13-01-closures.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch13-03-improving-our-io-project.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch13-01-closures.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch13-03-improving-our-io-project.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

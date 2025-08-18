@@ -1,0 +1,456 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Variables and Mutability 变量与可变性 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="variables-and-mutability-变量与可变性"><a class="header" href="#variables-and-mutability-变量与可变性">Variables and Mutability 变量与可变性</a></h2>
+<p>As mentioned in the “Storing Values with
+Variables” section, by default,
+variables are immutable. This is one of many nudges Rust gives you to write
+your code in a way that takes advantage of the safety and easy concurrency that
+Rust offers. However, you still have the option to make your variables mutable.
+Let’s explore how and why Rust encourages you to favor immutability and why
+sometimes you might want to opt out.</p>
+<p>如“使用变量存储值”章节所述，变量默认是不可变的。这是 Rust 引导你充分利用其安全性和简易并发特性编写代码的方式之一。不过，你仍然可以选择让变量可变。让我们探讨 Rust 为何鼓励你优先使用不可变性，以及何时可能需要选择可变性。</p>
+<p>When a variable is immutable, once a value is bound to a name, you can’t change
+that value. To illustrate this, generate a new project called <em>variables</em> in
+your <em>projects</em> directory by using <code>cargo new variables</code>.</p>
+<p>当变量不可变时，一旦值绑定到名称上，就无法更改该值。为了说明这一点，请在 <em>projects</em> 目录下使用 <code>cargo new variables</code> 生成一个名为 <em>variables</em> 的新项目。</p>
+<p>Then, in your new <em>variables</em> directory, open <em>src/main.rs</em> and replace its
+code with the following code, which won’t compile just yet:</p>
+<p>接着，在新的 <em>variables</em> 目录中，打开 <em>src/main.rs</em> 并将其代码替换为以下代码（这段代码暂时无法编译）：</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let x = 5;
+    println!("The value of x is: {x}");
+    x = 6;
+    println!("The value of x is: {x}");
+}</code></pre>
+<p>Save and run the program using <code>cargo run</code>. You should receive an error message
+regarding an immutability error, as shown in this output:</p>
+<p>保存并使用 <code>cargo run</code> 运行程序。你会收到关于不可变性的错误信息，如下所示：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+error[E0384]: cannot assign twice to immutable variable `x`
+ --&gt; src/main.rs:4:5
+  |
+2 |     let x = 5;
+  |         - first assignment to `x`
+3 |     println!("The value of x is: {x}");
+4 |     x = 6;
+  |     ^^^^^ cannot assign twice to immutable variable
+  |
+help: consider making this binding mutable
+  |
+2 |     let mut x = 5;
+  |         +++
+
+For more information about this error, try `rustc --explain E0384`.
+error: could not compile `variables` (bin "variables") due to 1 previous error
+</code></pre>
+<p>This example shows how the compiler helps you find errors in your programs.
+Compiler errors can be frustrating, but really they only mean your program
+isn’t safely doing what you want it to do yet; they do <em>not</em> mean that you’re
+not a good programmer! Experienced Rustaceans still get compiler errors.</p>
+<p>此例展示了编译器如何帮助你发现程序中的错误。编译错误可能令人沮丧，但它们仅意味着你的程序尚未安全地执行预期操作，而<strong>绝不</strong>意味着你不是优秀的程序员！经验丰富的 Rust 开发者也会遇到编译错误。</p>
+<p>You received the error message <code>cannot assign twice to immutable variable `x`</code> because you tried to assign a second value to the immutable <code>x</code> variable.</p>
+<p>错误信息 <code>cannot assign twice to immutable variable `x`</code> 的出现，是因为你尝试为不可变的 <code>x</code> 变量赋予第二个值。</p>
+<p>It’s important that we get compile-time errors when we attempt to change a
+value that’s designated as immutable because this very situation can lead to
+bugs. If one part of our code operates on the assumption that a value will
+never change and another part of our code changes that value, it’s possible
+that the first part of the code won’t do what it was designed to do. The cause
+of this kind of bug can be difficult to track down after the fact, especially
+when the second piece of code changes the value only <em>sometimes</em>. The Rust
+compiler guarantees that when you state that a value won’t change, it really
+won’t change, so you don’t have to keep track of it yourself. Your code is thus
+easier to reason through.</p>
+<p>当我们尝试更改标记为不可变的值时，获得编译时错误至关重要，因为这种情况可能导致 bug。如果代码的某部分基于值永不改变的假设运行，而另一部分却更改了该值，那么第一部分代码可能无法按预期执行。这类 bug 的根源在事后往往难以追踪，特别是当第二段代码<strong>偶尔</strong>才更改值时。Rust 编译器保证：当你声明一个值不会改变时，它就确实不会改变，因此你无需自行跟踪状态。这样你的代码逻辑会更清晰。</p>
+<p>But mutability can be very useful, and can make code more convenient to write.
+Although variables are immutable by default, you can make them mutable by
+adding <code>mut</code> in front of the variable name as you did in Chapter
+2. Adding <code>mut</code> also conveys
+intent to future readers of the code by indicating that other parts of the code
+will be changing this variable’s value.</p>
+<p>但可变性非常实用，它能让代码编写更便捷。虽然变量默认不可变，你可以像第 2 章那样在变量名前添加 <code>mut</code> 使其可变。添加 <code>mut</code> 还能向未来的代码阅读者表明：其他部分的代码将会更改此变量的值。</p>
+<p>For example, let’s change <em>src/main.rs</em> to the following:</p>
+<p>例如，将 <em>src/main.rs</em> 修改如下：</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut x = 5;
+    println!("The value of x is: {x}");
+    x = 6;
+    println!("The value of x is: {x}");
+}</code></pre></pre>
+<p>When we run the program now, we get this:</p>
+<p>现在运行程序，将得到：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
+     Running `target/debug/variables`
+The value of x is: 5
+The value of x is: 6
+</code></pre>
+<p>We’re allowed to change the value bound to <code>x</code> from <code>5</code> to <code>6</code> when <code>mut</code> is
+used. Ultimately, deciding whether to use mutability or not is up to you and
+depends on what you think is clearest in that particular situation.</p>
+<p>当使用 <code>mut</code> 时，我们允许将绑定到 <code>x</code> 的值从 <code>5</code> 改为 <code>6</code>。最终是否使用可变性取决于你，需根据具体场景选择最清晰的方式。</p>
+<h3 id="constants-常量"><a class="header" href="#constants-常量">Constants 常量</a></h3>
+<p>Like immutable variables, <em>constants</em> are values that are bound to a name and
+are not allowed to change, but there are a few differences between constants
+and variables.</p>
+<p>与不可变变量类似，<strong>常量</strong>也是绑定到名称且不允许更改的值，但常量与变量存在几点区别。</p>
+<p>First, you aren’t allowed to use <code>mut</code> with constants. Constants aren’t just
+immutable by default—they’re always immutable. You declare constants using the
+<code>const</code> keyword instead of the <code>let</code> keyword, and the type of the value <em>must</em>
+be annotated. We’ll cover types and type annotations in the next section,
+“Data Types”, so don’t worry about the details
+right now. Just know that you must always annotate the type.</p>
+<p>首先，常量不能使用 <code>mut</code>。常量不仅是默认不可变——它们始终不可变。使用 <code>const</code> 关键字而非 <code>let</code> 声明常量，且<strong>必须</strong>标注值的类型。类型与类型标注将在下一节“数据类型”中介绍，现在无需深究细节，只需记住必须始终标注类型。</p>
+<p>Constants can be declared in any scope, including the global scope, which makes
+them useful for values that many parts of code need to know about.</p>
+<p>常量可在任何作用域声明（包括全局作用域），这使得它们非常适合需要被多部分代码知晓的值。</p>
+<p>The last difference is that constants may be set only to a constant expression,
+not the result of a value that could only be computed at runtime.</p>
+<p>最后一点区别是：<span class="highlight">[note]常量只能设置为常量表达式，不能是运行时才能计算结果的表达式。</span></p>
+<p>Here’s an example of a constant declaration:</p>
+<p>以下是常量声明的示例：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
+<span class="boring">}</span></code></pre></pre>
+<p>The constant’s name is <code>THREE_HOURS_IN_SECONDS</code> and its value is set to the
+result of multiplying 60 (the number of seconds in a minute) by 60 (the number
+of minutes in an hour) by 3 (the number of hours we want to count in this
+program). Rust’s naming convention for constants is to use all uppercase with
+underscores between words. The compiler is able to evaluate a limited set of
+operations at compile time, which lets us choose to write out this value in a
+way that’s easier to understand and verify, rather than setting this constant
+to the value 10,800. See the Rust Reference’s section on constant
+evaluation for more information on what operations can be used
+when declaring constants.</p>
+<p>常量名为 <code>THREE_HOURS_IN_SECONDS</code>，其值设置为 60（每分钟秒数）乘以 60（每小时分钟数）再乘以 3（本程序要计算的小时数）的结果。Rust 的常量命名规范是使用全大写字母并用下划线分隔单词。编译器能在编译时执行有限的操作运算，这让我们可以用更易理解和验证的方式写出此值（而非直接设为 10800）。有关常量声明中可使用的操作，请参阅《Rust 参考手册》的常量求值章节。</p>
+<p>Constants are valid for the entire time a program runs, within the scope in
+which they were declared. This property makes constants useful for values in
+your application domain that multiple parts of the program might need to know
+about, such as the maximum number of points any player of a game is allowed to
+earn, or the speed of light.</p>
+<p>常量在声明的作用域内于整个程序运行期间有效。这一特性使常量非常适合表示程序中多部分需要知晓的应用领域值，例如游戏玩家允许获得的最高分数，或光速。</p>
+<p>Naming hardcoded values used throughout your program as constants is useful in
+conveying the meaning of that value to future maintainers of the code. It also
+helps to have only one place in your code you would need to change if the
+hardcoded value needed to be updated in the future.</p>
+<p>将程序中硬编码的值命名为常量，有助于向未来的代码维护者传达值的含义。若将来需要更新硬编码值，这也确保只需在代码中的一个位置修改。</p>
+<h3 id="shadowing-变量遮蔽"><a class="header" href="#shadowing-变量遮蔽">Shadowing 变量遮蔽</a></h3>
+<p>As you saw in the guessing game tutorial in Chapter
+2, you can declare a
+new variable with the same name as a previous variable. Rustaceans say that the
+first variable is <em>shadowed</em> by the second, which means that the second
+variable is what the compiler will see when you use the name of the variable.
+In effect, the second variable overshadows the first, taking any uses of the
+variable name to itself until either it itself is shadowed or the scope ends.
+We can shadow a variable by using the same variable’s name and repeating the
+use of the <code>let</code> keyword as follows:</p>
+<p>如第 2 章猜谜游戏教程所示，你可以声明与先前变量同名的新变量。Rust 开发者称第一个变量被第二个变量<strong>遮蔽</strong>，意味着编译器在使用该变量名时将看到第二个变量。实际上，第二个变量会覆盖第一个，直到它自身被遮蔽或其作用域结束。我们可以通过重复使用 <code>let</code> 关键字来遮蔽变量：</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = 5;
+
+    let x = x + 1;
+
+    {
+        let x = x * 2;
+        println!("The value of x in the inner scope is: {x}");
+    }
+
+    println!("The value of x is: {x}");
+}</code></pre></pre>
+<p>This program first binds <code>x</code> to a value of <code>5</code>. Then it creates a new variable
+<code>x</code> by repeating <code>let x =</code>, taking the original value and adding <code>1</code> so the
+value of <code>x</code> is then <code>6</code>. Then, within an inner scope created with the curly
+brackets, the third <code>let</code> statement also shadows <code>x</code> and creates a new
+variable, multiplying the previous value by <code>2</code> to give <code>x</code> a value of <code>12</code>.
+When that scope is over, the inner shadowing ends and <code>x</code> returns to being <code>6</code>.
+When we run this program, it will output the following:</p>
+<p>此程序首先将 <code>x</code> 绑定到值 <code>5</code>。然后通过重复 <code>let x =</code> 创建新变量 <code>x</code>，取原值加 <code>1</code>，此时 <code>x</code> 值为 <code>6</code>。接着在用花括号创建的内部作用域中，第三条 <code>let</code> 语句再次遮蔽 <code>x</code> 并创建新变量，将前值乘以 <code>2</code> 使 <code>x</code> 变为 <code>12</code>。该作用域结束后，内部遮蔽终止，<code>x</code> 恢复为 <code>6</code>。运行此程序将输出：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running `target/debug/variables`
+The value of x in the inner scope is: 12
+The value of x is: 6
+</code></pre>
+<p>Shadowing is different from marking a variable as <code>mut</code> because we’ll get a
+compile-time error if we accidentally try to reassign to this variable without
+using the <code>let</code> keyword. By using <code>let</code>, we can perform a few transformations
+on a value but have the variable be immutable after those transformations have
+been completed.</p>
+<p>遮蔽与将变量标记为 <code>mut</code> 不同：若不使用 <code>let</code> 而尝试重新赋值，将导致编译时错误。通过 <code>let</code>，我们可以对值进行多次转换，并在转换完成后保持变量不可变。</p>
+<p>The other difference between <code>mut</code> and shadowing is that because we’re
+effectively creating a new variable when we use the <code>let</code> keyword again, we can
+change the type of the value but reuse the same name. For example, say our
+program asks a user to show how many spaces they want between some text by
+inputting space characters, and then we want to store that input as a number:</p>
+<p><code>mut</code> 与遮蔽的另一区别是：重新使用 <code>let</code> 关键字会创建新变量，因此可更改值的类型但重用同名。例如，当程序让用户输入空格字符来指定文本间距，随后需将输入存储为数字：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let spaces = "   ";
+    let spaces = spaces.len();
+<span class="boring">}</span></code></pre></pre>
+<p>The first <code>spaces</code> variable is a string type and the second <code>spaces</code> variable
+is a number type. Shadowing thus spares us from having to come up with
+different names, such as <code>spaces_str</code> and <code>spaces_num</code>; instead, we can reuse
+the simpler <code>spaces</code> name. However, if we try to use <code>mut</code> for this, as shown
+here, we’ll get a compile-time error:</p>
+<p>第一个 <code>spaces</code> 变量是字符串类型，第二个 <code>spaces</code> 变量是数字类型。遮蔽使我们无需构思不同名称（如 <code>spaces_str</code> 和 <code>spaces_num</code>），可直接复用更简洁的 <code>spaces</code>。但若尝试用 <code>mut</code> 实现，则会导致编译错误：</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut spaces = "   ";
+    spaces = spaces.len();
+<span class="boring">}</span></code></pre>
+<p>The error says we’re not allowed to mutate a variable’s type:</p>
+<p>错误信息指出禁止更改变量的类型：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling variables v0.1.0 (file:///projects/variables)
+error[E0308]: mismatched types
+ --&gt; src/main.rs:3:14
+  |
+2 |     let mut spaces = "   ";
+  |                      ----- expected due to this value
+3 |     spaces = spaces.len();
+  |              ^^^^^^^^^^^^ expected `&amp;str`, found `usize`
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `variables` (bin "variables") due to 1 previous error
+</code></pre>
+<p>Now that we’ve explored how variables work, let’s look at more data types they
+can have.</p>
+<p>现在我们已经探索了变量的工作机制，接下来看看它们能使用的更多数据类型。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch03-00-common-programming-concepts.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch03-02-data-types.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch03-00-common-programming-concepts.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch03-02-data-types.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

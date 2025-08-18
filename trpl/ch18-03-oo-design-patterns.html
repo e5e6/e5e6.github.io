@@ -1,0 +1,1192 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Implementing an Object-Oriented Design Pattern 实现面向对象设计模式 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="implementing-an-object-oriented-design-pattern-实现面向对象设计模式"><a class="header" href="#implementing-an-object-oriented-design-pattern-实现面向对象设计模式">Implementing an Object-Oriented Design Pattern 实现面向对象设计模式</a></h2>
+<p>The <em>state pattern</em> is an object-oriented design pattern. The crux of the
+pattern is that we define a set of states a value can have internally. The
+states are represented by a set of <em>state objects</em>, and the value’s behavior
+changes based on its state. We’re going to work through an example of a blog
+post struct that has a field to hold its state, which will be a state object
+from the set “draft,” “review,” or “published.”</p>
+<p><strong>状态模式</strong>(<em>state pattern</em>)是一种面向对象设计模式。该模式的核心在于：我们定义值可能具有的一组内部状态。这些状态由一组<strong>状态对象</strong>(<em>state objects</em>)表示，值的行为随其状态而改变。我们将通过一个示例展示：定义一个博客文章结构体，其中包含一个存储状态的字段，该状态字段的值来自“草稿”、“审核中”或“已发布”状态集合中的某个状态对象。</p>
+<p>The state objects share functionality: in Rust, of course, we use structs and
+traits rather than objects and inheritance. Each state object is responsible
+for its own behavior and for governing when it should change into another
+state. The value that holds a state object knows nothing about the different
+behavior of the states or when to transition between states.</p>
+<p>状态对象共享功能：在 Rust 中，我们使用结构体(struct)和特征(trait)而非对象和继承。每个状态对象负责自身行为，并控制何时应转换为另一个状态。持有状态对象的值对状态间的不同行为及状态转换时机一无所知。</p>
+<p>The advantage of using the state pattern is that, when the business
+requirements of the program change, we won’t need to change the code of the
+value holding the state or the code that uses the value. We’ll only need to
+update the code inside one of the state objects to change its rules or perhaps
+add more state objects.</p>
+<p>使用状态模式的优势在于：当程序业务需求变更时，我们无需修改持有状态的值的代码或使用该值的代码。只需更新某个状态对象内部的代码来更改规则，或添加更多状态对象。</p>
+<p>First we’re going to implement the state pattern in a more traditional
+object-oriented way, then we’ll use an approach that’s a bit more natural in
+Rust. Let’s dig in to incrementally implement a blog post workflow using the
+state pattern.</p>
+<p>首先，我们将以更传统的面向对象方式实现状态模式，随后采用一种更符合 Rust 风格的方式。让我们深入探讨如何用状态模式逐步实现博客文章工作流。</p>
+<p>The final functionality will look like this:</p>
+<p>最终功能如下：</p>
+<ol>
+<li>
+<p>A blog post starts as an empty draft.</p>
+</li>
+<li>
+<p>When the draft is done, a review of the post is requested.</p>
+</li>
+<li>
+<p>When the post is approved, it gets published.</p>
+</li>
+<li>
+<p>Only published blog posts return content to print, so unapproved posts can’t
+accidentally be published.</p>
+</li>
+<li>
+<p>博客文章初始为空草稿。</p>
+</li>
+<li>
+<p>草稿完成后，请求审核文章。</p>
+</li>
+<li>
+<p>文章通过审核后发布。</p>
+</li>
+<li>
+<p>仅已发布的博客文章返回可打印内容，因此未批准的文章不会被意外发布。</p>
+</li>
+</ol>
+<p>Any other changes attempted on a post should have no effect. For example, if we
+try to approve a draft blog post before we’ve requested a review, the post
+should remain an unpublished draft.</p>
+<p>其他对文章的更改尝试应无效。例如，若在请求审核前尝试批准草稿文章，文章应保持未发布的草稿状态。</p>
+<h3 id="a-traditional-object-oriented-attempt-传统面向对象尝试"><a class="header" href="#a-traditional-object-oriented-attempt-传统面向对象尝试">A Traditional Object-oriented Attempt 传统面向对象尝试</a></h3>
+<p>There are infinite ways to structure code to solve the same problem, each with
+different trade-offs. This section’s implementation is more of a traditional
+object-oriented style, which is possible to write in Rust, but doesn’t take
+advantage of some of Rust’s strengths. Later, we’ll demonstrate a different
+solution that still uses the object-oriented design pattern but is structured
+in a way that might look less familiar to programmers with object-oriented
+experience. We’ll compare the two solutions to experience the trade-offs of
+designing Rust code differently than code in other languages.</p>
+<p>解决同一问题的代码结构方式无穷无尽，各有取舍。本节实现更偏向传统面向对象风格，虽然能用 Rust 编写，但未充分利用 Rust 的某些优势。稍后我们将展示另一种仍使用面向对象设计模式但结构不同的解决方案，这可能让有面向对象经验的程序员感到陌生。通过比较两种方案，可体会 Rust 代码设计与其他语言的差异。</p>
+<p>Listing 18-11 shows this workflow in code form: this is an example usage of the
+API we’ll implement in a library crate named <code>blog</code>. This won’t compile yet
+because we haven’t implemented the <code>blog</code> crate.</p>
+<p>清单 18-11 展示了该工作流的代码形式：这是我们将在名为 <code>blog</code> 的库 crate 中实现的 API 用法示例。因尚未实现 <code>blog</code> crate，此代码暂无法编译。</p>
+<figure class="listing" id="listing-18-11">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile">use blog::Post;
+
+fn main() {
+    let mut post = Post::new();
+
+    post.add_text("I ate a salad for lunch today");
+    assert_eq!("", post.content());
+
+    post.request_review();
+    assert_eq!("", post.content());
+
+    post.approve();
+    assert_eq!("I ate a salad for lunch today", post.content());
+}</code></pre>
+<figcaption><a href="#listing-18-11">Listing 18-11</a>: Code that demonstrates the desired behavior we want our <code>blog</code> crate to have 展示我们希望 <code>blog</code> crate 具备行为的代码示例</figcaption>
+</figure>
+<p>We want to allow the user to create a new draft blog post with <code>Post::new</code>. We
+want to allow text to be added to the blog post. If we try to get the post’s
+content immediately, before approval, we shouldn’t get any text because the
+post is still a draft. We’ve added <code>assert_eq!</code> in the code for demonstration
+purposes. An excellent unit test for this would be to assert that a draft blog
+post returns an empty string from the <code>content</code> method, but we’re not going to
+write tests for this example.</p>
+<p>我们希望允许用户通过 <code>Post::new</code> 创建新草稿文章。允许向文章添加文本。若在批准前立即获取文章内容，应无文本返回（因文章仍是草稿）。代码中添加了 <code>assert_eq!</code> 用于演示。对此的完美单元测试是：断言草稿文章从 <code>content</code> 方法返回空字符串，但本例不编写测试。</p>
+<p>Next, we want to enable a request for a review of the post, and we want
+<code>content</code> to return an empty string while waiting for the review. When the post
+receives approval, it should get published, meaning the text of the post will
+be returned when <code>content</code> is called.</p>
+<p>接下来，启用审核请求功能，在等待审核期间 <code>content</code> 应返回空字符串。当文章获批准后发布，即调用 <code>content</code> 时返回文章文本。</p>
+<p>Notice that the only type we’re interacting with from the crate is the <code>Post</code>
+type. This type will use the state pattern and will hold a value that will be
+one of three state objects representing the various states a post can be
+in—draft, review, or published. Changing from one state to another will be
+managed internally within the <code>Post</code> type. The states change in response to the
+methods called by our library’s users on the <code>Post</code> instance, but they don’t
+have to manage the state changes directly. Also, users can’t make a mistake
+with the states, such as publishing a post before it’s reviewed.</p>
+<p>注意，我们仅与 crate 中的 <code>Post</code> 类型交互。该类型使用状态模式，持有表示文章可能状态（草稿、审核中或已发布）的三个状态对象之一的状态值。状态间的转换由 <code>Post</code> 类型内部管理。状态随用户对 <code>Post</code> 实例调用方法而改变，但用户无需直接管理状态变更。此外，用户不会误操作状态（例如在审核前发布文章）。</p>
+<h4 id="defining-post-and-creating-a-new-instance-in-the-draft-state-定义-post-及在草稿状态下创建新实例"><a class="header" href="#defining-post-and-creating-a-new-instance-in-the-draft-state-定义-post-及在草稿状态下创建新实例">Defining <code>Post</code> and Creating a New Instance in the Draft State 定义 <code>Post</code> 及在草稿状态下创建新实例</a></h4>
+<p>Let’s get started on the implementation of the library! We know we need a
+public <code>Post</code> struct that holds some content, so we’ll start with the
+definition of the struct and an associated public <code>new</code> function to create an
+instance of <code>Post</code>, as shown in Listing 18-12. We’ll also make a private
+<code>State</code> trait that will define the behavior that all state objects for a <code>Post</code>
+must have.</p>
+<p>开始库的实现！已知需一个公有 <code>Post</code> 结构体来存储内容，因此从结构体定义和关联的公有 <code>new</code> 函数开始（如清单 18-12 所示）。同时创建私有 <code>State</code> 特征，定义 <code>Post</code> 所有状态对象必须的行为。</p>
+<p>Then <code>Post</code> will hold a trait object of <code>Box&lt;dyn State&gt;</code> inside an <code>Option&lt;T&gt;</code>
+in a private field named <code>state</code> to hold the state object. You’ll see why the
+<code>Option&lt;T&gt;</code> is necessary in a bit.</p>
+<p>接着 <code>Post</code> 在私有字段 <code>state</code> 中持有 <code>Box&lt;dyn State&gt;</code> 的特征对象，并封装在 <code>Option&lt;T&gt;</code> 中。稍后你会明白为何需要 <code>Option&lt;T&gt;</code>。</p>
+<figure class="listing" id="listing-18-12">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">pub struct Post {
+    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+    content: String,
+}
+
+impl Post {
+    pub fn new() -&gt; Post {
+        Post {
+            state: Some(Box::new(Draft {})),
+            content: String::new(),
+        }
+    }
+}
+
+trait State {}
+
+struct Draft {}
+
+impl State for Draft {}</code></pre>
+<figcaption><a href="#listing-18-12">Listing 18-12</a>: Definition of a <code>Post</code> struct and a <code>new</code> function that creates a new <code>Post</code> instance, a <code>State</code> trait, and a <code>Draft</code> struct 定义 <code>Post</code> 结构体、创建新 <code>Post</code> 实例的 <code>new</code> 函数、<code>State</code> 特征及 <code>Draft</code> 结构体</figcaption>
+</figure>
+<p>The <code>State</code> trait defines the behavior shared by different post states. The
+state objects are <code>Draft</code>, <code>PendingReview</code>, and <code>Published</code>, and they will all
+implement the <code>State</code> trait. For now, the trait doesn’t have any methods, and
+we’ll start by defining just the <code>Draft</code> state because that is the state we
+want a post to start in.</p>
+<p><code>State</code> 特征定义了不同文章状态的共享行为。状态对象为 <code>Draft</code>、<code>PendingReview</code> 和 <code>Published</code>，它们均实现 <code>State</code> 特征。目前该特征无任何方法，我们仅定义 <code>Draft</code> 状态，因为这是文章的初始状态。</p>
+<p>When we create a new <code>Post</code>, we set its <code>state</code> field to a <code>Some</code> value that
+holds a <code>Box</code>. This <code>Box</code> points to a new instance of the <code>Draft</code> struct. This
+ensures that whenever we create a new instance of <code>Post</code>, it will start out as
+a draft. Because the <code>state</code> field of <code>Post</code> is private, there is no way to
+create a <code>Post</code> in any other state! In the <code>Post::new</code> function, we set the
+<code>content</code> field to a new, empty <code>String</code>.</p>
+<p>创建新 <code>Post</code> 时，将其 <code>state</code> 字段设为包含 <code>Box</code> 的 <code>Some</code> 值。该 <code>Box</code> 指向新的 <code>Draft</code> 结构体实例。这确保每当创建新 <code>Post</code> 实例时，均以草稿状态开始。因 <code>Post</code> 的 <code>state</code> 字段私有，无法创建其他状态的 <code>Post</code>！在 <code>Post::new</code> 函数中，将 <code>content</code> 字段设为新的空 <code>String</code>。</p>
+<h4 id="storing-the-text-of-the-post-content-存储文章内容文本"><a class="header" href="#storing-the-text-of-the-post-content-存储文章内容文本">Storing the Text of the Post Content 存储文章内容文本</a></h4>
+<p>We saw in Listing 18-11 that we want to be able to call a method named
+<code>add_text</code> and pass it a <code>&amp;str</code> that is then added as the text content of the
+blog post. We implement this as a method, rather than exposing the <code>content</code>
+field as <code>pub</code>, so that later we can implement a method that will control how
+the <code>content</code> field’s data is read. The <code>add_text</code> method is pretty
+straightforward, so let’s add the implementation in Listing 18-13 to the <code>impl  Post</code> block.</p>
+<p>如清单 18-11 所示，我们需调用 <code>add_text</code> 方法并传入 <code>&amp;str</code>，将其添加为博客文章的内容文本。我们将此实现为方法而非将 <code>content</code> 字段设为 <code>pub</code>，以便后续实现控制 <code>content</code> 字段数据读取的方法。<code>add_text</code> 方法较简单，如清单 18-13 所示将其添加到 <code>impl Post</code> 块中。</p>
+<figure class="listing" id="listing-18-13">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn add_text(&amp;mut self, text: &amp;str) {
+        self.content.push_str(text);
+    }
+}
+<span class="boring">
+</span><span class="boring">trait State {}
+</span><span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {}</span></code></pre>
+<figcaption><a href="#listing-18-13">Listing 18-13</a>: Implementing the <code>add_text</code> method to add text to a post’s <code>content</code> 实现 <code>add_text</code> 方法向文章 <code>content</code> 添加文本</figcaption>
+</figure>
+<p>The <code>add_text</code> method takes a mutable reference to <code>self</code> because we’re
+changing the <code>Post</code> instance that we’re calling <code>add_text</code> on. We then call
+<code>push_str</code> on the <code>String</code> in <code>content</code> and pass the <code>text</code> argument to add to
+the saved <code>content</code>. This behavior doesn’t depend on the state the post is in,
+so it’s not part of the state pattern. The <code>add_text</code> method doesn’t interact
+with the <code>state</code> field at all, but it is part of the behavior we want to
+support.</p>
+<p><code>add_text</code> 方法获取 <code>self</code> 的可变引用，因为我们正在更改调用 <code>add_text</code> 的 <code>Post</code> 实例。然后在 <code>content</code> 中的 <code>String</code> 上调用 <code>push_str</code>，传入 <code>text</code> 参数以添加到保存的 <code>content</code> 中。此行为不依赖文章状态，故不属状态模式。<code>add_text</code> 方法与 <code>state</code> 字段完全无关，但属于我们期望支持的行为。</p>
+<h4 id="ensuring-the-content-of-a-draft-post-is-empty-确保草稿文章内容为空"><a class="header" href="#ensuring-the-content-of-a-draft-post-is-empty-确保草稿文章内容为空">Ensuring the Content of a Draft Post Is Empty 确保草稿文章内容为空</a></h4>
+<p>Even after we’ve called <code>add_text</code> and added some content to our post, we still
+want the <code>content</code> method to return an empty string slice because the post is
+still in the draft state, as shown on line 7 of Listing 18-11. For now, let’s
+implement the <code>content</code> method with the simplest thing that will fulfill this
+requirement: always returning an empty string slice. We’ll change this later
+once we implement the ability to change a post’s state so it can be published.
+So far, posts can only be in the draft state, so the post content should always
+be empty. Listing 18-14 shows this placeholder implementation.</p>
+<p>即使调用 <code>add_text</code> 添加内容后，我们仍希望 <code>content</code> 方法返回空字符串切片，因为文章仍处草稿状态（如清单 18-11 第 7 行所示）。现在用最简单方式实现 <code>content</code> 方法以满足要求：始终返回空字符串切片。待实现状态变更功能使文章可发布后，再修改此方法。目前文章仅能处于草稿状态，故内容应始终为空。清单 18-14 展示了此占位实现。</p>
+<figure class="listing" id="listing-18-14">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn content(&amp;self) -&gt; &amp;str {
+        ""
+    }
+}
+<span class="boring">
+</span><span class="boring">trait State {}
+</span><span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {}</span></code></pre>
+<figcaption><a href="#listing-18-14">Listing 18-14</a>: Adding a placeholder implementation for the <code>content</code> method on <code>Post</code> that always returns an empty string slice 为 <code>Post</code> 的 <code>content</code> 方法添加占位实现（始终返回空字符串切片）</figcaption>
+</figure>
+<p>With this added <code>content</code> method, everything in Listing 18-11 up to line 7
+works as intended.</p>
+<p>添加此 <code>content</code> 方法后，清单 18-11 至第 7 行的所有内容均符合预期。</p>
+<h4 id="requesting-a-review-changes-the-posts-state-请求审核改变文章状态"><a class="header" href="#requesting-a-review-changes-the-posts-state-请求审核改变文章状态">Requesting a Review Changes the Post’s State 请求审核改变文章状态</a></h4>
+<p>Next, we need to add functionality to request a review of a post, which should
+change its state from <code>Draft</code> to <code>PendingReview</code>. Listing 18-15 shows this code.</p>
+<p>接下来添加请求审核文章的功能，将其状态从 <code>Draft</code> 改为 <code>PendingReview</code>。清单 18-15 展示了此代码。</p>
+<figure class="listing" id="listing-18-15">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        ""
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn request_review(&amp;mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.request_review())
+        }
+    }
+}
+
+trait State {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+}
+
+struct Draft {}
+
+impl State for Draft {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        Box::new(PendingReview {})
+    }
+}
+
+struct PendingReview {}
+
+impl State for PendingReview {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+}</code></pre>
+<figcaption><a href="#listing-18-15">Listing 18-15</a>: Implementing <code>request_review</code> methods on <code>Post</code> and the <code>State</code> trait 在 <code>Post</code> 和 <code>State</code> 特征上实现 <code>request_review</code> 方法</figcaption>
+</figure>
+<p>We give <code>Post</code> a public method named <code>request_review</code> that will take a mutable
+reference to <code>self</code>. Then we call an internal <code>request_review</code> method on the
+current state of <code>Post</code>, and this second <code>request_review</code> method consumes the
+current state and returns a new state.</p>
+<p>为 <code>Post</code> 添加名为 <code>request_review</code> 的公有方法，获取 <code>self</code> 的可变引用。然后在 <code>Post</code> 的当前状态上调用内部 <code>request_review</code> 方法，此内部方法消费当前状态并返回新状态。</p>
+<p>We add the <code>request_review</code> method to the <code>State</code> trait; all types that
+implement the trait will now need to implement the <code>request_review</code> method.
+Note that rather than having <code>self</code>, <code>&amp;self</code>, or <code>&amp;mut self</code> as the first
+parameter of the method, we have <code>self: Box&lt;Self&gt;</code>. This syntax means the
+method is only valid when called on a <code>Box</code> holding the type. This syntax takes
+ownership of <code>Box&lt;Self&gt;</code>, invalidating the old state so the state value of the
+<code>Post</code> can transform into a new state.</p>
+<p>将 <code>request_review</code> 方法加入 <code>State</code> 特征；所有实现该特征的类型现在均需实现 <code>request_review</code> 方法。注意<span class="highlight">[note]方法首参为 <code>self: Box&lt;Self&gt;</code> 而非 <code>self</code>、<code>&amp;self</code> 或 <code>&amp;mut self</code>。此语法表示方法仅在持有该类型的 <code>Box</code> 上调用有效。</span>该语法获取 <code>Box&lt;Self&gt;</code> 的所有权，使旧状态失效以便 <code>Post</code> 的状态值可转换为新状态。</p>
+<p>To consume the old state, the <code>request_review</code> method needs to take ownership
+of the state value. This is where the <code>Option</code> in the <code>state</code> field of <code>Post</code>
+comes in: we call the <code>take</code> method to take the <code>Some</code> value out of the <code>state</code>
+field and leave a <code>None</code> in its place because Rust doesn’t let us have
+unpopulated fields in structs. This lets us move the <code>state</code> value out of
+<code>Post</code> rather than borrowing it. Then we’ll set the post’s <code>state</code> value to the
+result of this operation.</p>
+<p>为消费旧状态，<code>request_review</code> 方法需获取状态值的所有权。这正是 <code>Post</code> 的 <code>state</code> 字段中的 <code>Option</code> 的作用：调用 <code>take</code> 方法取出 <code>state</code> 字段中的 <code>Some</code> 值，原位留 <code>None</code>（因 Rust 不允许结构体存在未填充字段）。这让我们能移出 <code>state</code> 值而非借用。随后将文章的 <code>state</code> 值设为此次操作结果。</p>
+<p>We need to set <code>state</code> to <code>None</code> temporarily rather than setting it directly
+with code like <code>self.state = self.state.request_review();</code> to get ownership of
+the <code>state</code> value. This ensures <code>Post</code> can’t use the old <code>state</code> value after
+we’ve transformed it into a new state.</p>
+<p>需临时将 <code>state</code> 设为 <code>None</code>，而非直接用 <code>self.state = self.state.request_review();</code> 设置，以获取 <code>state</code> 值的所有权。这确保 <code>Post</code> 在状态转换后无法复用旧状态值。</p>
+<p>The <code>request_review</code> method on <code>Draft</code> returns a new, boxed instance of a new
+<code>PendingReview</code> struct, which represents the state when a post is waiting for a
+review. The <code>PendingReview</code> struct also implements the <code>request_review</code> method
+but doesn’t do any transformations. Rather, it returns itself because when we
+request a review on a post already in the <code>PendingReview</code> state, it should stay
+in the <code>PendingReview</code> state.</p>
+<p><code>Draft</code> 上的 <code>request_review</code> 方法返回新的 <code>PendingReview</code> 结构体的装箱实例，表示文章等待审核的状态。<code>PendingReview</code> 结构体也实现 <code>request_review</code> 方法但不做转换，而是返回自身（因已处 <code>PendingReview</code> 状态的文章再次请求审核时，应保持该状态）。</p>
+<p>Now we can start seeing the advantages of the state pattern: the
+<code>request_review</code> method on <code>Post</code> is the same no matter its <code>state</code> value. Each
+state is responsible for its own rules.</p>
+<p>现在可见状态模式的优势：无论 <code>state</code> 值为何，<code>Post</code> 的 <code>request_review</code> 方法均相同。各状态负责自身规则。</p>
+<p>We’ll leave the <code>content</code> method on <code>Post</code> as is, returning an empty string
+slice. We can now have a <code>Post</code> in the <code>PendingReview</code> state as well as in the
+<code>Draft</code> state, but we want the same behavior in the <code>PendingReview</code> state.
+Listing 18-11 now works up to line 10!</p>
+<p>暂保持 <code>Post</code> 的 <code>content</code> 方法原样（返回空字符串切片）。现可有处于 <code>PendingReview</code> 状态的 <code>Post</code>（及 <code>Draft</code> 状态），但在 <code>PendingReview</code> 状态需相同行为。清单 18-11 现可运行至第 10 行！</p>
+<h4 id="adding-approve-to-change-the-behavior-of-content-添加-approve-改变-content-的行为"><a class="header" href="#adding-approve-to-change-the-behavior-of-content-添加-approve-改变-content-的行为">Adding <code>approve</code> to Change the Behavior of <code>content</code> 添加 <code>approve</code> 改变 <code>content</code> 的行为</a></h4>
+<p>The <code>approve</code> method will be similar to the <code>request_review</code> method: it will
+set <code>state</code> to the value that the current state says it should have when that
+state is approved, as shown in Listing 18-16.</p>
+<p><code>approve</code> 方法类似 <code>request_review</code>：将 <code>state</code> 设为当前状态在批准时应具有的值，如清单 18-16 所示。</p>
+<figure class="listing" id="listing-18-16">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        ""
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn request_review(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.request_review())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn approve(&amp;mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.approve())
+        }
+    }
+}
+
+trait State {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+}
+
+struct Draft {}
+
+impl State for Draft {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(PendingReview {})
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+}
+
+struct PendingReview {}
+
+impl State for PendingReview {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        Box::new(Published {})
+    }
+}
+
+struct Published {}
+
+impl State for Published {
+    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+
+    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+        self
+    }
+}</code></pre>
+<figcaption><a href="#listing-18-16">Listing 18-16</a>: Implementing the <code>approve</code> method on <code>Post</code> and the <code>State</code> trait 在 <code>Post</code> 和 <code>State</code> 特征上实现 <code>approve</code> 方法</figcaption>
+</figure>
+<p>We add the <code>approve</code> method to the <code>State</code> trait and add a new struct that
+implements <code>State</code>, the <code>Published</code> state.</p>
+<p>将 <code>approve</code> 方法加入 <code>State</code> 特征，并添加实现 <code>State</code> 的新结构体 <code>Published</code>。</p>
+<p>Similar to the way <code>request_review</code> on <code>PendingReview</code> works, if we call the
+<code>approve</code> method on a <code>Draft</code>, it will have no effect because <code>approve</code> will
+return <code>self</code>. When we call <code>approve</code> on <code>PendingReview</code>, it returns a new,
+boxed instance of the <code>Published</code> struct. The <code>Published</code> struct implements the
+<code>State</code> trait, and for both the <code>request_review</code> method and the <code>approve</code>
+method, it returns itself because the post should stay in the <code>Published</code> state
+in those cases.</p>
+<p>类似 <code>PendingReview</code> 的 <code>request_review</code>，若在 <code>Draft</code> 上调用 <code>approve</code> 无效（因 <code>approve</code> 返回 <code>self</code>）。在 <code>PendingReview</code> 上调用 <code>approve</code> 时，返回新的 <code>Published</code> 结构体的装箱实例。<code>Published</code> 结构体实现 <code>State</code> 特征，其 <code>request_review</code> 和 <code>approve</code> 方法均返回自身（因文章在这些情况下应保持 <code>Published</code> 状态）。</p>
+<p>Now we need to update the <code>content</code> method on <code>Post</code>. We want the value
+returned from <code>content</code> to depend on the current state of the <code>Post</code>, so we’re
+going to have the <code>Post</code> delegate to a <code>content</code> method defined on its <code>state</code>,
+as shown in Listing 18-17.</p>
+<p>现在需更新 <code>Post</code> 的 <code>content</code> 方法。我们希望 <code>content</code> 的返回值取决于 <code>Post</code> 的当前状态，因此让 <code>Post</code> 委托给其 <code>state</code> 定义的 <code>content</code> 方法，如清单 18-17 所示。</p>
+<figure class="listing" id="listing-18-17">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Post {
+    // --snip--
+<span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn content(&amp;self) -&gt; &amp;str {
+        self.state.as_ref().unwrap().content(self)
+    }
+    // --snip--
+<span class="boring">
+</span><span class="boring">    pub fn request_review(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.request_review())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn approve(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.approve())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span>}
+<span class="boring">
+</span><span class="boring">trait State {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(PendingReview {})
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct PendingReview {}
+</span><span class="boring">
+</span><span class="boring">impl State for PendingReview {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(Published {})
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct Published {}
+</span><span class="boring">
+</span><span class="boring">impl State for Published {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-18-17">Listing 18-17</a>: Updating the <code>content</code> method on <code>Post</code> to delegate to a <code>content</code> method on <code>State</code> 更新 <code>Post</code> 的 <code>content</code> 方法以委托给 <code>State</code> 的 <code>content</code> 方法</figcaption>
+</figure>
+<p>Because the goal is to keep all of these rules inside the structs that
+implement <code>State</code>, we call a <code>content</code> method on the value in <code>state</code> and pass
+the post instance (that is, <code>self</code>) as an argument. Then we return the value
+that’s returned from using the <code>content</code> method on the <code>state</code> value.</p>
+<p>目标是将所有规则封装在实现 <code>State</code> 的结构体中，故在 <code>state</code> 值上调用 <code>content</code> 方法并传入文章实例（即 <code>self</code>）作为参数。然后返回使用 <code>state</code> 值的 <code>content</code> 方法的结果。</p>
+<p>We call the <code>as_ref</code> method on the <code>Option</code> because we want a reference to the
+value inside the <code>Option</code> rather than ownership of the value. Because <code>state</code> is
+an <code>Option&lt;Box&lt;dyn State&gt;&gt;</code>, when we call <code>as_ref</code>, an <code>Option&lt;&amp;Box&lt;dyn  State&gt;&gt;</code> is returned. If we didn’t call <code>as_ref</code>, we would get an error because
+we can’t move <code>state</code> out of the borrowed <code>&amp;self</code> of the function parameter.</p>
+<p>在 <code>Option</code> 上调用 <code>as_ref</code> 是因为需要内部值的引用而非所有权。因 <code>state</code> 是 <code>Option&lt;Box&lt;dyn State&gt;&gt;</code>，调用 <code>as_ref</code> 后返回 <code>Option&lt;&amp;Box&lt;dyn State&gt;&gt;</code>。若不调用 <code>as_ref</code> 会报错（因无法从函数参数的借用 <code>&amp;self</code> 中移出 <code>state</code>）。</p>
+<p>We then call the <code>unwrap</code> method, which we know will never panic because we
+know the methods on <code>Post</code> ensure that <code>state</code> will always contain a <code>Some</code>
+value when those methods are done. This is one of the cases we talked about in
+“Cases in Which You Have More Information Than the
+Compiler” in Chapter 9 when we know that
+a <code>None</code> value is never possible, even though the compiler isn’t able to
+understand that.</p>
+<p>接着调用 <code>unwrap</code> 方法（我们知道这永不触发 panic），因为 <code>Post</code> 的方法确保这些方法完成后 <code>state</code> 始终含 <code>Some</code> 值。这是第 9 章“你比编译器掌握更多信息的情况”中讨论的案例之一：即便编译器无法理解，我们也知 <code>None</code> 值绝不可能出现。</p>
+<p>At this point, when we call <code>content</code> on the <code>&amp;Box&lt;dyn State&gt;</code>, deref coercion
+will take effect on the <code>&amp;</code> and the <code>Box</code> so the <code>content</code> method will
+ultimately be called on the type that implements the <code>State</code> trait. That means
+we need to add <code>content</code> to the <code>State</code> trait definition, and that is where
+we’ll put the logic for what content to return depending on which state we
+have, as shown in Listing 18-18.</p>
+<p>此时，在 <code>&amp;Box&lt;dyn State&gt;</code> 上调用 <code>content</code> 时，解引用强制转换将对 <code>&amp;</code> 和 <code>Box</code> 生效，最终在实现 <code>State</code> 特征的类型上调用 <code>content</code> 方法。这意味着需在 <code>State</code> 特征定义中添加 <code>content</code>，在此处放置根据不同状态返回内容的逻辑，如清单 18-18 所示。</p>
+<figure class="listing" id="listing-18-18">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    state: Option&lt;Box&lt;dyn State&gt;&gt;,
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Post {
+</span><span class="boring">    pub fn new() -&gt; Post {
+</span><span class="boring">        Post {
+</span><span class="boring">            state: Some(Box::new(Draft {})),
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        self.state.as_ref().unwrap().content(self)
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn request_review(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.request_review())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn approve(&amp;mut self) {
+</span><span class="boring">        if let Some(s) = self.state.take() {
+</span><span class="boring">            self.state = Some(s.approve())
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>trait State {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt;;
+</span><span class="boring">
+</span>    fn content&lt;'a&gt;(&amp;self, post: &amp;'a Post) -&gt; &amp;'a str {
+        ""
+    }
+}
+
+// --snip--
+<span class="boring">
+</span><span class="boring">struct Draft {}
+</span><span class="boring">
+</span><span class="boring">impl State for Draft {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(PendingReview {})
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">struct PendingReview {}
+</span><span class="boring">
+</span><span class="boring">impl State for PendingReview {
+</span><span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        Box::new(Published {})
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>struct Published {}
+
+impl State for Published {
+    // --snip--
+<span class="boring">    fn request_review(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    fn approve(self: Box&lt;Self&gt;) -&gt; Box&lt;dyn State&gt; {
+</span><span class="boring">        self
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    fn content&lt;'a&gt;(&amp;self, post: &amp;'a Post) -&gt; &amp;'a str {
+        &amp;post.content
+    }
+}</code></pre>
+<figcaption><a href="#listing-18-18">Listing 18-18</a>: Adding the <code>content</code> method to the <code>State</code> trait 向 <code>State</code> 特征添加 <code>content</code> 方法</figcaption>
+</figure>
+<p>We add a default implementation for the <code>content</code> method that returns an empty
+string slice. That means we don’t need to implement <code>content</code> on the <code>Draft</code>
+and <code>PendingReview</code> structs. The <code>Published</code> struct will override the <code>content</code>
+method and return the value in <code>post.content</code>. While convenient, having the
+<code>content</code> method on <code>State</code> determine the <code>content</code> of the <code>Post</code> is blurring
+the lines between the responsibility of <code>State</code> and the responsibility of
+<code>Post</code>.</p>
+<p>为 <code>content</code> 方法添加返回空字符串切片的默认实现。这意味着无需在 <code>Draft</code> 和 <code>PendingReview</code> 结构体上实现 <code>content</code>。<code>Published</code> 结构体将覆盖 <code>content</code> 方法并返回 <code>post.content</code> 中的值。虽然便捷，但让 <code>State</code> 的 <code>content</code> 方法决定 <code>Post</code> 的内容，模糊了 <code>State</code> 与 <code>Post</code> 的职责边界。</p>
+<p>Note that we need lifetime annotations on this method, as we discussed in
+Chapter 10. We’re taking a reference to a <code>post</code> as an argument and returning a
+reference to part of that <code>post</code>, so the lifetime of the returned reference is
+related to the lifetime of the <code>post</code> argument.</p>
+<p>注意此方法需生命周期注解（如第 10 章所述）。我们获取 <code>post</code> 的引用作为参数，并返回该 <code>post</code> 某部分的引用，故返回引用的生命周期与 <code>post</code> 参数相关。</p>
+<p>And we’re done—all of Listing 18-11 now works! We’ve implemented the state
+pattern with the rules of the blog post workflow. The logic related to the
+rules lives in the state objects rather than being scattered throughout <code>Post</code>.</p>
+<p>至此完成——清单 18-11 的所有功能现均可运行！我们已用状态模式实现博客文章工作流规则。与规则相关的逻辑位于状态对象中，而非分散在 <code>Post</code> 各处。</p>
+<section class="note" aria-role="note">
+<h3 id="why-not-an-enum-为何不使用枚举"><a class="header" href="#why-not-an-enum-为何不使用枚举">Why Not An Enum? 为何不使用枚举？</a></h3>
+<p>You may have been wondering why we didn’t use an <code>enum</code> with the different
+possible post states as variants. That’s certainly a possible solution; try it
+and compare the end results to see which you prefer! One disadvantage of using
+an enum is that every place that checks the value of the enum will need a
+<code>match</code> expression or similar to handle every possible variant. This could get
+more repetitive than this trait object solution.</p>
+<p>你可能好奇为何不用枚举（<code>enum</code>）以不同文章状态作为变体。这当然是可行方案；尝试并比较结果，看哪种更合你意！使用枚举的劣势在于：每次检查枚举值处均需 <code>match</code> 表达式或类似结构处理所有可能变体。这比特征对象方案更重复。</p>
+</section>
+<h4 id="trade-offs-of-the-state-pattern-状态模式的权衡"><a class="header" href="#trade-offs-of-the-state-pattern-状态模式的权衡">Trade-offs of the State Pattern 状态模式的权衡</a></h4>
+<p>We’ve shown that Rust is capable of implementing the object-oriented state
+pattern to encapsulate the different kinds of behavior a post should have in
+each state. The methods on <code>Post</code> know nothing about the various behaviors. The
+way we organized the code, we have to look in only one place to know the
+different ways a published post can behave: the implementation of the <code>State</code>
+trait on the <code>Published</code> struct.</p>
+<p>我们已展示 Rust 能实现面向对象状态模式，以封装文章在各状态下应有的不同行为。<code>Post</code> 的方法对各类行为一无所知。如此组织代码后，仅需查看一处即可知已发布文章的不同行为方式：<code>Published</code> 结构体上 <code>State</code> 特征的实现。</p>
+<p>If we were to create an alternative implementation that didn’t use the state
+pattern, we might instead use <code>match</code> expressions in the methods on <code>Post</code> or
+even in the <code>main</code> code that checks the state of the post and changes behavior
+in those places. That would mean we would have to look in several places to
+understand all the implications of a post being in the published state.</p>
+<p>若不使用状态模式，可能在 <code>Post</code> 的方法中用 <code>match</code> 表达式，甚至在检查文章状态的 <code>main</code> 代码中直接更改行为。这将导致需查看多处才能理解文章处于发布状态的全部影响。</p>
+<p>With the state pattern, the <code>Post</code> methods and the places we use <code>Post</code> don’t
+need <code>match</code> expressions, and to add a new state, we would only need to add a
+new struct and implement the trait methods on that one struct in one location.</p>
+<p>使用状态模式后，<code>Post</code> 的方法及其使用处均无需 <code>match</code> 表达式。添加新状态时，仅需添加新结构体并在单处为其实现特征方法。</p>
+<p>The implementation using the state pattern is easy to extend to add more
+functionality. To see the simplicity of maintaining code that uses the state
+pattern, try a few of these suggestions:</p>
+<p>基于状态模式的实现易于扩展功能。为体验其可维护性，尝试以下建议：</p>
+<ul>
+<li>
+<p>Add a <code>reject</code> method that changes the post’s state from <code>PendingReview</code> back
+to <code>Draft</code>.</p>
+</li>
+<li>
+<p>Require two calls to <code>approve</code> before the state can be changed to <code>Published</code>.</p>
+</li>
+<li>
+<p>Allow users to add text content only when a post is in the <code>Draft</code> state.
+Hint: have the state object responsible for what might change about the
+content but not responsible for modifying the <code>Post</code>.</p>
+</li>
+<li>
+<p>添加 <code>reject</code> 方法，将文章状态从 <code>PendingReview</code> 改回 <code>Draft</code>。</p>
+</li>
+<li>
+<p>要求两次 <code>approve</code> 调用才将状态改为 <code>Published</code>。</p>
+</li>
+<li>
+<p>仅允许在 <code>Draft</code> 状态下添加文本内容。提示：让状态对象负责内容可能的变化，而非负责修改 <code>Post</code>。</p>
+</li>
+</ul>
+<p>One downside of the state pattern is that, because the states implement the
+transitions between states, some of the states are coupled to each other. If we
+add another state between <code>PendingReview</code> and <code>Published</code>, such as <code>Scheduled</code>,
+we would have to change the code in <code>PendingReview</code> to transition to
+<code>Scheduled</code> instead. It would be less work if <code>PendingReview</code> didn’t need to
+change with the addition of a new state, but that would mean switching to
+another design pattern.</p>
+<p>状态模式的一个缺点是：因状态间转换由状态自身实现，部分状态相互耦合。若在 <code>PendingReview</code> 和 <code>Published</code> 间添加新状态（如 <code>Scheduled</code>），需修改 <code>PendingReview</code> 的代码以转为 <code>Scheduled</code>。若 <code>PendingReview</code> 不随新状态改变可减少工作量，但这需改用其他设计模式。</p>
+<p>Another downside is that we’ve duplicated some logic. To eliminate some of the
+duplication, we might try to make default implementations for the
+<code>request_review</code> and <code>approve</code> methods on the <code>State</code> trait that return <code>self</code>.
+However, this wouldn’t work: when using <code>State</code> as a trait object, the trait
+doesn’t know what the concrete <code>self</code> will be exactly, so the return type isn’t
+known at compile time. (This is one of the <code>dyn</code> compatibility rules mentioned
+earlier.)</p>
+<p>另一缺点是有逻辑重复。为消除重复，可尝试为 <code>State</code> 特征的 <code>request_review</code> 和 <code>approve</code> 方法提供返回 <code>self</code> 的默认实现。但这行不通：当 <code>State</code> 作为特征对象使用时，特征不知具体 <code>self</code> 类型，故编译时无法确定返回类型（这是前文提到的 <code>dyn</code> 兼容性规则之一）。</p>
+<p>Other duplication includes the similar implementations of the <code>request_review</code>
+and <code>approve</code> methods on <code>Post</code>. Both methods use <code>Option::take</code> with the
+<code>state</code> field of <code>Post</code>, and if <code>state</code> is <code>Some</code>, they delegate to the wrapped
+value’s implementation of the same method and set the new value of the <code>state</code>
+field to the result. If we had a lot of methods on <code>Post</code> that followed this
+pattern, we might consider defining a macro to eliminate the repetition (see
+“Macros” in Chapter 20).</p>
+<p>其他重复包括 <code>Post</code> 上 <code>request_review</code> 和 <code>approve</code> 方法的相似实现。两方法均使用 <code>Option::take</code> 处理 <code>Post</code> 的 <code>state</code> 字段，若 <code>state</code> 为 <code>Some</code>，则委托给内部值的同名方法并设置 <code>state</code> 字段的新值。若 <code>Post</code> 上有大量此类方法，可考虑用宏消除重复（见第 20 章“宏”）。</p>
+<p>By implementing the state pattern exactly as it’s defined for object-oriented
+languages, we’re not taking as full advantage of Rust’s strengths as we could.
+Let’s look at some changes we can make to the <code>blog</code> crate that can make
+invalid states and transitions into compile-time errors.</p>
+<p>严格按面向对象语言定义实现状态模式，未能充分利用 Rust 的优势。下面看看如何修改 <code>blog</code> crate，将无效状态和转换转化为编译时错误。</p>
+<h3 id="encoding-states-and-behavior-as-types-将状态和行为编码为类型"><a class="header" href="#encoding-states-and-behavior-as-types-将状态和行为编码为类型">Encoding States and Behavior as Types 将状态和行为编码为类型</a></h3>
+<p>We’ll show you how to rethink the state pattern to get a different set of
+trade-offs. Rather than encapsulating the states and transitions completely so
+outside code has no knowledge of them, we’ll encode the states into different
+types. Consequently, Rust’s type checking system will prevent attempts to use
+draft posts where only published posts are allowed by issuing a compiler error.</p>
+<p>我们将展示如何重新思考状态模式以获得不同的权衡方案。不同于完全封装状态和转换（使外部代码对其无感知），我们将状态编码为不同类型。因此 Rust 的类型检查系统将通过编译器错误阻止在仅允许发布文章处使用草稿文章。</p>
+<p>Let’s consider the first part of <code>main</code> in Listing 18-11:</p>
+<p>考虑清单 18-11 中 <code>main</code> 的第一部分：</p>
+<figure class="listing">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore"><span class="boring">use blog::Post;
+</span><span class="boring">
+</span>fn main() {
+    let mut post = Post::new();
+
+    post.add_text("I ate a salad for lunch today");
+    assert_eq!("", post.content());
+<span class="boring">
+</span><span class="boring">    post.request_review();
+</span><span class="boring">    assert_eq!("", post.content());
+</span><span class="boring">
+</span><span class="boring">    post.approve();
+</span><span class="boring">    assert_eq!("I ate a salad for lunch today", post.content());
+</span>}</code></pre>
+</figure>
+<p>We still enable the creation of new posts in the draft state using <code>Post::new</code>
+and the ability to add text to the post’s content. But instead of having a
+<code>content</code> method on a draft post that returns an empty string, we’ll make it so
+draft posts don’t have the <code>content</code> method at all. That way, if we try to get
+a draft post’s content, we’ll get a compiler error telling us the method
+doesn’t exist. As a result, it will be impossible for us to accidentally
+display draft post content in production because that code won’t even compile.
+Listing 18-19 shows the definition of a <code>Post</code> struct and a <code>DraftPost</code> struct,
+as well as methods on each.</p>
+<p>我们仍允许用 <code>Post::new</code> 创建草稿状态的新文章，并能向文章添加文本。但不再为草稿文章提供返回空字符串的 <code>content</code> 方法，而是直接让草稿文章无 <code>content</code> 方法。这样，若尝试获取草稿文章内容，编译器将报错“方法不存在”。因此，生产环境不可能意外显示草稿内容（因相关代码甚至无法编译）。清单 18-19 展示了 <code>Post</code> 和 <code>DraftPost</code> 结构体的定义及各自的方法。</p>
+<figure class="listing" id="listing-18-19">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">pub struct Post {
+    content: String,
+}
+
+pub struct DraftPost {
+    content: String,
+}
+
+impl Post {
+    pub fn new() -&gt; DraftPost {
+        DraftPost {
+            content: String::new(),
+        }
+    }
+
+    pub fn content(&amp;self) -&gt; &amp;str {
+        &amp;self.content
+    }
+}
+
+impl DraftPost {
+    pub fn add_text(&amp;mut self, text: &amp;str) {
+        self.content.push_str(text);
+    }
+}</code></pre>
+<figcaption><a href="#listing-18-19">Listing 18-19</a>: A <code>Post</code> with a <code>content</code> method and <code>DraftPost</code> without a <code>content</code> method 带 <code>content</code> 方法的 <code>Post</code> 和不带该方法的 <code>DraftPost</code></figcaption>
+</figure>
+<p>Both the <code>Post</code> and <code>DraftPost</code> structs have a private <code>content</code> field that
+stores the blog post text. The structs no longer have the <code>state</code> field because
+we’re moving the encoding of the state to the types of the structs. The <code>Post</code>
+struct will represent a published post, and it has a <code>content</code> method that
+returns the <code>content</code>.</p>
+<p><code>Post</code> 和 <code>DraftPost</code> 结构体均有私有 <code>content</code> 字段存储博客文本。结构体不再含 <code>state</code> 字段，因我们将状态编码移至结构体类型。<code>Post</code> 结构体表示已发布的文章，其 <code>content</code> 方法返回 <code>content</code>。</p>
+<p>We still have a <code>Post::new</code> function, but instead of returning an instance of
+<code>Post</code>, it returns an instance of <code>DraftPost</code>. Because <code>content</code> is private and
+there aren’t any functions that return <code>Post</code>, it’s not possible to create an
+instance of <code>Post</code> right now.</p>
+<p>仍有 <code>Post::new</code> 函数，但它返回 <code>DraftPost</code> 实例而非 <code>Post</code>。因 <code>content</code> 私有且无返回 <code>Post</code> 的函数，目前无法直接创建 <code>Post</code> 实例。</p>
+<p>The <code>DraftPost</code> struct has an <code>add_text</code> method, so we can add text to
+<code>content</code> as before, but note that <code>DraftPost</code> does not have a <code>content</code> method
+defined! So now the program ensures all posts start as draft posts, and draft
+posts don’t have their content available for display. Any attempt to get around
+these constraints will result in a compiler error.</p>
+<p><code>DraftPost</code> 有 <code>add_text</code> 方法，故可如前往内容添加文本。但注意 <code>DraftPost</code> 未定义 <code>content</code> 方法！程序现确保所有文章均以草稿开始，且草稿文章内容不可显示。任何规避这些约束的尝试将导致编译错误。</p>
+<p>So how do we get a published post? We want to enforce the rule that a draft
+post has to be reviewed and approved before it can be published. A post in the
+pending review state should still not display any content. Let’s implement
+these constraints by adding another struct, <code>PendingReviewPost</code>, defining the
+<code>request_review</code> method on <code>DraftPost</code> to return a <code>PendingReviewPost</code> and
+defining an <code>approve</code> method on <code>PendingReviewPost</code> to return a <code>Post</code>, as
+shown in Listing 18-20.</p>
+<p>那么如何获取已发布的文章？我们需强制规则：草稿文章必须经审核批准才能发布。处于待审核状态的文章仍不应显示内容。通过添加新结构体 <code>PendingReviewPost</code> 实现这些约束：在 <code>DraftPost</code> 上定义 <code>request_review</code> 方法（返回 <code>PendingReviewPost</code>），在 <code>PendingReviewPost</code> 上定义 <code>approve</code> 方法（返回 <code>Post</code>），如清单 18-20 所示。</p>
+<figure class="listing" id="listing-18-20">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub struct Post {
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct DraftPost {
+</span><span class="boring">    content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Post {
+</span><span class="boring">    pub fn new() -&gt; DraftPost {
+</span><span class="boring">        DraftPost {
+</span><span class="boring">            content: String::new(),
+</span><span class="boring">        }
+</span><span class="boring">    }
+</span><span class="boring">
+</span><span class="boring">    pub fn content(&amp;self) -&gt; &amp;str {
+</span><span class="boring">        &amp;self.content
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl DraftPost {
+    // --snip--
+<span class="boring">    pub fn add_text(&amp;mut self, text: &amp;str) {
+</span><span class="boring">        self.content.push_str(text);
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    pub fn request_review(self) -&gt; PendingReviewPost {
+        PendingReviewPost {
+            content: self.content,
+        }
+    }
+}
+
+pub struct PendingReviewPost {
+    content: String,
+}
+
+impl PendingReviewPost {
+    pub fn approve(self) -&gt; Post {
+        Post {
+            content: self.content,
+        }
+    }
+}</code></pre>
+<figcaption><a href="#listing-18-20">Listing 18-20</a>: A <code>PendingReviewPost</code> that gets created by calling <code>request_review</code> on <code>DraftPost</code> and an <code>approve</code> method that turns a <code>PendingReviewPost</code> into a published <code>Post</code> 通过调用 <code>DraftPost</code> 的 <code>request_review</code> 创建 <code>PendingReviewPost</code>，其 <code>approve</code> 方法将 <code>PendingReviewPost</code> 转为已发布 <code>Post</code></figcaption>
+</figure>
+<p>The <code>request_review</code> and <code>approve</code> methods take ownership of <code>self</code>, thus
+consuming the <code>DraftPost</code> and <code>PendingReviewPost</code> instances and transforming
+them into a <code>PendingReviewPost</code> and a published <code>Post</code>, respectively. This way,
+we won’t have any lingering <code>DraftPost</code> instances after we’ve called
+<code>request_review</code> on them, and so forth. The <code>PendingReviewPost</code> struct doesn’t
+have a <code>content</code> method defined on it, so attempting to read its content
+results in a compiler error, as with <code>DraftPost</code>. Because the only way to get a
+published <code>Post</code> instance that does have a <code>content</code> method defined is to call
+the <code>approve</code> method on a <code>PendingReviewPost</code>, and the only way to get a
+<code>PendingReviewPost</code> is to call the <code>request_review</code> method on a <code>DraftPost</code>,
+we’ve now encoded the blog post workflow into the type system.</p>
+<p><code>request_review</code> 和 <code>approve</code> 方法获取 <code>self</code> 的所有权，从而消费 <code>DraftPost</code> 和 <code>PendingReviewPost</code> 实例，分别将其转换为 <code>PendingReviewPost</code> 和已发布的 <code>Post</code>。这样，调用 <code>request_review</code> 后不会遗留 <code>DraftPost</code> 实例，以此类推。<code>PendingReviewPost</code> 结构体未定义 <code>content</code> 方法，故尝试读取其内容会导致编译器错误（同 <code>DraftPost</code>）。因唯一获取带 <code>content</code> 方法的 <code>Post</code> 实例的途径是调用 <code>PendingReviewPost</code> 的 <code>approve</code> 方法，而唯一获取 <code>PendingReviewPost</code> 的途径是调用 <code>DraftPost</code> 的 <code>request_review</code> 方法，我们已将博客文章工作流编码进类型系统。</p>
+<p>But we also have to make some small changes to <code>main</code>. The <code>request_review</code> and
+<code>approve</code> methods return new instances rather than modifying the struct they’re
+called on, so we need to add more <code>let post =</code> shadowing assignments to save
+the returned instances. We also can’t have the assertions about the draft and
+pending review posts’ contents be empty strings, nor do we need them: we can’t
+compile code that tries to use the content of posts in those states any longer.
+The updated code in <code>main</code> is shown in Listing 18-21.</p>
+<p>但也需对 <code>main</code> 做小修改。<code>request_review</code> 和 <code>approve</code> 方法返回新实例而非修改原结构体，故需添加更多 <code>let post =</code> 阴影赋值保存返回实例。此外，不再需要（也不能有）关于草稿和待审核文章内容为空的断言：因编译器已阻止使用这些状态的文章内容。更新后的 <code>main</code> 代码如清单 18-21 所示。</p>
+<figure class="listing" id="listing-18-21">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore">use blog::Post;
+
+fn main() {
+    let mut post = Post::new();
+
+    post.add_text("I ate a salad for lunch today");
+
+    let post = post.request_review();
+
+    let post = post.approve();
+
+    assert_eq!("I ate a salad for lunch today", post.content());
+}</code></pre>
+<figcaption><a href="#listing-18-21">Listing 18-21</a>: Modifications to <code>main</code> to use the new implementation of the blog post workflow 修改 <code>main</code> 以使用博客文章工作流的新实现</figcaption>
+</figure>
+<p>The changes we needed to make to <code>main</code> to reassign <code>post</code> mean that this
+implementation doesn’t quite follow the object-oriented state pattern anymore:
+the transformations between the states are no longer encapsulated entirely
+within the <code>Post</code> implementation. However, our gain is that invalid states are
+now impossible because of the type system and the type checking that happens at
+compile time! This ensures that certain bugs, such as display of the content of
+an unpublished post, will be discovered before they make it to production.</p>
+<p>为重新赋值 <code>post</code> 对 <code>main</code> 的修改意味着：此实现不再严格遵循面向对象状态模式（状态间转换不再完全封装在 <code>Post</code> 实现内）。但我们的收获是：类型系统及编译时类型检查使无效状态成为不可能！这确保某些 bug（如显示未发布文章内容）在进入生产环境前即被发现。</p>
+<p>Try the tasks suggested at the start of this section on the <code>blog</code> crate as it
+is after Listing 18-21 to see what you think about the design of this version
+of the code. Note that some of the tasks might be completed already in this
+design.</p>
+<p>尝试在本节开头提出的任务，对清单 18-21 后的 <code>blog</code> crate 进行操作，思考此版本代码的设计。注意部分任务可能已在此设计中完成。</p>
+<p>We’ve seen that even though Rust is capable of implementing object-oriented
+design patterns, other patterns, such as encoding state into the type system,
+are also available in Rust. These patterns have different trade-offs. Although
+you might be very familiar with object-oriented patterns, rethinking the
+problem to take advantage of Rust’s features can provide benefits, such as
+preventing some bugs at compile time. Object-oriented patterns won’t always be
+the best solution in Rust due to certain features, like ownership, that
+object-oriented languages don’t have.</p>
+<p>我们已看到：尽管 Rust 能实现面向对象设计模式，但也存在其他模式（如将状态编码进类型系统）。这些模式各有取舍。虽然你可能熟悉面向对象模式，但重新思考问题以利用 Rust 的特性可带来优势（如在编译时阻止某些错误）。因所有权等面向对象语言不具备的特性，在 Rust 中面向对象模式并非总是最佳解决方案。</p>
+<h2 id="summary-总结"><a class="header" href="#summary-总结">Summary 总结</a></h2>
+<p>Regardless of whether you think Rust is an object-oriented language after
+reading this chapter, you now know that you can use trait objects to get some
+object-oriented features in Rust. Dynamic dispatch can give your code some
+flexibility in exchange for a bit of runtime performance. You can use this
+flexibility to implement object-oriented patterns that can help your code’s
+maintainability. Rust also has other features, like ownership, that
+object-oriented languages don’t have. An object-oriented pattern won’t always
+be the best way to take advantage of Rust’s strengths, but it is an available
+option.</p>
+<p>无论阅读本章后你是否认为 Rust 是面向对象语言，现在你已知可用特征对象在 Rust 中获取部分面向对象特性。动态调度能以些许运行时性能为代价换取代码灵活性。此灵活性可用于实现面向对象模式以提升代码可维护性。Rust 也有其他特性（如所有权）是面向对象语言所缺的。面向对象模式并非总能充分利用 Rust 的优势，但它是一种可选项。</p>
+<p>Next, we’ll look at patterns, which are another of Rust’s features that enable
+lots of flexibility. We’ve looked at them briefly throughout the book but
+haven’t seen their full capability yet. Let’s go!</p>
+<p>接下来，我们将探讨模式（pattern）——这是 Rust 另一支持高度灵活性的特性。本书中我们已简要接触过，但尚未窥其全貌。让我们继续前进！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch18-02-trait-objects.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch19-00-patterns.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch18-02-trait-objects.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch19-00-patterns.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,680 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>A Closer Look at the Traits for Async 深入探索异步特性 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="a-closer-look-at-the-traits-for-async-深入探索异步特性"><a class="header" href="#a-closer-look-at-the-traits-for-async-深入探索异步特性">A Closer Look at the Traits for Async 深入探索异步特性</a></h2>
+<p>Throughout the chapter, we’ve used the <code>Future</code>, <code>Pin</code>, <code>Unpin</code>, <code>Stream</code>, and
+<code>StreamExt</code> traits in various ways. So far, though, we’ve avoided getting too
+far into the details of how they work or how they fit together, which is fine
+most of the time for your day-to-day Rust work. Sometimes, though, you’ll
+encounter situations where you’ll need to understand a few more of these
+details. In this section, we’ll dig in just enough to help in those scenarios,
+still leaving the <em>really</em> deep dive for other documentation.</p>
+<p>在本章中，我们以多种方式使用了 <code>Future</code>、<code>Pin</code>、<code>Unpin</code>、<code>Stream</code> 和 <code>StreamExt</code> 特征。但到目前为止，我们避免深入探讨它们的<span class="highlight">[note]工作原理</span>或如何协同工作，这对日常 Rust 工作通常已足够。然而，有时你会遇到需要理解更多细节的情况。本节将深入探讨这些细节以应对此类场景，更深入的内容则留给其他文档。</p>
+<h3 id="the-future-trait-future-特征"><a class="header" href="#the-future-trait-future-特征">The <code>Future</code> Trait <code>Future</code> 特征</a></h3>
+<p>Let’s start by taking a closer look at how the <code>Future</code> trait works. Here’s how
+Rust defines it:</p>
+<p>首先深入了解 <code>Future</code> 特征的工作原理。以下是 Rust 的定义方式：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::pin::Pin;
+use std::task::{Context, Poll};
+
+pub trait Future {
+    type Output;
+
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>That trait definition includes a bunch of new types and also some syntax we
+haven’t seen before, so let’s walk through the definition piece by piece.</p>
+<p>该特征定义包含多个新类型及未见的语法，因此我们将逐部分解析。</p>
+<p>First, <code>Future</code>’s associated type <code>Output</code> says what the future resolves to.
+This is analogous to the <code>Item</code> associated type for the <code>Iterator</code> trait.
+Second, <code>Future</code> also has the <code>poll</code> method, which takes a special <code>Pin</code>
+reference for its <code>self</code> parameter and a mutable reference to a <code>Context</code> type,
+and returns a <code>Poll&lt;Self::Output&gt;</code>. We’ll talk more about <code>Pin</code> and
+<code>Context</code> in a moment. For now, let’s focus on what the method returns,
+the <code>Poll</code> type:</p>
+<p>首先，<code>Future</code> 的关联类型 <code>Output</code> 表示 Future 的解析结果。这类似于 <code>Iterator</code> 特征的 <code>Item</code> 关联类型。其次，<code>Future</code> 还包含 <code>poll</code> 方法，它接收一个特殊的 <code>Pin</code> 引用作为 <code>self</code> 参数，以及一个 <code>Context</code> 类型的可变引用，并返回 <code>Poll&lt;Self::Output&gt;</code>。稍后将详细讨论 <code>Pin</code> 和 <code>Context</code>，现在先关注返回值 <code>Poll</code> 类型：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>enum Poll&lt;T&gt; {
+    Ready(T),
+    Pending,
+}
+<span class="boring">}</span></code></pre></pre>
+<p>This <code>Poll</code> type is similar to an <code>Option</code>. It has one variant that has a value,
+<code>Ready(T)</code>, and one which does not, <code>Pending</code>. <code>Poll</code> means something quite
+different from <code>Option</code>, though! The <code>Pending</code> variant indicates that the future
+still has work to do, so the caller will need to check again later. The <code>Ready</code>
+variant indicates that the future has finished its work and the <code>T</code> value is
+available.</p>
+<p><code>Poll</code> 类型类似于 <code>Option</code>：包含带值的 <code>Ready(T)</code> 变体和无值的 <code>Pending</code> 变体。但 <code>Poll</code> 的含义与 <code>Option</code> 截然不同！<code>Pending</code> 表示 Future 仍需工作，调用方需稍后重试；<code>Ready</code> 表示 Future 已完成工作，值 <code>T</code> 已就绪。</p>
+<section class="note" aria-role="note">
+<p>Note: With most futures, the caller should not call <code>poll</code> again after the
+future has returned <code>Ready</code>. Many futures will panic if polled again after
+becoming ready. Futures that are safe to poll again will say so explicitly in
+their documentation. This is similar to how <code>Iterator::next</code> behaves.</p>
+<p>注意：对多数 Future 而言，在返回 <code>Ready</code> 后不应再次调用 <code>poll</code>。若在就绪后轮询，许多 Future 会触发 panic。可安全重复轮询的 Future 会在文档中明确说明，类似于 <code>Iterator::next</code> 的行为。</p>
+</section>
+<p>When you see code that uses <code>await</code>, Rust compiles it under the hood to code
+that calls <code>poll</code>. If you look back at Listing 17-4, where we printed out the
+page title for a single URL once it resolved, Rust compiles it into something
+kind of (although not exactly) like this:</p>
+<p>当使用 <code>await</code> 时，Rust 在底层将其编译为调用 <code>poll</code> 的代码。回顾清单 17-4（单 URL 页面标题打印），Rust 会将其编译为类似以下代码（非完全一致）：</p>
+<pre><code class="language-rust ignore">match page_title(url).poll() {
+    Ready(page_title) =&gt; match page_title {
+        Some(title) =&gt; println!("The title for {url} was {title}"),
+        None =&gt; println!("{url} had no title"),
+    }
+    Pending =&gt; {
+        // But what goes here?
+    }
+}</code></pre>
+<p>What should we do when the future is still <code>Pending</code>? We need some way to try
+again, and again, and again, until the future is finally ready. In other words,
+we need a loop:</p>
+<p>当 Future 仍为 <code>Pending</code> 时该如何处理？我们需要一种能反复重试直至就绪的机制，即循环：</p>
+<pre><code class="language-rust ignore">let mut page_title_fut = page_title(url);
+loop {
+    match page_title_fut.poll() {
+        Ready(value) =&gt; match page_title {
+            Some(title) =&gt; println!("The title for {url} was {title}"),
+            None =&gt; println!("{url} had no title"),
+        }
+        Pending =&gt; {
+            // continue
+        }
+    }
+}</code></pre>
+<p>If Rust compiled it to exactly that code, though, every <code>await</code> would be
+blocking—exactly the opposite of what we were going for! Instead, Rust makes
+sure that the loop can hand off control to something that can pause work on this
+future to work on other futures and then check this one again later. As we’ve
+seen, that something is an async runtime, and this scheduling and coordination
+work is one of its main jobs.</p>
+<p>若 Rust 直接编译为此代码，每个 <code>await</code> 都会阻塞——这与我们的目标背道而驰！实际上，Rust 确保循环能将控制权转移给可暂停当前 Future 以处理其他 Future 的调度器，并在稍后重新检查。如我们所见，调度器就是异步运行时，其核心职责之一正是此类调度协调。</p>
+<p>Earlier in the chapter, we described waiting on <code>rx.recv</code>. The <code>recv</code> call
+returns a future, and awaiting the future polls it. We noted that a runtime will
+pause the future until it’s ready with either <code>Some(message)</code> or <code>None</code> when the
+channel closes. With our deeper understanding of the <code>Future</code> trait, and
+specifically <code>Future::poll</code>, we can see how that works. The runtime knows the
+future isn’t ready when it returns <code>Poll::Pending</code>. Conversely, the runtime
+knows the future <em>is</em> ready and advances it when <code>poll</code> returns
+<code>Poll::Ready(Some(message))</code> or <code>Poll::Ready(None)</code>.</p>
+<p>本章前半部分描述的 <code>rx.recv</code> 等待：<code>recv</code> 返回 Future，而 <code>await</code> 会轮询该 Future。运行时会在通道关闭前暂停 Future，直到返回 <code>Some(message)</code> 或 <code>None</code>。通过对 <code>Future</code> 特征（尤其是 <code>poll</code>）的深入理解，可明确其机制：当返回 <code>Poll::Pending</code> 时，运行时知晓 Future 未就绪；反之当返回 <code>Poll::Ready(Some(message))</code> 或 <code>Poll::Ready(None)</code> 时，运行时知晓 Future 已就绪并推进其状态。</p>
+<p>The exact details of how a runtime does that are beyond the scope of this book,
+but the key is to see the basic mechanics of futures: a runtime <em>polls</em> each
+future it is responsible for, putting the future back to sleep when it is not
+yet ready.</p>
+<p>运行时的具体实现超出本书范围，但关键在于理解 Future 的基本机制：运行时<strong>轮询</strong>其管理的每个 Future，在未就绪时使其休眠。</p>
+<h3 id="the-pin-and-unpin-traits-pin-与-unpin-特征"><a class="header" href="#the-pin-and-unpin-traits-pin-与-unpin-特征">The <code>Pin</code> and <code>Unpin</code> Traits <code>Pin</code> 与 <code>Unpin</code> 特征</a></h3>
+<p>When we introduced the idea of pinning in Listing 17-16, we ran into a very
+gnarly error message. Here is the relevant part of it again:</p>
+<p>在清单 17-16 引入固定（pinning）概念时，我们遇到了复杂错误信息。以下是其核心部分：</p>
+<pre><code class="language-text">error[E0277]: `{async block@src/main.rs:10:23: 10:33}` cannot be unpinned
+  --&gt; src/main.rs:48:33
+   |
+48 |         trpl::join_all(futures).await;
+   |                                 ^^^^^ the trait `Unpin` is not implemented for `{async block@src/main.rs:10:23: 10:33}`
+   |
+   = note: consider using the `pin!` macro
+           consider using `Box::pin` if you need to access the pinned value outside of the current scope
+   = note: required for `Box&lt;{async block@src/main.rs:10:23: 10:33}&gt;` to implement `Future`
+note: required by a bound in `futures_util::future::join_all::JoinAll`
+  --&gt; file:///home/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/futures-util-0.3.30/src/future/join_all.rs:29:8
+   |
+27 | pub struct JoinAll&lt;F&gt;
+   |            ------- required by a bound in this struct
+28 | where
+29 |     F: Future,
+   |        ^^^^^^ required by this bound in `JoinAll`
+</code></pre>
+<p>This error message tells us not only that we need to pin the values but also why
+pinning is required. The <code>trpl::join_all</code> function returns a struct called
+<code>JoinAll</code>. That struct is generic over a type <code>F</code>, which is constrained to
+implement the <code>Future</code> trait. Directly awaiting a future with <code>await</code> pins the
+future implicitly. That’s why we don’t need to use <code>pin!</code> everywhere we want to
+await futures.</p>
+<p>此错误不仅提示需固定值，还解释了原因：<code>trpl::join_all</code> 返回的 <code>JoinAll</code> 结构体对类型 <code>F</code> 有泛型约束，要求其实现 <code>Future</code> 特征。直接通过 <code>await</code> 等待 Future 会隐式固定该 Future，因此无需在每个等待处显式使用 <code>pin!</code>。</p>
+<p>However, we’re not directly awaiting a future here. Instead, we construct a new
+future, <code>JoinAll</code>, by passing a collection of futures to the <code>join_all</code>
+function. The signature for <code>join_all</code> requires that the types of the items in
+the collection all implement the <code>Future</code> trait, and <code>Box&lt;T&gt;</code> implements
+<code>Future</code> only if the <code>T</code> it wraps is a future that implements the <code>Unpin</code> trait.</p>
+<p>但此处并非直接等待 Future，而是通过向 <code>join_all</code> 传递 Future 集合来构造新 Future <code>JoinAll</code>。<code>join_all</code> 的签名要求集合中所有项均实现 <code>Future</code> 特征，而 <code>Box&lt;T&gt;</code> 仅在包装的 <code>T</code> 实现 <code>Unpin</code> 特征时才实现 <code>Future</code>。</p>
+<p>That’s a lot to absorb! To really understand it, let’s dive a little further
+into how the <code>Future</code> trait actually works, in particular around <em>pinning</em>.</p>
+<p>信息量巨大！为深入理解，需进一步探究 <code>Future</code> 特征的工作原理，尤其是<strong>固定</strong>机制。</p>
+<p>Look again at the definition of the <code>Future</code> trait:</p>
+<p>再次查看 <code>Future</code> 特征定义：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::pin::Pin;
+use std::task::{Context, Poll};
+
+pub trait Future {
+    type Output;
+
+    // Required method
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>cx</code> parameter and its <code>Context</code> type are the key to how a runtime actually
+knows when to check any given future while still being lazy. Again, the details
+of how that works are beyond the scope of this chapter, and you generally only
+need to think about this when writing a custom <code>Future</code> implementation. We’ll
+focus instead on the type for <code>self</code>, as this is the first time we’ve seen a
+method where <code>self</code> has a type annotation. A type annotation for <code>self</code> works
+like type annotations for other function parameters, but with two key
+differences:</p>
+<p><code>cx</code> 参数及其 <code>Context</code> 类型是运行时实现惰性调度的关键。其细节超出本章范围，通常仅在自定义 <code>Future</code> 实现时需关注。我们将聚焦 <code>self</code> 的类型——这是首次在方法中看到带类型注解的 <code>self</code>。<code>self</code> 的类型注解与其他函数参数类似，但有两点关键区别：</p>
+<ul>
+<li>It tells Rust what type <code>self</code> must be for the method to be called.</li>
+<li>它指定调用方法时 <code>self</code> 必须具备的类型</li>
+<li>It can’t be just any type. It’s restricted to the type on which the method is
+implemented, a reference or smart pointer to that type, or a <code>Pin</code> wrapping a
+reference to that type.</li>
+<li>它不能是任意类型，仅限于方法实现的类型、该类型的引用/智能指针，或包裹该类型引用的 <code>Pin</code></li>
+</ul>
+<p>We’ll see more on this syntax in Chapter 18. For now,
+it’s enough to know that if we want to poll a future to check whether it is
+<code>Pending</code> or <code>Ready(Output)</code>, we need a <code>Pin</code>-wrapped mutable reference to the
+type.</p>
+<p>第 18 章将详述此语法。目前只需知晓：轮询 Future 检查其状态（<code>Pending</code> 或 <code>Ready(Output)</code>）时，需要该类型的 <code>Pin</code> 包裹的可变引用。</p>
+<p><code>Pin</code> is a wrapper for pointer-like types such as <code>&amp;</code>, <code>&amp;mut</code>, <code>Box</code>, and <code>Rc</code>.
+(Technically, <code>Pin</code> works with types that implement the <code>Deref</code> or <code>DerefMut</code>
+traits, but this is effectively equivalent to working only with pointers.) <code>Pin</code>
+is not a pointer itself and doesn’t have any behavior of its own like <code>Rc</code> and
+<code>Arc</code> do with reference counting; it’s purely a tool the compiler can use to
+enforce constraints on pointer usage.</p>
+<p><code>Pin</code> 是指针类类型（如 <code>&amp;</code>、<code>&amp;mut</code>、<code>Box</code>、<code>Rc</code>）的包装器（严格说，<code>Pin</code> 适用于实现 <code>Deref</code> 或 <code>DerefMut</code> 的类型，但效果等同于仅处理指针）。<code>Pin</code> 本身非指针，也不像 <code>Rc</code> 和 <code>Arc</code> 具备引用计数等行为；它纯粹是编译器用于强制执行指针约束的工具。</p>
+<p>Recalling that <code>await</code> is implemented in terms of calls to <code>poll</code> starts to
+explain the error message we saw earlier, but that was in terms of <code>Unpin</code>, not
+<code>Pin</code>. So how exactly does <code>Pin</code> relate to <code>Unpin</code>, and why does <code>Future</code> need
+<code>self</code> to be in a <code>Pin</code> type to call <code>poll</code>?</p>
+<p>回顾 <code>await</code> 通过调用 <code>poll</code> 实现，可部分解释之前的错误，但错误涉及 <code>Unpin</code> 而非 <code>Pin</code>。那么 <code>Pin</code> 与 <code>Unpin</code> 究竟有何关联？为何 <code>Future</code> 调用 <code>poll</code> 时要求 <code>self</code> 为 <code>Pin</code> 类型？</p>
+<p>Remember from earlier in this chapter a series of await points in a future get
+compiled into a state machine, and the compiler makes sure that state machine
+follows all of Rust’s normal rules around safety, including borrowing and
+ownership. To make that work, Rust looks at what data is needed between one
+await point and either the next await point or the end of the async block. It
+then creates a corresponding variant in the compiled state machine. Each variant
+gets the access it needs to the data that will be used in that section of the
+source code, whether by taking ownership of that data or by getting a mutable or
+immutable reference to it.</p>
+<p>本章前文提到，Future 中的一系列等待点会被编译为状态机，编译器确保该状态机遵循 Rust 的安全规则（包括借用和所有权）。为此，Rust 分析从一个等待点到下一等待点（或 async 块结束）所需的数据，并在编译后的状态机中创建对应变体。每个变体通过获取所有权或可变/不可变引用来访问该代码段所需数据。</p>
+<p>So far, so good: if we get anything wrong about the ownership or references in a
+given async block, the borrow checker will tell us. When we want to move around
+the future that corresponds to that block—like moving it into a <code>Vec</code> to pass to
+<code>join_all</code>—things get trickier.</p>
+<p>目前一切正常：若在 async 块中所有权或引用处理有误，借用检查器会报错。但当移动该块对应的 Future 时（如移入 <code>Vec</code> 以传递给 <code>join_all</code>），情况变得复杂。</p>
+<p>When we move a future—whether by pushing it into a data structure to use as an
+iterator with <code>join_all</code> or by returning it from a function—that actually means
+moving the state machine Rust creates for us. And unlike most other types in
+Rust, the futures Rust creates for async blocks can end up with references to
+themselves in the fields of any given variant, as shown in the simplified illustration in Figure 17-4.</p>
+<p>移动 Future（无论是将其推入数据结构供 <code>join_all</code> 迭代使用，还是从函数返回）实际是移动 Rust 生成的状态机。与多数 Rust 类型不同，async 块生成的 Future 可能在其任意变体字段中包含指向自身的引用，如图 17-4 的简化示意图所示。</p>
+<figure>
+<img alt="" src="img/trpl17-04.svg" class="center" />
+<figcaption>Figure 17-4: A self-referential data type. 自引用数据类型</figcaption>
+</figure>
+<p>By default, though, any object that has a reference to itself is unsafe to move,
+because references always point to the actual memory address of whatever they
+refer to (see Figure 17-5). If you move the data structure itself, those
+internal references will be left pointing to the old location. However, that
+memory location is now invalid. For one thing, its value will not be updated
+when you make changes to the data structure. For another—more important—thing,
+the computer is now free to reuse that memory for other purposes! You could end
+up reading completely unrelated data later.</p>
+<p>默认情况下，包含自引用的对象移动是不安全的，因为引用总指向其目标的内存地址（见图 17-5）。若移动数据结构，内部引用将指向旧地址，而该地址现已失效：值更新不会反映移动，且计算机可重用该内存！最终可能读取到无关数据。</p>
+<figure>
+<img alt="" src="img/trpl17-05.svg" class="center" />
+<figcaption>Figure 17-5: The unsafe result of moving a self-referential data type 移动自引用数据类型的不安全结果</figcaption>
+</figure>
+<p>Theoretically, the Rust compiler could try to update every reference to an
+object whenever it gets moved, but that could add a lot of performance overhead,
+especially if a whole web of references needs updating. If we could instead make
+sure the data structure in question <em>doesn’t move in memory</em>, we wouldn’t have
+to update any references. This is exactly what Rust’s borrow checker requires:
+in safe code, it prevents you from moving any item with an active reference to
+it.</p>
+<p>理论上，Rust 编译器可在对象移动时更新所有引用，但这会带来性能开销（尤其当引用网络庞大时）。若确保数据结构<strong>内存位置固定</strong>，则无需更新引用。这正是 Rust 借用检查器的要求：在安全代码中，禁止移动存在活跃引用的项。</p>
+<p><code>Pin</code> builds on that to give us the exact guarantee we need. When we <em>pin</em> a
+value by wrapping a pointer to that value in <code>Pin</code>, it can no longer move. Thus,
+if you have <code>Pin&lt;Box&lt;SomeType&gt;&gt;</code>, you actually pin the <code>SomeType</code> value, <em>not</em>
+the <code>Box</code> pointer. Figure 17-6 illustrates this process.</p>
+<p><code>Pin</code> 基于此提供所需保证：当通过 <code>Pin</code> 包裹指向值的指针来<strong>固定</strong>该值时，其位置将不可移动。因此，若持有 <code>Pin&lt;Box&lt;SomeType&gt;&gt;</code>，实际固定的是 <code>SomeType</code> 值而非 <code>Box</code> 指针。图 17-6 展示了此过程。</p>
+<figure>
+<img alt="" src="img/trpl17-06.svg" class="center" />
+<figcaption>Figure 17-6: Pinning a `Box` that points to a self-referential future type. 固定指向自引用 Future 的 `Box`</figcaption>
+</figure>
+<p>In fact, the <code>Box</code> pointer can still move around freely. Remember: we care about
+making sure the data ultimately being referenced stays in place. If a pointer
+moves around, <em>but the data it points to is in the same place</em>, as in Figure
+17-7, there’s no potential problem. As an independent exercise, look at the docs
+for the types as well as the <code>std::pin</code> module and try to work out how you’d do
+this with a <code>Pin</code> wrapping a <code>Box</code>.) The key is that the self-referential type
+itself cannot move, because it is still pinned.</p>
+<p>实际上 <code>Box</code> 指针仍可自由移动（见图 17-7）。关键点在于确保被引用的数据位置固定。若指针移动但指向的数据未移动（作为独立练习，可查阅相关类型及 <code>std::pin</code> 文档），则无潜在问题。核心在于自引用类型本身不可移动，因其仍处于固定状态。</p>
+<figure>
+<img alt="" src="img/trpl17-07.svg" class="center" />
+<figcaption>Figure 17-7: Moving a `Box` which points to a self-referential future type. 移动指向自引用 Future 的 `Box`</figcaption>
+</figure>
+<p>However, most types are perfectly safe to move around, even if they happen to be
+behind a <code>Pin</code> wrapper. We only need to think about pinning when items have
+internal references. Primitive values such as numbers and Booleans are safe
+because they obviously don’t have any internal references. Neither do most types
+you normally work with in Rust. You can move around a <code>Vec</code>, for example,
+without worrying. Given only what we have seen so far, if you have a
+<code>Pin&lt;Vec&lt;String&gt;&gt;</code>, you’d have to do everything via the safe but restrictive
+APIs provided by <code>Pin</code>, even though a <code>Vec&lt;String&gt;</code> is always safe to move if
+there are no other references to it. We need a way to tell the compiler that
+it’s fine to move items around in cases like this—and that’s where <code>Unpin</code> comes
+into play.</p>
+<p>但多数类型可安全移动，即使被 <code>Pin</code> 包裹。仅当项存在内部引用时才需考虑固定。原始值（如数字、布尔值）显然安全，Rust 中多数常用类型（如 <code>Vec</code>）亦然。若持有 <code>Pin&lt;Vec&lt;String&gt;&gt;</code>，即使 <code>Vec&lt;String&gt;</code> 在无其他引用时可安全移动，也需通过 <code>Pin</code> 提供的安全但受限的 API 操作。我们需要一种方式告知编译器此类情况可安全移动——这正是 <code>Unpin</code> 的作用。</p>
+<p><code>Unpin</code> is a marker trait, similar to the <code>Send</code> and <code>Sync</code> traits we saw in
+Chapter 16, and thus has no functionality of its own. Marker traits exist only
+to tell the compiler it’s safe to use the type implementing a given trait in a
+particular context. <code>Unpin</code> informs the compiler that a given type does <em>not</em>
+need to uphold any guarantees about whether the value in question can be safely
+moved.</p>
+<p><code>Unpin</code> 是标记特征（类似第 16 章的 <code>Send</code> 和 <code>Sync</code>），自身无功能。标记特征仅用于告知编译器可在特定上下文中安全使用实现该特征的类型。<code>Unpin</code> 向编译器声明：某类型<strong>无需</strong>保证其值可安全移动。</p>
+<p>Just as with <code>Send</code> and <code>Sync</code>, the compiler implements <code>Unpin</code> automatically
+for all types where it can prove it is safe. A special case, again similar to
+<code>Send</code> and <code>Sync</code>, is where <code>Unpin</code> is <em>not</em> implemented for a type. The
+notation for this is <code>impl !Unpin for <em>SomeType</em></code>, where
+<code><em>SomeType</em></code> is the name of a type that <em>does</em> need to uphold
+those guarantees to be safe whenever a pointer to that type is used in a <code>Pin</code>.</p>
+<p>与 <code>Send</code> 和 <code>Sync</code> 类似，编译器会为可证明安全的所有类型自动实现 <code>Unpin</code>。特殊情况下，某类型可能<strong>未实现</strong> <code>Unpin</code>，记为 <code>impl !Unpin for <em>SomeType</em></code>，表示该类型需在 <code>Pin</code> 包裹的指针使用时满足安全保证。</p>
+<p>In other words, there are two things to keep in mind about the relationship
+between <code>Pin</code> and <code>Unpin</code>. First, <code>Unpin</code> is the “normal” case, and <code>!Unpin</code> is
+the special case. Second, whether a type implements <code>Unpin</code> or <code>!Unpin</code> <em>only</em>
+matters when you’re using a pinned pointer to that type like <code>Pin&lt;&amp;mut
+<em>SomeType</em>&gt;</code>.</p>
+<p>综上，关于 <code>Pin</code> 和 <code>Unpin</code> 需注意两点：</p>
+<ol>
+<li><code>Unpin</code> 是“常态”，<code>!Unpin</code> 是特例</li>
+<li>仅当使用固定指针（如 <code>Pin&lt;&amp;mut <em>SomeType</em>&gt;</code>）时，类型是否实现 <code>Unpin</code> 才有意义</li>
+</ol>
+<p>To make that concrete, think about a <code>String</code>: it has a length and the Unicode
+characters that make it up. We can wrap a <code>String</code> in <code>Pin</code>, as seen in Figure
+17-8. However, <code>String</code> automatically implements <code>Unpin</code>, as do most other types
+in Rust.</p>
+<p>以 <code>String</code> 为例（见图 17-8）：其长度和字符数据可被 <code>Pin</code> 包裹，但 <code>String</code> 自动实现 <code>Unpin</code>（Rust 中多数类型如此）。</p>
+<figure>
+<img alt="" src="img/trpl17-08.svg" class="center" />
+<figcaption>Figure 17-8: Pinning a `String`; the dotted line indicates that the `String` implements the `Unpin` trait, and thus is not pinned. 固定 `String`（虚线表示其实现 `Unpin` 特征，故未被固定）</figcaption>
+</figure>
+<p>As a result, we can do things that would be illegal if <code>String</code> implemented
+<code>!Unpin</code> instead, such as replacing one string with another at the exact same
+location in memory as in Figure 17-9. This doesn’t violate the <code>Pin</code> contract,
+because <code>String</code> has no internal references that make it unsafe to move around!
+That is precisely why it implements <code>Unpin</code> rather than <code>!Unpin</code>.</p>
+<p>因此，若 <code>String</code> 实现 <code>!Unpin</code> 本应非法的操作（如在内存相同位置替换字符串，见图 17-9），在 <code>Unpin</code> 下是允许的。这不违反 <code>Pin</code> 约定，因为 <code>String</code> 无使其移动不安全的内部引用！这正是其实现 <code>Unpin</code> 而非 <code>!Unpin</code> 的原因。</p>
+<figure>
+<img alt="" src="img/trpl17-09.svg" class="center" />
+<figcaption>Figure 17-9: Replacing the `String` with an entirely different `String` in memory. 在内存中完全替换 `String`</figcaption>
+</figure>
+<p>Now we know enough to understand the errors reported for that <code>join_all</code> call
+from back in Listing 17-17. We originally tried to move the futures produced by
+async blocks into a <code>Vec&lt;Box&lt;dyn Future&lt;Output = ()&gt;&gt;&gt;</code>, but as we’ve seen,
+those futures may have internal references, so they don’t implement <code>Unpin</code>.
+They need to be pinned, and then we can pass the <code>Pin</code> type into the <code>Vec</code>,
+confident that the underlying data in the futures will <em>not</em> be moved.</p>
+<p>现在可理解清单 17-17 中 <code>join_all</code> 调用的报错了：我们尝试将 async 块生成的 Future 移入 <code>Vec&lt;Box&lt;dyn Future&lt;Output = ()&gt;&gt;&gt;</code>，但这些 Future 可能有内部引用，故未实现 <code>Unpin</code>。它们需被固定后，才能将 <code>Pin</code> 类型传入 <code>Vec</code>，确保 Future 底层数据<strong>不会</strong>移动。</p>
+<p><code>Pin</code> and <code>Unpin</code> are mostly important for building lower-level libraries, or
+when you’re building a runtime itself, rather than for day-to-day Rust code.
+When you see these traits in error messages, though, now you’ll have a better
+idea of how to fix your code!</p>
+<p><code>Pin</code> 和 <code>Unpin</code> 主要用于构建底层库或运行时本身，而非日常 Rust 编码。但当在错误信息中遇到这些特征时，你现在应能更好地修复代码！</p>
+<section class="note" aria-role="note">
+<p>Note: This combination of <code>Pin</code> and <code>Unpin</code> makes it possible to safely
+implement a whole class of complex types in Rust that would otherwise prove
+challenging because they’re self-referential. Types that require <code>Pin</code> show up
+most commonly in async Rust today, but every once in a while, you might see
+them in other contexts, too.</p>
+<p>注意：<code>Pin</code> 与 <code>Unpin</code> 的组合使 Rust 能安全实现一类复杂类型（否则因自引用特性难以实现）。需 <code>Pin</code> 的类型最常见于异步 Rust，但偶尔也出现在其他场景。</p>
+<p>The specifics of how <code>Pin</code> and <code>Unpin</code> work, and the rules they’re required
+to uphold, are covered extensively in the API documentation for <code>std::pin</code>, so
+if you’re interested in learning more, that’s a great place to start.</p>
+<p><code>Pin</code> 和 <code>Unpin</code> 的具体工作原理及约束规则详见 <code>std::pin</code> 的 API 文档。</p>
+<p>If you want to understand how things work under the hood in even more detail,
+see Chapters 2 and 4 of <em>Asynchronous
+Programming in Rust</em>.</p>
+<p>若需更深入理解底层机制，请参阅《Rust 异步编程》第 2 章和第 4 章。</p>
+</section>
+<h3 id="the-stream-trait-stream-特征"><a class="header" href="#the-stream-trait-stream-特征">The <code>Stream</code> Trait <code>Stream</code> 特征</a></h3>
+<p>Now that you have a deeper grasp on the <code>Future</code>, <code>Pin</code>, and <code>Unpin</code> traits, we
+can turn our attention to the <code>Stream</code> trait. As you learned earlier in the
+chapter, streams are similar to asynchronous iterators. Unlike <code>Iterator</code> and
+<code>Future</code>, however, <code>Stream</code> has no definition in the standard library as of this
+writing, but there <em>is</em> a very common definition from the <code>futures</code> crate used
+throughout the ecosystem.</p>
+<p>深入理解 <code>Future</code>、<code>Pin</code> 和 <code>Unpin</code> 后，我们将转向 <code>Stream</code> 特征。如本章前文所述，流（Stream）类似于异步迭代器。但不同于 <code>Iterator</code> 和 <code>Future</code>，截至本文写作时 <code>Stream</code> 在标准库中无定义，生态中普遍使用的是 <code>futures</code> crate 的定义。</p>
+<p>Let’s review the definitions of the <code>Iterator</code> and <code>Future</code> traits before
+looking at how a <code>Stream</code> trait might merge them together. From <code>Iterator</code>, we
+have the idea of a sequence: its <code>next</code> method provides an <code>Option&lt;Self::Item&gt;</code>.
+From <code>Future</code>, we have the idea of readiness over time: its <code>poll</code> method
+provides a <code>Poll&lt;Self::Output&gt;</code>. To represent a sequence of items that become
+ready over time, we define a <code>Stream</code> trait that puts those features together:</p>
+<p>在探讨如何合并 <code>Stream</code> 特征前，先回顾 <code>Iterator</code> 和 <code>Future</code> 的定义。<code>Iterator</code> 体现序列性：其 <code>next</code> 方法返回 <code>Option&lt;Self::Item&gt;</code>。<code>Future</code> 体现随时间就绪性：其 <code>poll</code> 方法返回 <code>Poll&lt;Self::Output&gt;</code>。为表示随时间就绪的项序列，我们定义结合这两者的 <code>Stream</code> 特征：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::pin::Pin;
+use std::task::{Context, Poll};
+
+trait Stream {
+    type Item;
+
+    fn poll_next(
+        self: Pin&lt;&amp;mut Self&gt;,
+        cx: &amp;mut Context&lt;'_&gt;
+    ) -&gt; Poll&lt;Option&lt;Self::Item&gt;&gt;;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>The <code>Stream</code> trait defines an associated type called <code>Item</code> for the type of the
+items produced by the stream. This is similar to <code>Iterator</code>, where there may be
+zero to many items, and unlike <code>Future</code>, where there is always a single
+<code>Output</code>, even if it’s the unit type <code>()</code>.</p>
+<p><code>Stream</code> 特征定义关联类型 <code>Item</code> 表示流生成的项类型。这类似于 <code>Iterator</code>（可能生成零至多项），而有别于 <code>Future</code>（即使输出为单元类型 <code>()</code>，也总有单个 <code>Output</code>）。</p>
+<p><code>Stream</code> also defines a method to get those items. We call it <code>poll_next</code>, to
+make it clear that it polls in the same way <code>Future::poll</code> does and produces a
+sequence of items in the same way <code>Iterator::next</code> does. Its return type
+combines <code>Poll</code> with <code>Option</code>. The outer type is <code>Poll</code>, because it has to be
+checked for readiness, just as a future does. The inner type is <code>Option</code>,
+because it needs to signal whether there are more messages, just as an iterator
+does.</p>
+<p><code>Stream</code> 还定义了获取项的方法 <code>poll_next</code>，其命名明确体现类似 <code>Future::poll</code> 的轮询机制和类似 <code>Iterator::next</code> 的序列生成特性。返回类型结合了 <code>Poll</code> 和 <code>Option</code>：外层为 <code>Poll</code>（需检查就绪性，如 Future），内层为 <code>Option</code>（需表示是否有更多消息，如迭代器）。</p>
+<p>Something very similar to this definition will likely end up as part of Rust’s
+standard library. In the meantime, it’s part of the toolkit of most runtimes, so
+you can rely on it, and everything we cover next should generally apply!</p>
+<p>类似定义很可能纳入 Rust 标准库。目前它已是多数运行时的工具集组成部分，因此你可依赖它，且下文内容通常适用！</p>
+<p>In the example we saw in the section on streaming, though, we didn’t use
+<code>poll_next</code> <em>or</em> <code>Stream</code>, but instead used <code>next</code> and <code>StreamExt</code>. We <em>could</em>
+work directly in terms of the <code>poll_next</code> API by hand-writing our own <code>Stream</code>
+state machines, of course, just as we <em>could</em> work with futures directly via
+their <code>poll</code> method. Using <code>await</code> is much nicer, though, and the <code>StreamExt</code>
+trait supplies the <code>next</code> method so we can do just that:</p>
+<p>但在本章流处理的示例中，我们未使用 <code>poll_next</code> 或 <code>Stream</code>，而是使用了 <code>next</code> 和 <code>StreamExt</code>。当然，我们也可直接通过 <code>poll_next</code> API 手动编写 <code>Stream</code> 状态机（如同通过 <code>poll</code> 方法直接操作 Future）。但使用 <code>await</code> 更优雅，而 <code>StreamExt</code> 特征提供的 <code>next</code> 方法使之成为可能：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">use std::pin::Pin;
+</span><span class="boring">use std::task::{Context, Poll};
+</span><span class="boring">
+</span><span class="boring">trait Stream {
+</span><span class="boring">    type Item;
+</span><span class="boring">    fn poll_next(
+</span><span class="boring">        self: Pin&lt;&amp;mut Self&gt;,
+</span><span class="boring">        cx: &amp;mut Context&lt;'_&gt;,
+</span><span class="boring">    ) -&gt; Poll&lt;Option&lt;Self::Item&gt;&gt;;
+</span><span class="boring">}
+</span><span class="boring">
+</span>trait StreamExt: Stream {
+    async fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;
+    where
+        Self: Unpin;
+
+    // other methods...
+}
+<span class="boring">}</span></code></pre></pre>
+<section class="note" aria-role="note">
+<p>Note: The actual definition we used earlier in the chapter looks slightly
+different than this, because it supports versions of Rust that did not yet
+support using async functions in traits. As a result, it looks like this:</p>
+<p>注意：本章早前使用的实际定义略有不同（因支持在特征中使用 async 函数的 Rust 版本较新）。其形式如下：</p>
+<pre><code class="language-rust ignore">fn next(&amp;mut self) -&gt; Next&lt;'_, Self&gt; where Self: Unpin;</code></pre>
+<p>That <code>Next</code> type is a <code>struct</code> that implements <code>Future</code> and allows us to name
+the lifetime of the reference to <code>self</code> with <code>Next&lt;'_, Self&gt;</code>, so that <code>await</code>
+can work with this method.</p>
+<p>此处的 <code>Next</code> 是实现了 <code>Future</code> 的结构体，通过 <code>Next&lt;'_, Self&gt;</code> 显式命名 <code>self</code> 引用的生命周期，使 <code>await</code> 可作用于该方法。</p>
+</section>
+<p>The <code>StreamExt</code> trait is also the home of all the interesting methods available
+to use with streams. <code>StreamExt</code> is automatically implemented for every type
+that implements <code>Stream</code>, but these traits are defined separately to enable the
+community to iterate on convenience APIs without affecting the foundational
+trait.</p>
+<p><code>StreamExt</code> 特征也包含所有流操作的有用方法。该特征自动为所有实现 <code>Stream</code> 的类型提供实现，但与基础特征分离定义，以便社区迭代便利 API 而不影响核心。</p>
+<p>In the version of <code>StreamExt</code> used in the <code>trpl</code> crate, the trait not only
+defines the <code>next</code> method but also supplies a default implementation of <code>next</code>
+that correctly handles the details of calling <code>Stream::poll_next</code>. This means
+that even when you need to write your own streaming data type, you <em>only</em> have
+to implement <code>Stream</code>, and then anyone who uses your data type can use
+<code>StreamExt</code> and its methods with it automatically.</p>
+<p>在 <code>trpl</code> crate 使用的 <code>StreamExt</code> 版本中，该特征不仅定义 <code>next</code> 方法，还提供正确处理 <code>Stream::poll_next</code> 细节的默认实现。这意味着即使需自定义流数据类型，也<strong>仅需</strong>实现 <code>Stream</code>，使用者即可自动使用 <code>StreamExt</code> 的方法。</p>
+<p>That’s all we’re going to cover for the lower-level details on these traits. To
+wrap up, let’s consider how futures (including streams), tasks, and threads all
+fit together!</p>
+<p>关于这些特征的底层细节到此结束。最后，我们探讨 Future（含流）、任务和线程如何协同工作！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch17-04-streams.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch17-06-futures-tasks-threads.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch17-04-streams.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch17-06-futures-tasks-threads.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

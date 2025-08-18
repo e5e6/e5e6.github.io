@@ -1,0 +1,833 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Traits: Defining Shared Behavior 特质：定义共享行为 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="traits-defining-shared-behavior-特质定义共享行为"><a class="header" href="#traits-defining-shared-behavior-特质定义共享行为">Traits: Defining Shared Behavior 特质：定义共享行为</a></h2>
+<p>A <em>trait</em> defines the functionality a particular type has and can share with
+other types. We can use traits to define shared behavior in an abstract way. We
+can use <em>trait bounds</em> to specify that a generic type can be any type that has
+certain behavior.</p>
+<p><strong>特质</strong>定义了特定类型拥有的功能，并能与其他类型共享。我们可以使用特质以抽象方式定义共享行为，并通过<strong>特质限定</strong>来指定泛型类型必须是具有特定行为的任意类型。</p>
+<section class="note" aria-role="note">
+<p>Note: Traits are similar to a feature often called <em>interfaces</em> in other
+languages, although with some differences.</p>
+<p>注意：特质类似于其他语言中常称为<strong>接口</strong>的特性，但存在一些差异。</p>
+</section>
+<h3 id="defining-a-trait-定义特质"><a class="header" href="#defining-a-trait-定义特质">Defining a Trait 定义特质</a></h3>
+<p>A type’s behavior consists of the methods we can call on that type. Different
+types share the same behavior if we can call the same methods on all of those
+types. Trait definitions are a way to group method signatures together to
+define a set of behaviors necessary to accomplish some purpose.</p>
+<p>类型的行为由可在该类型上调用的方法组成。若能在不同类型上调用相同的方法，则这些类型共享相同的行为。特质定义通过将方法签名分组，定义实现特定目的所需的一组行为。</p>
+<p>For example, let’s say we have multiple structs that hold various kinds and
+amounts of text: a <code>NewsArticle</code> struct that holds a news story filed in a
+particular location and a <code>SocialPost</code> that can have, at most, 280 characters
+along with metadata that indicates whether it was a new post, a repost, or a
+reply to another post.</p>
+<p>例如，假设有多个结构体用于存储不同种类和数量的文本：<code>NewsArticle</code> 结构体存储特定地区提交的新闻报道，<code>SocialPost</code> 最多可存储 280 个字符以及元数据（标明是新帖子、转发还是对其他帖子的回复）。</p>
+<p>We want to make a media aggregator library crate named <code>aggregator</code> that can
+display summaries of data that might be stored in a <code>NewsArticle</code> or
+<code>SocialPost</code> instance. To do this, we need a summary from each type, and we’ll
+request that summary by calling a <code>summarize</code> method on an instance. Listing
+10-12 shows the definition of a public <code>Summary</code> trait that expresses this
+behavior.</p>
+<p>我们想创建一个名为 <code>aggregator</code> 的媒体聚合器库 crate，它能显示可能存储在 <code>NewsArticle</code> 或 <code>SocialPost</code> 实例中的数据摘要。为此，我们需要从每种类型获取摘要，并通过调用实例的 <code>summarize</code> 方法来请求摘要。<span class="highlight">[note]代码清单 10-12 展示了表达此行为的公共 <code>Summary</code> 特质定义。</span></p>
+<figure class="listing" id="listing-10-12">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize(&amp;self) -&gt; String;
+}</code></pre>
+<figcaption><a href="#listing-10-12">Listing 10-12</a>: A <code>Summary</code> trait that consists of the behavior provided by a <code>summarize</code> method 包含 <code>summarize</code> 方法行为的 <code>Summary</code> 特质</figcaption>
+</figure>
+<p>Here, we declare a trait using the <code>trait</code> keyword and then the trait’s name,
+which is <code>Summary</code> in this case. We also declare the trait as <code>pub</code> so that
+crates depending on this crate can make use of this trait too, as we’ll see in
+a few examples. Inside the curly brackets, we declare the method signatures
+that describe the behaviors of the types that implement this trait, which in
+this case is <code>fn summarize(&amp;self) -&gt; String</code>.</p>
+<p>此处使用 <code>trait</code> 关键字声明特质，后跟特质名称（本例中为 <code>Summary</code>）。同时将特质声明为 <code>pub</code>，以便依赖此 crate 的其他 crate 也能使用该特质（后续示例将展示）。在大括号内声明描述实现此特质的类型行为的方法签名，本例中为 <code>fn summarize(&amp;self) -&gt; String</code>。</p>
+<p>After the method signature, instead of providing an implementation within curly
+brackets, we use a semicolon. Each type implementing this trait must provide
+its own custom behavior for the body of the method. The compiler will enforce
+that any type that has the <code>Summary</code> trait will have the method <code>summarize</code>
+defined with this signature exactly.</p>
+<p>在方法签名后，我们使用分号而非在大括号内提供实现。实现此特质的每个类型必须为方法体提供自定义行为。编译器将确保任何拥有 <code>Summary</code> 特质的类型都准确定义了具有此签名的 <code>summarize</code> 方法。</p>
+<p>A trait can have multiple methods in its body: the method signatures are listed
+one per line, and each line ends in a semicolon.</p>
+<p>特质主体可包含多个方法：方法签名逐行列示，每行以分号结尾。</p>
+<h3 id="implementing-a-trait-on-a-type-为类型实现特质"><a class="header" href="#implementing-a-trait-on-a-type-为类型实现特质">Implementing a Trait on a Type 为类型实现特质</a></h3>
+<p>Now that we’ve defined the desired signatures of the <code>Summary</code> trait’s methods,
+we can implement it on the types in our media aggregator. Listing 10-13 shows
+an implementation of the <code>Summary</code> trait on the <code>NewsArticle</code> struct that uses
+the headline, the author, and the location to create the return value of
+<code>summarize</code>. For the <code>SocialPost</code> struct, we define <code>summarize</code> as the username
+followed by the entire text of the post, assuming that the post content is
+already limited to 280 characters.</p>
+<p>定义了 <code>Summary</code> 特质方法的期望签名后，即可在媒体聚合器中的类型上实现它。代码清单 10-13 展示了在 <code>NewsArticle</code> 结构体上实现 <code>Summary</code> 特质，它使用标题、作者和地点创建 <code>summarize</code> 的返回值。对于 <code>SocialPost</code> 结构体，我们将 <code>summarize</code> 定义为用户名后跟帖子全文（假设内容已限制在 280 字符内）。</p>
+<figure class="listing" id="listing-10-13">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub struct NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for NewsArticle {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
+    }
+}
+
+pub struct SocialPost {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub repost: bool,
+}
+
+impl Summary for SocialPost {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{}: {}", self.username, self.content)
+    }
+}</code></pre>
+<figcaption><a href="#listing-10-13">Listing 10-13</a>: Implementing the <code>Summary</code> trait on the <code>NewsArticle</code> and <code>SocialPost</code> types 在 <code>NewsArticle</code> 和 <code>SocialPost</code> 类型上实现 <code>Summary</code> 特质</figcaption>
+</figure>
+<p>Implementing a trait on a type is similar to implementing regular methods. The
+difference is that after <code>impl</code>, we put the trait name we want to implement,
+then use the <code>for</code> keyword, and then specify the name of the type we want to
+implement the trait for. Within the <code>impl</code> block, we put the method signatures
+that the trait definition has defined. Instead of adding a semicolon after each
+signature, we use curly brackets and fill in the method body with the specific
+behavior that we want the methods of the trait to have for the particular type.</p>
+<p>为类型实现特质类似于实现常规方法。区别在于 <code>impl</code> 后需放置要实现的 trait 名，接着使用 <code>for</code> 关键字，再指定要为其实现特质的类型名。在 <code>impl</code> 块内放置特质定义中的方法签名。此时不在签名后加分号，而是使用大括号填充方法体，定义该特质方法在特定类型上的具体行为。</p>
+<p>Now that the library has implemented the <code>Summary</code> trait on <code>NewsArticle</code> and
+<code>SocialPost</code>, users of the crate can call the trait methods on instances of
+<code>NewsArticle</code> and <code>SocialPost</code> in the same way we call regular methods. The only
+difference is that the user must bring the trait into scope as well as the
+types. Here’s an example of how a binary crate could use our <code>aggregator</code>
+library crate:</p>
+<p>库在 <code>NewsArticle</code> 和 <code>SocialPost</code> 上实现 <code>Summary</code> 特质后，crate 用户可在其实例上调用特质方法，方式与常规方法相同。唯一区别是用户需将特质和类型同时引入作用域。以下示例展示二进制 crate 如何使用 <code>aggregator</code> 库 crate：</p>
+<pre><code class="language-rust ignore">use aggregator::{SocialPost, Summary};
+
+fn main() {
+    let post = SocialPost {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        repost: false,
+    };
+
+    println!("1 new post: {}", post.summarize());
+}</code></pre>
+<p>This code prints <code>1 new post: horse_ebooks: of course, as you probably already  know, people</code>.</p>
+<p>此代码输出：<code>1 new post: horse_ebooks: of course, as you probably already  know, people</code>。</p>
+<p>Other crates that depend on the <code>aggregator</code> crate can also bring the <code>Summary</code>
+trait into scope to implement <code>Summary</code> on their own types. One restriction to
+note is that we can implement a trait on a type only if either the trait or the
+type, or both, are local to our crate. For example, we can implement standard
+library traits like <code>Display</code> on a custom type like <code>SocialPost</code> as part of our
+<code>aggregator</code> crate functionality because the type <code>SocialPost</code> is local to our
+<code>aggregator</code> crate. We can also implement <code>Summary</code> on <code>Vec&lt;T&gt;</code> in our
+<code>aggregator</code> crate because the trait <code>Summary</code> is local to our <code>aggregator</code>
+crate.</p>
+<p>依赖 <code>aggregator</code> crate 的其他 crate 也可将 <code>Summary</code> 特质引入作用域，以在其类型上实现 <code>Summary</code>。需注意的一个限制是，仅当特质或类型至少其一是本地 crate 所有时，才能为类型实现特质。例如，可在自定义类型 <code>SocialPost</code> 上实现标准库特质（如 <code>Display</code>），因为 <code>SocialPost</code> 是本地 crate 所有；也可在 <code>Vec&lt;T&gt;</code> 上实现 <code>Summary</code>，因为 <code>Summary</code> 是本地 crate 所有。</p>
+<p>But we can’t implement external traits on external types. For example, we can’t
+implement the <code>Display</code> trait on <code>Vec&lt;T&gt;</code> within our <code>aggregator</code> crate because
+<code>Display</code> and <code>Vec&lt;T&gt;</code> are both defined in the standard library and aren’t
+local to our <code>aggregator</code> crate. This restriction is part of a property called
+<em>coherence</em>, and more specifically the <em>orphan rule</em>, so named because the
+parent type is not present. This rule ensures that other people’s code can’t
+break your code and vice versa. Without the rule, two crates could implement
+the same trait for the same type, and Rust wouldn’t know which implementation
+to use.</p>
+<p>但<span class="highlight">[note]无法在外部类型上实现外部特质</span>。例如，不能在 <code>aggregator</code> crate 中为 <code>Vec&lt;T&gt;</code> 实现 <code>Display</code> 特质，因为两者均定义于标准库。此限制源于<strong>一致性</strong>原则（具体为<strong>孤儿规则</strong>，因父类型不存在）。该规则确保他人代码不会破坏你的代码，反之亦然。若无此规则，两个 crate 可能为同一类型实现相同特质，Rust 将无法确定使用哪个实现。</p>
+<h3 id="default-implementations-默认实现"><a class="header" href="#default-implementations-默认实现">Default Implementations 默认实现</a></h3>
+<p>Sometimes it’s useful to have default behavior for some or all of the methods
+in a trait instead of requiring implementations for all methods on every type.
+Then, as we implement the trait on a particular type, we can keep or override
+each method’s default behavior.</p>
+<p>有时为特质的部分或全部方法提供默认行为很有用，无需为每个类型实现所有方法。这样在特定类型上实现特质时，可选择保留或覆盖每个方法的默认行为。</p>
+<p>In Listing 10-14, we specify a default string for the <code>summarize</code> method of the
+<code>Summary</code> trait instead of only defining the method signature, as we did in
+Listing 10-12.</p>
+<p>在代码清单 10-14 中，我们为 <code>Summary</code> 特质的 <code>summarize</code> 方法指定了默认字符串，而非仅定义方法签名（如代码清单 10-12）。</p>
+<figure class="listing" id="listing-10-14">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize(&amp;self) -&gt; String {
+        String::from("(Read more...)")
+    }
+}
+<span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {}
+</span><span class="boring">
+</span><span class="boring">pub struct SocialPost {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub repost: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for SocialPost {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-10-14">Listing 10-14</a>: Defining a <code>Summary</code> trait with a default implementation of the <code>summarize</code> method 为 <code>summarize</code> 方法提供默认实现的 <code>Summary</code> 特质</figcaption>
+</figure>
+<p>To use a default implementation to summarize instances of <code>NewsArticle</code>, we
+specify an empty <code>impl</code> block with <code>impl Summary for NewsArticle {}</code>.</p>
+<p>要使用默认实现汇总 <code>NewsArticle</code> 实例，需指定一个空的 <code>impl</code> 块：<code>impl Summary for NewsArticle {}</code>。</p>
+<p>Even though we’re no longer defining the <code>summarize</code> method on <code>NewsArticle</code>
+directly, we’ve provided a default implementation and specified that
+<code>NewsArticle</code> implements the <code>Summary</code> trait. As a result, we can still call
+the <code>summarize</code> method on an instance of <code>NewsArticle</code>, like this:</p>
+<p>尽管不再直接在 <code>NewsArticle</code> 上定义 <code>summarize</code> 方法，但我们提供了默认实现并声明 <code>NewsArticle</code> 实现了 <code>Summary</code> 特质。因此仍可在其实例上调用 <code>summarize</code> 方法：</p>
+<pre><code class="language-rust ignore"><span class="boring">use aggregator::{self, NewsArticle, Summary};
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    let article = NewsArticle {
+        headline: String::from("Penguins win the Stanley Cup Championship!"),
+        location: String::from("Pittsburgh, PA, USA"),
+        author: String::from("Iceburgh"),
+        content: String::from(
+            "The Pittsburgh Penguins once again are the best \
+             hockey team in the NHL.",
+        ),
+    };
+
+    println!("New article available! {}", article.summarize());
+<span class="boring">}</span></code></pre>
+<p>This code prints <code>New article available! (Read more...)</code>.</p>
+<p>此代码输出：<code>New article available! (Read more...)</code>。</p>
+<p>Creating a default implementation doesn’t require us to change anything about
+the implementation of <code>Summary</code> on <code>SocialPost</code> in Listing 10-13. The reason is
+that the syntax for overriding a default implementation is the same as the
+syntax for implementing a trait method that doesn’t have a default
+implementation.</p>
+<p>创建默认实现无需更改代码清单 10-13 中 <code>SocialPost</code> 的 <code>Summary</code> 实现，因为覆盖默认实现的语法与实现无默认方法的特质方法相同。</p>
+<p>Default implementations can call other methods in the same trait, even if those
+other methods don’t have a default implementation. In this way, a trait can
+provide a lot of useful functionality and only require implementors to specify
+a small part of it. For example, we could define the <code>Summary</code> trait to have a
+<code>summarize_author</code> method whose implementation is required, and then define a
+<code>summarize</code> method that has a default implementation that calls the
+<code>summarize_author</code> method:</p>
+<p><span class="highlight">[note]默认实现可调用同一特质中的其他方法（即使这些方法无默认实现）。</span>这样，特质可提供大量功能，仅要求实现者指定一小部分。例如，可定义 <code>Summary</code> 特质包含需实现的 <code>summarize_author</code> 方法，再定义调用 <code>summarize_author</code> 的默认 <code>summarize</code> 方法：</p>
+<pre><code class="language-rust noplayground">pub trait Summary {
+    fn summarize_author(&amp;self) -&gt; String;
+
+    fn summarize(&amp;self) -&gt; String {
+        format!("(Read more from {}...)", self.summarize_author())
+    }
+}
+<span class="boring">
+</span><span class="boring">pub struct SocialPost {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub repost: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for SocialPost {
+</span><span class="boring">    fn summarize_author(&amp;self) -&gt; String {
+</span><span class="boring">        format!("@{}", self.username)
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<p>To use this version of <code>Summary</code>, we only need to define <code>summarize_author</code>
+when we implement the trait on a type:</p>
+<p>使用此版本 <code>Summary</code> 时，实现特质仅需定义 <code>summarize_author</code>：</p>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize_author(&amp;self) -&gt; String;
+</span><span class="boring">
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("(Read more from {}...)", self.summarize_author())
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct SocialPost {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub repost: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Summary for SocialPost {
+    fn summarize_author(&amp;self) -&gt; String {
+        format!("@{}", self.username)
+    }
+}</code></pre>
+<p>After we define <code>summarize_author</code>, we can call <code>summarize</code> on instances of the
+<code>SocialPost</code> struct, and the default implementation of <code>summarize</code> will call the
+definition of <code>summarize_author</code> that we’ve provided. Because we’ve implemented
+<code>summarize_author</code>, the <code>Summary</code> trait has given us the behavior of the
+<code>summarize</code> method without requiring us to write any more code. Here’s what
+that looks like:</p>
+<p>定义 <code>summarize_author</code> 后，即可在 <code>SocialPost</code> 实例上调用 <code>summarize</code>。默认实现将调用我们提供的 <code>summarize_author</code> 实现。由于实现了 <code>summarize_author</code>，<code>Summary</code> 特质为我们提供了 <code>summarize</code> 的行为而无需额外编码：</p>
+<pre><code class="language-rust ignore"><span class="boring">use aggregator::{self, SocialPost, Summary};
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>    let post = SocialPost {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        repost: false,
+    };
+
+    println!("1 new post: {}", post.summarize());
+<span class="boring">}</span></code></pre>
+<p>This code prints <code>1 new post: (Read more from @horse_ebooks...)</code>.</p>
+<p>此代码输出：<code>1 new post: (Read more from @horse_ebooks...)</code>。</p>
+<p>Note that it isn’t possible to call the default implementation from an
+overriding implementation of that same method.</p>
+<p>注意：无法从覆盖实现中调用此方法的默认实现。</p>
+<h3 id="traits-as-parameters-特质作为参数"><a class="header" href="#traits-as-parameters-特质作为参数">Traits as Parameters 特质作为参数</a></h3>
+<p>Now that you know how to define and implement traits, we can explore how to use
+traits to define functions that accept many different types. We’ll use the
+<code>Summary</code> trait we implemented on the <code>NewsArticle</code> and <code>SocialPost</code> types in
+Listing 10-13 to define a <code>notify</code> function that calls the <code>summarize</code> method
+on its <code>item</code> parameter, which is of some type that implements the <code>Summary</code>
+trait. To do this, we use the <code>impl Trait</code> syntax, like this:</p>
+<p>了解如何定义和使用特质后，可探索如何用特质定义接受多种类型的函数。我们将使用代码清单 10-13 中为 <code>NewsArticle</code> 和 <code>SocialPost</code> 实现的 <code>Summary</code> 特质，定义 <code>notify</code> 函数：在其参数 <code>item</code>（某实现 <code>Summary</code> 特质的类型）上调用 <code>summarize</code> 方法。使用 <code>impl Trait</code> 语法实现：</p>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct SocialPost {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub repost: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for SocialPost {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>pub fn notify(item: &amp;impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}</code></pre>
+<p>Instead of a concrete type for the <code>item</code> parameter, we specify the <code>impl</code>
+keyword and the trait name. This parameter accepts any type that implements the
+specified trait. In the body of <code>notify</code>, we can call any methods on <code>item</code>
+that come from the <code>Summary</code> trait, such as <code>summarize</code>. We can call <code>notify</code>
+and pass in any instance of <code>NewsArticle</code> or <code>SocialPost</code>. Code that calls the
+function with any other type, such as a <code>String</code> or an <code>i32</code>, won’t compile
+because those types don’t implement <code>Summary</code>.</p>
+<p><code>item</code> 参数使用 <code>impl</code> 关键字加特质名替代具体类型，接受任何实现指定特质的类型。在 <code>notify</code> 主体中，可调用来自 <code>Summary</code> 特质的任何方法（如 <code>summarize</code>）。可传入 <code>NewsArticle</code> 或 <code>SocialPost</code> 实例调用 <code>notify</code>。若传入 <code>String</code> 或 <code>i32</code> 等未实现 <code>Summary</code> 的类型，代码将无法编译。</p>
+<h4 id="trait-bound-syntax-特质限定语法"><a class="header" href="#trait-bound-syntax-特质限定语法">Trait Bound Syntax 特质限定语法</a></h4>
+<p>The <code>impl Trait</code> syntax works for straightforward cases but is actually syntax
+sugar for a longer form known as a <em>trait bound</em>; it looks like this:</p>
+<p><span class="highlight">[note]<code>impl Trait</code> 语法适用于简单情况，实为 <em>特质限定（trait bound）</em> 的语法糖：</span></p>
+<pre><code class="language-rust ignore">pub fn notify&lt;T: Summary&gt;(item: &amp;T) {
+    println!("Breaking news! {}", item.summarize());
+}</code></pre>
+<p>This longer form is equivalent to the example in the previous section but is
+more verbose. We place trait bounds with the declaration of the generic type
+parameter after a colon and inside angle brackets.</p>
+<p>此完整形式等同于上例但更冗长。特质限定位于泛型参数声明后，以冒号分隔并置于尖括号内。</p>
+<p>The <code>impl Trait</code> syntax is convenient and makes for more concise code in simple
+cases, while the fuller trait bound syntax can express more complexity in other
+cases. For example, we can have two parameters that implement <code>Summary</code>. Doing
+so with the <code>impl Trait</code> syntax looks like this:</p>
+<p><code>impl Trait</code> 语法很方便，并且在简单情况下能够让代码更加简洁，而完整的 trait 约束语法则能在其他情况下表达更多的复杂性。例如，我们可以有两个实现了 <code>Summary</code> 的参数。使用 <code>impl Trait</code> 语法的写法如下：</p>
+<pre><code class="language-rust ignore">pub fn notify(item1: &amp;impl Summary, item2: &amp;impl Summary) {</code></pre>
+<p>Using <code>impl Trait</code> is appropriate if we want this function to allow <code>item1</code> and
+<code>item2</code> to have different types (as long as both types implement <code>Summary</code>). If
+we want to force both parameters to have the same type, however, we must use a
+trait bound, like this:</p>
+<p>如果我们希望此函数允许 <code>item1</code> 和 <code>item2</code> 具有不同的类型（只要它们都实现了 <code>Summary</code> 接口），可以使用 <code>impl Trait</code>。但是，如果我们想强制两个参数具有相同的类型，则必须使用 <code>trait bound</code>：</p>
+<pre><code class="language-rust ignore">pub fn notify&lt;T: Summary&gt;(item1: &amp;T, item2: &amp;T) {</code></pre>
+<p>The generic type <code>T</code> specified as the type of the <code>item1</code> and <code>item2</code>
+parameters constrains the function such that the concrete type of the value
+passed as an argument for <code>item1</code> and <code>item2</code> must be the same.</p>
+<p>这里，泛型类型 <code>T</code> 被指定为 <code>item1</code> 和 <code>item2</code> 参数的类型，限制了该函数，使得传递给 <code>item1</code> 和 <code>item2</code> 的实际类型必须相同。</p>
+<h4 id="specifying-multiple-trait-bounds-with-the--syntax-使用--语法指定多个特质限定"><a class="header" href="#specifying-multiple-trait-bounds-with-the--syntax-使用--语法指定多个特质限定">Specifying Multiple Trait Bounds with the <code>+</code> Syntax 使用 <code>+</code> 语法指定多个特质限定</a></h4>
+<p>We can also specify more than one trait bound. Say we wanted <code>notify</code> to use
+display formatting as well as <code>summarize</code> on <code>item</code>: we specify in the <code>notify</code>
+definition that <code>item</code> must implement both <code>Display</code> and <code>Summary</code>. We can do
+so using the <code>+</code> syntax:</p>
+<p><span class="highlight">[note]可指定多个特质限定。</span>若需 <code>notify</code> 同时使用显示格式化和 <code>summarize</code>，则要求 <code>item</code> 实现 <code>Display</code> 和 <code>Summary</code>：</p>
+<pre><code class="language-rust ignore">pub fn notify(item: &amp;(impl Summary + Display)) {</code></pre>
+<p>The <code>+</code> syntax is also valid with trait bounds on generic types:</p>
+<p><code>+</code> 语法也适用于泛型的特质限定：</p>
+<pre><code class="language-rust ignore">pub fn notify&lt;T: Summary + Display&gt;(item: &amp;T) {</code></pre>
+<p>With the two trait bounds specified, the body of <code>notify</code> can call <code>summarize</code>
+and use <code>{}</code> to format <code>item</code>.</p>
+<p>指定两个特质限定后，<code>notify</code> 主体可调用 <code>summarize</code> 并使用 <code>{}</code> 格式化 <code>item</code>。</p>
+<h4 id="clearer-trait-bounds-with-where-clauses-使用-where-子句增强可读性"><a class="header" href="#clearer-trait-bounds-with-where-clauses-使用-where-子句增强可读性">Clearer Trait Bounds with <code>where</code> Clauses 使用 <code>where</code> 子句增强可读性</a></h4>
+<p>Using too many trait bounds has its downsides. Each generic has its own trait
+bounds, so functions with multiple generic type parameters can contain lots of
+trait bound information between the function’s name and its parameter list,
+making the function signature hard to read. For this reason, Rust has alternate
+syntax for specifying trait bounds inside a <code>where</code> clause after the function
+signature. So, instead of writing this:</p>
+<p>使用过多的特征约束是有缺点的。每个泛型都有自己的特征约束，因此具有多个泛型类型参数的函数可能会在函数名和参数列表之间包含大量特征约束信息，这使得函数签名变得难以阅读。为了解决这个问题，Rust 提供了另一种语法，可以在函数签名后使用 <code>where</code> 子句来指定特征约束。因此，无需写成这样：</p>
+<pre><code class="language-rust ignore">fn some_function&lt;T: Display + Clone, U: Clone + Debug&gt;(t: &amp;T, u: &amp;U) -&gt; i32 {</code></pre>
+<p>we can use a <code>where</code> clause, like this:</p>
+<p>我们可以使用 <code>where</code> 子句，如下所示：</p>
+<pre><code class="language-rust ignore">fn some_function&lt;T, U&gt;(t: &amp;T, u: &amp;U) -&gt; i32
+where
+    T: Display + Clone,
+    U: Clone + Debug,
+{
+<span class="boring">    unimplemented!()
+</span><span class="boring">}</span></code></pre>
+<p>This function’s signature is less cluttered: the function name, parameter list,
+and return type are close together, similar to a function without lots of trait
+bounds.</p>
+<p>这个函数的签名更加简洁：函数名、参数列表和返回类型紧密相连，类似于没有过多特征约束的函数。</p>
+<h3 id="returning-types-that-implement-traits-返回实现特质的类型"><a class="header" href="#returning-types-that-implement-traits-返回实现特质的类型">Returning Types That Implement Traits 返回实现特质的类型</a></h3>
+<p>We can also use the <code>impl Trait</code> syntax in the return position to return a
+value of some type that implements a trait, as shown here:</p>
+<p>可在返回位置使用 <code>impl Trait</code> 语法返回实现某特质的类型：</p>
+<pre><code class="language-rust ignore"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct SocialPost {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub repost: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for SocialPost {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn returns_summarizable() -&gt; impl Summary {
+    SocialPost {
+        username: String::from("horse_ebooks"),
+        content: String::from(
+            "of course, as you probably already know, people",
+        ),
+        reply: false,
+        repost: false,
+    }
+}</code></pre>
+<p>By using <code>impl Summary</code> for the return type, we specify that the
+<code>returns_summarizable</code> function returns some type that implements the <code>Summary</code>
+trait without naming the concrete type. In this case, <code>returns_summarizable</code>
+returns a <code>SocialPost</code>, but the code calling this function doesn’t need to know
+that.</p>
+<p>通过 <code>impl Summary</code> 指定返回类型，表明 <code>returns_summarizable</code> 返回实现 <code>Summary</code> 特质的类型（不指定具体类型）。调用方无需知晓实际返回的是 <code>SocialPost</code>。</p>
+<p>The ability to specify a return type only by the trait it implements is
+especially useful in the context of closures and iterators, which we cover in
+Chapter 13. Closures and iterators create types that only the compiler knows or
+types that are very long to specify. The <code>impl Trait</code> syntax lets you concisely
+specify that a function returns some type that implements the <code>Iterator</code> trait
+without needing to write out a very long type.</p>
+<p>此功能在闭包和迭代器场景中尤其有用（第 13 章介绍）。闭包和迭代器生成的类型或由编译器推导或冗长难写。<code>impl Trait</code> 语法可简洁指定函数返回实现 <code>Iterator</code> 特质的类型。</p>
+<p>However, you can only use <code>impl Trait</code> if you’re returning a single type. For
+example, this code that returns either a <code>NewsArticle</code> or a <code>SocialPost</code> with
+the return type specified as <code>impl Summary</code> wouldn’t work:</p>
+<p>但 <span class="highlight">[note]<code>impl Trait</code> 仅适用于返回单一类型</span>。以下尝试返回 <code>NewsArticle</code> 或 <code>SocialPost</code> 的代码无效：</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct NewsArticle {
+</span><span class="boring">    pub headline: String,
+</span><span class="boring">    pub location: String,
+</span><span class="boring">    pub author: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for NewsArticle {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}, by {} ({})", self.headline, self.author, self.location)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">pub struct SocialPost {
+</span><span class="boring">    pub username: String,
+</span><span class="boring">    pub content: String,
+</span><span class="boring">    pub reply: bool,
+</span><span class="boring">    pub repost: bool,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Summary for SocialPost {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String {
+</span><span class="boring">        format!("{}: {}", self.username, self.content)
+</span><span class="boring">    }
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn returns_summarizable(switch: bool) -&gt; impl Summary {
+    if switch {
+        NewsArticle {
+            headline: String::from(
+                "Penguins win the Stanley Cup Championship!",
+            ),
+            location: String::from("Pittsburgh, PA, USA"),
+            author: String::from("Iceburgh"),
+            content: String::from(
+                "The Pittsburgh Penguins once again are the best \
+                 hockey team in the NHL.",
+            ),
+        }
+    } else {
+        SocialPost {
+            username: String::from("horse_ebooks"),
+            content: String::from(
+                "of course, as you probably already know, people",
+            ),
+            reply: false,
+            repost: false,
+        }
+    }
+}</code></pre>
+<p>Returning either a <code>NewsArticle</code> or a <code>SocialPost</code> isn’t allowed due to
+restrictions around how the <code>impl Trait</code> syntax is implemented in the compiler.
+We’ll cover how to write a function with this behavior in the “Using Trait
+Objects That Allow for Values of Different
+Types” section of Chapter 18.</p>
+<p>由于编译器中 <code>impl Trait</code> 语法的实现方式的限制，不允许返回 <code>NewsArticle</code> 或 <code>SocialPost</code>。我们将在第18章的“使用允许不同类型值的 Trait 对象”部分中讨论如何编写具有此行为的函数。</p>
+<h3 id="using-trait-bounds-to-conditionally-implement-methods-使用特质限定条件实现方法"><a class="header" href="#using-trait-bounds-to-conditionally-implement-methods-使用特质限定条件实现方法">Using Trait Bounds to Conditionally Implement Methods 使用特质限定条件实现方法</a></h3>
+<p>By using a trait bound with an <code>impl</code> block that uses generic type parameters,
+we can implement methods conditionally for types that implement the specified
+traits. For example, the type <code>Pair&lt;T&gt;</code> in Listing 10-15 always implements the
+<code>new</code> function to return a new instance of <code>Pair&lt;T&gt;</code> (recall from the
+“Defining Methods” section of Chapter 5 that <code>Self</code>
+is a type alias for the type of the <code>impl</code> block, which in this case is
+<code>Pair&lt;T&gt;</code>). But in the next <code>impl</code> block, <code>Pair&lt;T&gt;</code> only implements the
+<code>cmp_display</code> method if its inner type <code>T</code> implements the <code>PartialOrd</code> trait
+that enables comparison <em>and</em> the <code>Display</code> trait that enables printing.</p>
+<p><span class="highlight">[note]通过将特质限定与使用泛型参数的 <code>impl</code> 块结合，可以有条件地为满足特质的类型实现方法。</span>例如，代码清单 10-15 中的类型 <code>Pair&lt;T&gt;</code> 总是实现 <code>new</code> 函数，用于返回 <code>Pair&lt;T&gt;</code> 的新实例（回顾一下第 5 章“定义方法”部分，<code>Self</code> 是 <code>impl</code> 块类型的类型别名，在本例中是 <code>Pair&lt;T&gt;</code>）。但在下一个 <code>impl</code> 块中，只有当其内部类型 <code>T</code> 实现了 <code>PartialOrd</code> trait（用于比较）和 <code>Display</code> trait（用于打印）时，<code>Pair&lt;T&gt;</code> 才会实现 <code>cmp_display</code> 方法。</p>
+<figure class="listing" id="listing-10-15">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">use std::fmt::Display;
+
+struct Pair&lt;T&gt; {
+    x: T,
+    y: T,
+}
+
+impl&lt;T&gt; Pair&lt;T&gt; {
+    fn new(x: T, y: T) -&gt; Self {
+        Self { x, y }
+    }
+}
+
+impl&lt;T: Display + PartialOrd&gt; Pair&lt;T&gt; {
+    fn cmp_display(&amp;self) {
+        if self.x &gt;= self.y {
+            println!("The largest member is x = {}", self.x);
+        } else {
+            println!("The largest member is y = {}", self.y);
+        }
+    }
+}</code></pre>
+<figcaption><a href="#listing-10-15">Listing 10-15</a>: Conditionally implementing methods on a generic type depending on trait bounds 根据特质限条件为泛型类型实现方法</figcaption>
+</figure>
+<p>We can also conditionally implement a trait for any type that implements
+another trait. Implementations of a trait on any type that satisfies the trait
+bounds are called <em>blanket implementations</em> and are used extensively in the
+Rust standard library. For example, the standard library implements the
+<code>ToString</code> trait on any type that implements the <code>Display</code> trait. The <code>impl</code>
+block in the standard library looks similar to this code:</p>
+<p>我们还<span class="highlight">[note]可以有条件地为实现了另一个 trait 的任何类型实现一个 trait。对于任何满足 trait 约束的类型的 trait 实现，称为 <em>通用实现（blanket implementations）</em></span>，并在 Rust 标准库中被广泛使用。例如，标准库为实现了 <code>Display</code> trait 的任何类型实现了 <code>ToString</code> trait。标准库中的 <code>impl</code> 块看起来类似于以下代码：</p>
+<pre><code class="language-rust ignore">impl&lt;T: Display&gt; ToString for T {
+    // --snip--
+}</code></pre>
+<p>Because the standard library has this blanket implementation, we can call the
+<code>to_string</code> method defined by the <code>ToString</code> trait on any type that implements
+the <code>Display</code> trait. For example, we can turn integers into their corresponding
+<code>String</code> values like this because integers implement <code>Display</code>:</p>
+<p>由于标准库有这个通用实现，我们可以在任何实现了 <code>Display</code> trait 的类型上调用 <code>ToString</code> trait 中定义的 <code>to_string</code> 方法。例如，我们可以像这样将整数转换为对应的 <code>String</code> 值，因为整数实现了 <code>Display</code>：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = 3.to_string();
+<span class="boring">}</span></code></pre></pre>
+<p>Blanket implementations appear in the documentation for the trait in the
+“Implementors” section.</p>
+<p>通用实现会出现在 trait 的文档中的“实现者”部分。</p>
+<p>Traits and trait bounds let us write code that uses generic type parameters to
+reduce duplication but also specify to the compiler that we want the generic
+type to have particular behavior. The compiler can then use the trait bound
+information to check that all the concrete types used with our code provide the
+correct behavior. In dynamically typed languages, we would get an error at
+runtime if we called a method on a type which didn’t define the method. But
+Rust moves these errors to compile time so we’re forced to fix the problems
+before our code is even able to run. Additionally, we don’t have to write code
+that checks for behavior at runtime because we’ve already checked at compile
+time. Doing so improves performance without having to give up the flexibility
+of generics.</p>
+<p>traits 和 trait 约束让我们可以编写使用泛型类型参数的代码，以减少重复，同时还可以向编译器指定我们希望泛型类型具有特定的行为。然后，编译器可以使用 trait 约束信息来检查我们代码中使用的所有具体类型是否提供了正确的行为。在动态类型语言中，如果我们在一个没有定义该方法的类型上调用了方法，会在运行时出错。但 Rust 将这些错误移到了编译时，因此我们在代码能够运行之前就被迫修复问题。此外，我们不需要编写在运行时检查行为的代码，因为我们已经在编译时进行了检查。这样做提高了性能，而无需放弃泛型的灵活性。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch10-01-syntax.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch10-03-lifetime-syntax.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch10-01-syntax.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch10-03-lifetime-syntax.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

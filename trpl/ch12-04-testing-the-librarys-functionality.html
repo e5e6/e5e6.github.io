@@ -1,0 +1,579 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Developing the Library’s Functionality with Test Driven Development 使用测试驱动开发完善库功能 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="developing-the-librarys-functionality-with-test-driven-development-使用测试驱动开发完善库功能"><a class="header" href="#developing-the-librarys-functionality-with-test-driven-development-使用测试驱动开发完善库功能">Developing the Library’s Functionality with Test-Driven Development 使用测试驱动开发完善库功能</a></h2>
+<p>Now that we have the search logic in <em>src/lib.rs</em> separate from the <code>main</code>
+function, it’s much easier to write tests for the core functionality of our
+code. We can call functions directly with various arguments and check return
+values without having to call our binary from the command line.</p>
+<p>现在我们已经将 <em>src/lib.rs</em> 中的搜索逻辑与 <code>main</code> 函数分离，这让我们更容易为代码的核心功能编写测试。我们可以直接使用各种参数调用函数并检查返回值，而无需从命令行调用二进制文件。</p>
+<p>In this section, we’ll add the searching logic to the <code>minigrep</code> program using
+the test-driven development (TDD) process with the following steps:</p>
+<p>本节我们将通过测试驱动开发（TDD）流程向 <code>minigrep</code> 程序添加搜索逻辑，步骤如下：</p>
+<ul>
+<li>Write a test that fails and run it to make sure it fails for the reason you
+expect.</li>
+<li>编写一个失败的测试并运行它，确保它因预期原因失败。</li>
+<li>Write or modify just enough code to make the new test pass.</li>
+<li>编写或修改最少量的代码使新测试通过。</li>
+<li>Refactor the code you just added or changed and make sure the tests continue
+to pass.</li>
+<li>重构刚添加或修改的代码，并确保测试继续通过。</li>
+<li>Repeat from step 1!</li>
+<li>从步骤1开始重复！</li>
+</ul>
+<p>Though it’s just one of many ways to write software, TDD can help drive code
+design. Writing the test before you write the code that makes the test pass
+helps to maintain high test coverage throughout the process.</p>
+<p>虽然这只是众多软件开发方法之一，但TDD有助于驱动代码设计。在编写使测试通过的代码之前先编写测试，有助于在整个过程中保持高测试覆盖率。</p>
+<p>We’ll test-drive the implementation of the functionality that will actually do
+the searching for the query string in the file contents and produce a list of
+lines that match the query. We’ll add this functionality in a function called
+<code>search</code>.</p>
+<p>我们将通过测试驱动的方式实现实际功能：在文件内容中搜索查询字符串并生成匹配查询的行列表。我们将在一个名为 <code>search</code> 的函数中添加此功能。</p>
+<h3 id="writing-a-failing-test-编写失败测试"><a class="header" href="#writing-a-failing-test-编写失败测试">Writing a Failing Test 编写失败测试</a></h3>
+<p>In <em>src/lib.rs</em>, we’ll add a <code>tests</code> module with a test function, as we did in
+Chapter 11. The test function specifies the
+behavior we want the <code>search</code> function to have: it will take a query and the
+text to search, and it will return only the lines from the text that contain
+the query. Listing 12-15 shows this test.</p>
+<p>在 <em>src/lib.rs</em> 中，我们将添加一个包含测试函数的 <code>tests</code> 模块（如第11章所做）。该测试函数明确了期望 <code>search</code> 函数具备的行为：它接收查询词和待搜索文本，仅返回文本中包含查询词的行。代码清单12-15展示了这个测试。</p>
+<figure class="listing" id="listing-12-15">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+</span><span class="boring">    unimplemented!();
+</span><span class="boring">}
+</span><span class="boring">
+</span>// --snip--
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn one_result() {
+        let query = "duct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.";
+
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+    }
+}</code></pre>
+<figcaption><a href="#listing-12-15">Listing 12-15</a>: Creating a failing test for the <code>search</code> function for the functionality we wish we had 为期望实现的<code>search</code>功能创建失败测试</figcaption>
+</figure>
+<p>This test searches for the string <code>"duct"</code>. The text we’re searching is three
+lines, only one of which contains <code>"duct"</code> (note that the backslash after the
+opening double quote tells Rust not to put a newline character at the beginning
+of the contents of this string literal). We assert that the value returned from
+the <code>search</code> function contains only the line we expect.</p>
+<p>该测试搜索字符串 <code>"duct"</code>。待搜索文本有三行，其中只有一行包含 <code>"duct"</code>（注意<span class="highlight">[note]开头双引号后的反斜杠告诉 Rust 不要在此字符串字面量开头添加换行符</span>）。我们断言 <code>search</code> 函数返回的值仅包含预期的那一行。</p>
+<p>If we run this test, it will currently fail because the <code>unimplemented!</code> macro
+panics with the message “not implemented”. In accordance with TDD principles,
+we’ll take a small step of adding just enough code to get the test to not panic
+when calling the function by defining the <code>search</code> function to always return an
+empty vector, as shown in Listing 12-16. Then the test should compile and fail
+because an empty vector doesn’t match a vector containing the line <code>"safe,  fast, productive."</code></p>
+<p>如果运行此测试，它当前会失败，因为 <code>unimplemented!</code> 宏会因“未实现“的消息而恐慌（panic）。遵循TDD原则，我们将采取一个小步骤：添加刚好足够的代码使函数调用时不恐慌，如代码清单12-16所示，将 <code>search</code> 函数定义为始终返回空向量。此时测试应能编译但会失败，因为空向量与包含行 <code>"safe, fast, productive."</code> 的向量不匹配。</p>
+<figure class="listing" id="listing-12-16">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust noplayground">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    vec![]
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-12-16">Listing 12-16</a>: Defining just enough of the <code>search</code> function so calling it won’t panic 定义<code>search</code>函数的最小实现使其可被调用（不恐慌）</figcaption>
+</figure>
+<p>Now let’s discuss why we need to define an explicit lifetime <code>'a</code> in the
+signature of <code>search</code> and use that lifetime with the <code>contents</code> argument and
+the return value. Recall in Chapter 10 that
+the lifetime parameters specify which argument lifetime is connected to the
+lifetime of the return value. In this case, we indicate that the returned
+vector should contain string slices that reference slices of the argument
+<code>contents</code> (rather than the argument <code>query</code>).</p>
+<p>现在讨论为何需要在 <code>search</code> 签名中定义显式生命周期 <code>'a</code>，并在 <code>contents</code> 参数和返回值中使用它。回顾第10章，生命周期参数指定哪个参数生命周期与返回值生命周期相关联。此处我们指明返回的向量应包含引用参数 <code>contents</code>（而非参数 <code>query</code>）切片的字符串切片。</p>
+<p>In other words, we tell Rust that the data returned by the <code>search</code> function
+will live as long as the data passed into the <code>search</code> function in the
+<code>contents</code> argument. This is important! The data referenced <em>by</em> a slice needs
+to be valid for the reference to be valid; if the compiler assumes we’re making
+string slices of <code>query</code> rather than <code>contents</code>, it will do its safety checking
+incorrectly.</p>
+<p>换句话说，我们告诉 Rust：<code>search</code> 函数返回的数据存活时间将与传入 <code>search</code> 函数的 <code>contents</code> 参数数据一样长。这很重要！切片引用的数据必须有效，引用才能有效；若编译器假定我们创建的是 <code>query</code> 而非 <code>contents</code> 的字符串切片，其安全检查将出错。</p>
+<p>If we forget the lifetime annotations and try to compile this function, we’ll
+get this error:</p>
+<p>如果忘记生命周期注解尝试编译此函数，将得到以下错误：</p>
+<pre><code class="language-console">$ cargo build
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+error[E0106]: missing lifetime specifier
+ --&gt; src/lib.rs:1:51
+  |
+1 | pub fn search(query: &amp;str, contents: &amp;str) -&gt; Vec&lt;&amp;str&gt; {
+  |                      ----            ----         ^ expected named lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `query` or `contents`
+help: consider introducing a named lifetime parameter
+  |
+1 | pub fn search&lt;'a&gt;(query: &amp;'a str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+  |              ++++         ++                 ++              ++
+
+For more information about this error, try `rustc --explain E0106`.
+error: could not compile `minigrep` (lib) due to 1 previous error
+</code></pre>
+<p>Rust can’t know which of the two parameters we need for the output, so we need
+to tell it explicitly. Note that the help text suggests specifying the same
+lifetime parameter for all the parameters and the output type, which is
+incorrect! Because <code>contents</code> is the parameter that contains all of our text
+and we want to return the parts of that text that match, we know <code>contents</code> is
+the only parameter that should be connected to the return value using the
+lifetime syntax.</p>
+<p>Rust 无法确定输出需要哪个参数，因此需要显式告知。注意帮助文本建议为所有参数和输出类型指定相同的生命周期参数，这是错误的！由于 <code>contents</code> 是包含全部文本的参数，且我们要返回匹配该文本的部分，因此只有 <code>contents</code> 应通过生命周期语法与返回值关联。</p>
+<p>Other programming languages don’t require you to connect arguments to return
+values in the signature, but this practice will get easier over time. You might
+want to compare this example with the examples in the “Validating References
+with Lifetimes” section
+in Chapter 10.</p>
+<p>其他编程语言不要求在签名中连接参数与返回值，但这种实践会随时间推移变得容易。建议将此示例与第10章“使用生命周期验证引用“部分的示例进行比较。</p>
+<h3 id="writing-code-to-pass-the-test-编写通过测试的代码"><a class="header" href="#writing-code-to-pass-the-test-编写通过测试的代码">Writing Code to Pass the Test 编写通过测试的代码</a></h3>
+<p>Currently, our test is failing because we always return an empty vector. To fix
+that and implement <code>search</code>, our program needs to follow these steps:</p>
+<p>当前测试因始终返回空向量而失败。为实现 <code>search</code> 功能，程序需遵循以下步骤：</p>
+<ul>
+<li>Iterate through each line of the contents.</li>
+<li>遍历内容的每一行。</li>
+<li>Check whether the line contains our query string.</li>
+<li>检查行是否包含查询字符串。</li>
+<li>If it does, add it to the list of values we’re returning.</li>
+<li>若包含，则将其添加到返回的值列表中。</li>
+<li>If it doesn’t, do nothing.</li>
+<li>若不包含，则不执行操作。</li>
+<li>Return the list of results that match.</li>
+<li>返回匹配的结果列表。</li>
+</ul>
+<p>Let’s work through each step, starting with iterating through lines.</p>
+<p>让我们逐步实现，从遍历行开始。</p>
+<h4 id="iterating-through-lines-with-the-lines-method-使用-lines-方法逐行迭代"><a class="header" href="#iterating-through-lines-with-the-lines-method-使用-lines-方法逐行迭代">Iterating Through Lines with the <code>lines</code> Method 使用 <code>lines</code> 方法逐行迭代</a></h4>
+<p>Rust has a helpful method to handle line-by-line iteration of strings,
+conveniently named <code>lines</code>, that works as shown in Listing 12-17. Note that
+this won’t compile yet.</p>
+<p>Rust 提供了便捷的 <code>lines</code> 方法处理字符串的逐行迭代，如代码清单12-17所示。注意此代码尚不能编译。</p>
+<figure class="listing" id="listing-12-17">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust ignore does_not_compile">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    for line in contents.lines() {
+        // do something with line
+    }
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-12-17">Listing 12-17</a>: Iterating through each line in <code>contents</code> 遍历<code>contents</code>中的每一行</figcaption>
+</figure>
+<p>The <code>lines</code> method returns an iterator. We’ll talk about iterators in depth in
+Chapter 13, but recall that you saw this way
+of using an iterator in Listing 3-5, where we used a
+<code>for</code> loop with an iterator to run some code on each item in a collection.</p>
+<p><code>lines</code> 方法返回一个迭代器。我们将在第13章深入讨论迭代器，但回忆一下在代码清单3-5中曾用 <code>for</code> 循环配合迭代器对集合中每个元素执行代码。</p>
+<h4 id="searching-each-line-for-the-query-在每行中搜索查询词"><a class="header" href="#searching-each-line-for-the-query-在每行中搜索查询词">Searching Each Line for the Query 在每行中搜索查询词</a></h4>
+<p>Next, we’ll check whether the current line contains our query string.
+Fortunately, strings have a helpful method named <code>contains</code> that does this for
+us! Add a call to the <code>contains</code> method in the <code>search</code> function, as shown in
+Listing 12-18. Note that this still won’t compile yet.</p>
+<p>接下来检查当前行是否包含查询字符串。幸运的是，字符串提供了 <code>contains</code> 方法！如代码清单12-18所示，在 <code>search</code> 函数中添加对 <code>contains</code> 的调用。注意此代码仍不能编译。</p>
+<figure class="listing" id="listing-12-18">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust ignore does_not_compile">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    for line in contents.lines() {
+        if line.contains(query) {
+            // do something with line
+        }
+    }
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-12-18">Listing 12-18</a>: Adding functionality to see whether the line contains the string in <code>query</code> 添加检查行是否包含<code>query</code>字符串的功能</figcaption>
+</figure>
+<p>At the moment, we’re building up functionality. To get the code to compile, we
+need to return a value from the body as we indicated we would in the function
+signature.</p>
+<p>目前我们正在构建功能。为使代码编译，需从函数体返回签名中声明的值。</p>
+<h4 id="storing-matching-lines-存储匹配行"><a class="header" href="#storing-matching-lines-存储匹配行">Storing Matching Lines 存储匹配行</a></h4>
+<p>To finish this function, we need a way to store the matching lines that we want
+to return. For that, we can make a mutable vector before the <code>for</code> loop and
+call the <code>push</code> method to store a <code>line</code> in the vector. After the <code>for</code> loop,
+we return the vector, as shown in Listing 12-19.</p>
+<p>要完成此函数，需要存储要返回的匹配行。为此，在 <code>for</code> 循环前创建可变向量，并调用 <code>push</code> 方法将 <code>line</code> 存入向量。<code>for</code> 循环后返回该向量，如代码清单12-19所示。</p>
+<figure class="listing" id="listing-12-19">
+<span class="file-name">Filename: src/lib.rs</span>
+<pre><code class="language-rust ignore">pub fn search&lt;'a&gt;(query: &amp;str, contents: &amp;'a str) -&gt; Vec&lt;&amp;'a str&gt; {
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+
+    results
+}
+<span class="boring">
+</span><span class="boring">#[cfg(test)]
+</span><span class="boring">mod tests {
+</span><span class="boring">    use super::*;
+</span><span class="boring">
+</span><span class="boring">    #[test]
+</span><span class="boring">    fn one_result() {
+</span><span class="boring">        let query = "duct";
+</span><span class="boring">        let contents = "\
+</span><span class="boring">Rust:
+</span><span class="boring">safe, fast, productive.
+</span><span class="boring">Pick three.";
+</span><span class="boring">
+</span><span class="boring">        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
+</span><span class="boring">    }
+</span><span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-12-19">Listing 12-19</a>: Storing the lines that match so we can return them 存储匹配行以便返回</figcaption>
+</figure>
+<p>Now the <code>search</code> function should return only the lines that contain <code>query</code>,
+and our test should pass. Let’s run the test:</p>
+<p>现在 <code>search</code> 函数应仅返回包含 <code>query</code> 的行，测试应能通过。运行测试：</p>
+<pre><code class="language-console">$ cargo test
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.22s
+     Running unittests src/lib.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 1 test
+test tests::one_result ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/minigrep-9cd200e5fac0fc94)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests minigrep
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+</code></pre>
+<p>Our test passed, so we know it works!</p>
+<p>测试通过，确认功能正常！</p>
+<p>At this point, we could consider opportunities for refactoring the
+implementation of the search function while keeping the tests passing to
+maintain the same functionality. The code in the search function isn’t too bad,
+but it doesn’t take advantage of some useful features of iterators. We’ll
+return to this example in Chapter 13, where
+we’ll explore iterators in detail, and look at how to improve it.</p>
+<p>此时，可以考虑重构 <code>search</code> 函数的实现，同时保持测试通过以维持相同功能。当前实现尚可，但未充分利用迭代器的特性。我们将在第13章重新探讨此示例，详细研究迭代器并改进实现。</p>
+<p>Now the entire program should work! Let’s try it out, first with a word that
+should return exactly one line from the Emily Dickinson poem: <em>frog</em>.</p>
+<p>现在整个程序应能工作！让我们用 Emily Dickinson 诗中应返回单行的词测试：<em>frog</em>。</p>
+<pre><code class="language-console">$ cargo run -- frog poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
+     Running `target/debug/minigrep frog poem.txt`
+How public, like a frog
+</code></pre>
+<p>Cool! Now let’s try a word that will match multiple lines, like <em>body</em>:</p>
+<p>很好！现在尝试匹配多行的词，如 <em>body</em>：</p>
+<pre><code class="language-console">$ cargo run -- body poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep body poem.txt`
+I'm nobody! Who are you?
+Are you nobody, too?
+How dreary to be somebody!
+</code></pre>
+<p>And finally, let’s make sure that we don’t get any lines when we search for a
+word that isn’t anywhere in the poem, such as <em>monomorphization</em>:</p>
+<p>最后确认搜索诗中不存在的词（如 <em>monomorphization</em>）时不返回任何行：</p>
+<pre><code class="language-console">$ cargo run -- monomorphization poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running `target/debug/minigrep monomorphization poem.txt`
+</code></pre>
+<p>Excellent! We’ve built our own mini version of a classic tool and learned a lot
+about how to structure applications. We’ve also learned a bit about file input
+and output, lifetimes, testing, and command line parsing.</p>
+<p>完美！我们构建了自己的经典工具简化版，并学习了应用结构设计。同时还学习了文件输入输出、生命周期、测试和命令行解析。</p>
+<p>To round out this project, we’ll briefly demonstrate how to work with
+environment variables and how to print to standard error, both of which are
+useful when you’re writing command line programs.</p>
+<p>作为项目收尾，我们将简要演示如何处理环境变量及打印到标准错误流，这两者在编写命令行程序时非常实用。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch12-03-improving-error-handling-and-modularity.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch12-05-working-with-environment-variables.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch12-03-improving-error-handling-and-modularity.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch12-05-working-with-environment-variables.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

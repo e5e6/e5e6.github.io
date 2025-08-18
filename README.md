@@ -1,1 +1,1 @@
-# e5e6.github.io
+[The Rust Programming Language](/trpl/index.html)

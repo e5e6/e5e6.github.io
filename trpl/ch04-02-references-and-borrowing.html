@@ -1,0 +1,624 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>References and Borrowing 引用和借用 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="references-and-borrowing-引用与借用"><a class="header" href="#references-and-borrowing-引用与借用">References and Borrowing 引用与借用</a></h2>
+<p>The issue with the tuple code in Listing 4-5 is that we have to return the
+<code>String</code> to the calling function so we can still use the <code>String</code> after the
+call to <code>calculate_length</code>, because the <code>String</code> was moved into
+<code>calculate_length</code>. Instead, we can provide a reference to the <code>String</code> value.
+A <em>reference</em> is like a pointer in that it’s an address we can follow to access
+the data stored at that address; that data is owned by some other variable.
+Unlike a pointer, a reference is guaranteed to point to a valid value of a
+particular type for the life of that reference.</p>
+<p>清单4-5中元组代码的问题在于，我们必须将<code>String</code>返回给调用函数，这样才能在调用<code>calculate_length</code>后继续使用<code>String</code>，因为<code>String</code>被移动到了<code>calculate_length</code>中。实际上，我们可以提供<code>String</code>值的引用。<strong>引用</strong>类似于指针，它是一个可以追踪到存储数据的地址；这些数据由其他变量所有。与指针不同，引用在其生命周期内保证指向特定类型的有效值。</p>
+<p>Here is how you would define and use a <code>calculate_length</code> function that has a
+reference to an object as a parameter instead of taking ownership of the value:</p>
+<p>以下是定义和使用带引用参数的<code>calculate_length</code>函数的方法（而非获取值的所有权）：</p>
+<figure class="listing">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let s1 = String::from("hello");
+
+    let len = calculate_length(&amp;s1);
+
+    println!("The length of '{s1}' is {len}.");
+}
+
+fn calculate_length(s: &amp;String) -&gt; usize {
+    s.len()
+}</code></pre></pre>
+</figure>
+<p>First, notice that all the tuple code in the variable declaration and the
+function return value is gone. Second, note that we pass <code>&amp;s1</code> into
+<code>calculate_length</code> and, in its definition, we take <code>&amp;String</code> rather than
+<code>String</code>. These ampersands represent <em>references</em>, and they allow you to refer
+to some value without taking ownership of it. Figure 4-6 depicts this concept.</p>
+<p>首先注意变量声明和函数返回值中的所有元组代码都消失了。其次，我们向<code>calculate_length</code>传递<code>&amp;s1</code>，在函数定义中接收<code>&amp;String</code>而非<code>String</code>。这些<code>&amp;</code>符号表示<strong>引用</strong>，它们允许你引用某个值而不获取其所有权。图4-6描绘了这一概念。</p>
+<img alt="" src="img/trpl04-06.svg" class="center" />
+<p><span class="caption">Figure 4-6: A diagram of <code>&amp;String s</code> pointing at <code>String  s1</code> 指向<code>String s1</code>的<code>&amp;String s</code>示意图</span></p>
+<section class="note" aria-role="note">
+<p>Note: The opposite of referencing by using <code>&amp;</code> is <em>dereferencing</em>, which is
+accomplished with the dereference operator, <code>*</code>. We’ll see some uses of the
+dereference operator in Chapter 8 and discuss details of dereferencing in
+Chapter 15.</p>
+<p>注意：使用<code>&amp;</code>引用的反操作是<strong>解引用</strong>，通过解引用运算符<code>*</code>实现。我们将在第8章看到解引用运算符的应用，并在第15章讨论解引用细节。</p>
+</section>
+<p>Let’s take a closer look at the function call here:</p>
+<p>仔细观察此函数调用：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s1 = String::from("hello");
+
+    let len = calculate_length(&amp;s1);
+<span class="boring">
+</span><span class="boring">    println!("The length of '{s1}' is {len}.");
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn calculate_length(s: &amp;String) -&gt; usize {
+</span><span class="boring">    s.len()
+</span><span class="boring">}</span></code></pre></pre>
+<p>The <code>&amp;s1</code> syntax lets us create a reference that <em>refers</em> to the value of <code>s1</code>
+but does not own it. Because the reference does not own it, the value it points
+to will not be dropped when the reference stops being used.</p>
+<p><code>&amp;s1</code>语法创建了一个<strong>指向</strong><code>s1</code>值但不拥有它的引用。由于引用不拥有该值，当引用停止使用时，其指向的值不会被丢弃。</p>
+<p>Likewise, the signature of the function uses <code>&amp;</code> to indicate that the type of
+the parameter <code>s</code> is a reference. Let’s add some explanatory annotations:</p>
+<p>同理，函数签名中的<code>&amp;</code>表明参数<code>s</code>是引用类型。添加注释说明：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let s1 = String::from("hello");
+</span><span class="boring">
+</span><span class="boring">    let len = calculate_length(&amp;s1);
+</span><span class="boring">
+</span><span class="boring">    println!("The length of '{s1}' is {len}.");
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn calculate_length(s: &amp;String) -&gt; usize { // s is a reference to a String
+    s.len()
+} // Here, s goes out of scope. But because s does not have ownership of what
+  // it refers to, the String is not dropped.</code></pre></pre>
+<p>The scope in which the variable <code>s</code> is valid is the same as any function
+parameter’s scope, but the value pointed to by the reference is not dropped
+when <code>s</code> stops being used, because <code>s</code> doesn’t have ownership. When functions
+have references as parameters instead of the actual values, we won’t need to
+return the values in order to give back ownership, because we never had
+ownership.</p>
+<p>变量<code>s</code>的作用域与任何函数参数相同，但当<code>s</code>停止使用时，引用指向的值不会被丢弃，因为<code>s</code>没有所有权。当函数使用引用而非实际值作为参数时，我们无需返回值来归还所有权，因为我们从未拥有所有权。</p>
+<p>We call the action of creating a reference <em>borrowing</em>. As in real life, if a
+person owns something, you can borrow it from them. When you’re done, you have
+to give it back. You don’t own it.</p>
+<p>创建引用的行为称为<strong>借用</strong>。如同现实生活，若某人拥有某物，你可以借用它。用完后必须归还，你并不拥有它。</p>
+<p>So, what happens if we try to modify something we’re borrowing? Try the code in
+Listing 4-6. Spoiler alert: it doesn’t work!</p>
+<p>若尝试修改借用的值会发生什么？试运行清单4-6的代码（剧透警告：无法运行！）：</p>
+<figure class="listing" id="listing-4-6">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let s = String::from("hello");
+
+    change(&amp;s);
+}
+
+fn change(some_string: &amp;String) {
+    some_string.push_str(", world");
+}</code></pre>
+<figcaption><a href="#listing-4-6">Listing 4-6</a>: Attempting to modify a borrowed value 尝试修改借用值</figcaption>
+</figure>
+<p>Here’s the error:</p>
+<p>错误信息如下：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0596]: cannot borrow `*some_string` as mutable, as it is behind a `&amp;` reference
+ --&gt; src/main.rs:8:5
+  |
+8 |     some_string.push_str(", world");
+  |     ^^^^^^^^^^^ `some_string` is a `&amp;` reference, so the data it refers to cannot be borrowed as mutable
+  |
+help: consider changing this to be a mutable reference
+  |
+7 | fn change(some_string: &amp;mut String) {
+  |                         +++
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `ownership` (bin "ownership") due to 1 previous error
+</code></pre>
+<p>Just as variables are immutable by default, so are references. We’re not
+allowed to modify something we have a reference to.</p>
+<p>正如变量默认不可变，引用也是不可变的。不允许修改引用的值。</p>
+<h3 id="mutable-references-可变引用"><a class="header" href="#mutable-references-可变引用">Mutable References 可变引用</a></h3>
+<p>We can fix the code from Listing 4-6 to allow us to modify a borrowed value
+with just a few small tweaks that use, instead, a <em>mutable reference</em>:</p>
+<p>我们可通过少量调整修复清单4-6的代码，改为使用<strong>可变引用</strong>：</p>
+<figure class="listing">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from("hello");
+
+    change(&amp;mut s);
+}
+
+fn change(some_string: &amp;mut String) {
+    some_string.push_str(", world");
+}</code></pre></pre>
+</figure>
+<p>First we change <code>s</code> to be <code>mut</code>. Then we create a mutable reference with <code>&amp;mut  s</code> where we call the <code>change</code> function, and update the function signature to
+accept a mutable reference with <code>some_string: &amp;mut String</code>. This makes it very
+clear that the <code>change</code> function will mutate the value it borrows.</p>
+<p>首先将<code>s</code>改为<code>mut</code>。在调用<code>change</code>函数时用<code>&amp;mut s</code>创建可变引用，并将函数签名更新为<code>some_string: &amp;mut String</code>以接收可变引用。这明确表示<code>change</code>函数将修改其借用的值。</p>
+<p>Mutable references have one big restriction: if you have a mutable reference to
+a value, you can have no other references to that value. This code that
+attempts to create two mutable references to <code>s</code> will fail:</p>
+<p>可变引用有严格限制：若存在对某值的可变引用，则不能有其他指向该值的引用。尝试创建两个指向<code>s</code>的可变引用的代码会失败：</p>
+<figure class="listing">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut s = String::from("hello");
+
+    let r1 = &amp;mut s;
+    let r2 = &amp;mut s;
+
+    println!("{r1}, {r2}");
+<span class="boring">}</span></code></pre>
+</figure>
+<p>Here’s the error:</p>
+<p>错误如下：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0499]: cannot borrow `s` as mutable more than once at a time
+ --&gt; src/main.rs:5:14
+  |
+4 |     let r1 = &amp;mut s;
+  |              ------ first mutable borrow occurs here
+5 |     let r2 = &amp;mut s;
+  |              ^^^^^^ second mutable borrow occurs here
+6 |
+7 |     println!("{r1}, {r2}");
+  |               ---- first borrow later used here
+
+For more information about this error, try `rustc --explain E0499`.
+error: could not compile `ownership` (bin "ownership") due to 1 previous error
+</code></pre>
+<p>This error says that this code is invalid because we cannot borrow <code>s</code> as
+mutable more than once at a time. The first mutable borrow is in <code>r1</code> and must
+last until it’s used in the <code>println!</code>, but between the creation of that
+mutable reference and its usage, we tried to create another mutable reference
+in <code>r2</code> that borrows the same data as <code>r1</code>.</p>
+<p>此错误表明代码无效，因为我们不能同时多次可变借用<code>s</code>。第一个可变借用位于<code>r1</code>，其生命周期持续到<code>println!</code>使用它为止，但在此可变引用创建和使用之间，我们尝试在<code>r2</code>创建另一个借用相同数据的可变引用。</p>
+<p>The restriction preventing multiple mutable references to the same data at the
+same time allows for mutation but in a very controlled fashion. It’s something
+that new Rustaceans struggle with because most languages let you mutate
+whenever you’d like. The benefit of having this restriction is that Rust can
+prevent data races at compile time. A <em>data race</em> is similar to a race
+condition and happens when these three behaviors occur:</p>
+<p>该限制允许在严格控制下进行修改。新手常因此困扰，因为多数语言允许自由修改变量。此限制的好处是Rust能在编译时防止数据竞争。<strong>数据竞争</strong>类似于竞态条件，在以下三种行为同时发生时出现：</p>
+<ul>
+<li>Two or more pointers access the same data at the same time.</li>
+<li>两个或更多指针同时访问同一数据</li>
+<li>At least one of the pointers is being used to write to the data.</li>
+<li>至少有一个指针用于写入数据</li>
+<li>There’s no mechanism being used to synchronize access to the data.</li>
+<li>未使用同步机制协调数据访问</li>
+</ul>
+<p>Data races cause undefined behavior and can be difficult to diagnose and fix
+when you’re trying to track them down at runtime; Rust prevents this problem by
+refusing to compile code with data races!</p>
+<p>数据竞争会导致未定义行为，且在运行时难以诊断和修复；Rust通过拒绝编译存在数据竞争的代码来避免此问题！</p>
+<p>As always, we can use curly brackets to create a new scope, allowing for
+multiple mutable references, just not <em>simultaneous</em> ones:</p>
+<p>我们可用花括号创建新作用域，允许非<strong>同时</strong>存在的多个可变引用：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("hello");
+
+    {
+        let r1 = &amp;mut s;
+    } // r1 goes out of scope here, so we can make a new reference with no problems.
+
+    let r2 = &amp;mut s;
+<span class="boring">}</span></code></pre></pre>
+<p>Rust enforces a similar rule for combining mutable and immutable references.
+This code results in an error:</p>
+<p>Rust对可变引用与不可变引用的组合有类似规则。以下代码会报错：</p>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let mut s = String::from("hello");
+
+    let r1 = &amp;s; // no problem
+    let r2 = &amp;s; // no problem
+    let r3 = &amp;mut s; // BIG PROBLEM
+
+    println!("{r1}, {r2}, and {r3}");
+<span class="boring">}</span></code></pre>
+<p>Here’s the error:</p>
+<p>错误如下：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0502]: cannot borrow `s` as mutable because it is also borrowed as immutable
+ --&gt; src/main.rs:6:14
+  |
+4 |     let r1 = &amp;s; // no problem
+  |              -- immutable borrow occurs here
+5 |     let r2 = &amp;s; // no problem
+6 |     let r3 = &amp;mut s; // BIG PROBLEM
+  |              ^^^^^^ mutable borrow occurs here
+7 |
+8 |     println!("{r1}, {r2}, and {r3}");
+  |               ---- immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `ownership` (bin "ownership") due to 1 previous error
+</code></pre>
+<p>Whew! We <em>also</em> cannot have a mutable reference while we have an immutable one
+to the same value.</p>
+<p>哇！当存在对同一值的不可变引用时，也不能拥有可变引用。</p>
+<p>Users of an immutable reference don’t expect the value to suddenly change out
+from under them! However, multiple immutable references are allowed because no
+one who is just reading the data has the ability to affect anyone else’s
+reading of the data.</p>
+<p>不可变引用用户不期望值突然被修改！但允许多个不可变引用存在，因为只读数据的用户不会影响其他用户的读取。</p>
+<p>Note that a reference’s scope starts from where it is introduced and continues
+through the last time that reference is used. For instance, this code will
+compile because the last usage of the immutable references is in the <code>println!</code>,
+before the mutable reference is introduced:</p>
+<p>注意引用的作用域从声明处开始，持续到最后一次使用。例如以下代码可编译，因为不可变引用的最后一次使用在<code>println!</code>（在可变引用创建之前）：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut s = String::from("hello");
+
+    let r1 = &amp;s; // no problem
+    let r2 = &amp;s; // no problem
+    println!("{r1} and {r2}");
+    // Variables r1 and r2 will not be used after this point.
+
+    let r3 = &amp;mut s; // no problem
+    println!("{r3}");
+<span class="boring">}</span></code></pre></pre>
+<p>The scopes of the immutable references <code>r1</code> and <code>r2</code> end after the <code>println!</code>
+where they are last used, which is before the mutable reference <code>r3</code> is
+created. These scopes don’t overlap, so this code is allowed: the compiler can
+tell that the reference is no longer being used at a point before the end of
+the scope.</p>
+<p>不可变引用<code>r1</code>和<code>r2</code>的作用域在最后一次使用的<code>println!</code>后结束，此时可变引用<code>r3</code>尚未创建。这些作用域不重叠，因此允许此代码：编译器能判断在作用域结束前引用已不再使用。</p>
+<p>Even though borrowing errors may be frustrating at times, remember that it’s
+the Rust compiler pointing out a potential bug early (at compile time rather
+than at runtime) and showing you exactly where the problem is. Then you don’t
+have to track down why your data isn’t what you thought it was.</p>
+<p>尽管借用错误有时令人沮丧，但请记住：Rust编译器是在早期（编译时而非运行时）指出潜在错误，并精确定位问题所在。这样你就不必追踪数据为何不符合预期。</p>
+<h3 id="dangling-references-悬垂引用"><a class="header" href="#dangling-references-悬垂引用">Dangling References 悬垂引用</a></h3>
+<p>In languages with pointers, it’s easy to erroneously create a <em>dangling
+pointer</em>—a pointer that references a location in memory that may have been
+given to someone else—by freeing some memory while preserving a pointer to that
+memory. In Rust, by contrast, the compiler guarantees that references will
+never be dangling references: if you have a reference to some data, the
+compiler will ensure that the data will not go out of scope before the
+reference to the data does.</p>
+<p>在使用指针的语言中，容易错误创建<strong>悬垂指针</strong>（指向已释放内存的指针）。而在Rust中，编译器保证引用永远不会成为悬垂引用：若存在对某数据的引用，编译器将确保该数据在引用失效前不会离开作用域。</p>
+<p>Let’s try to create a dangling reference to see how Rust prevents them with a
+compile-time error:</p>
+<p>尝试创建悬垂引用以观察Rust如何通过编译错误阻止：</p>
+<figure class="listing">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let reference_to_nothing = dangle();
+}
+
+fn dangle() -&gt; &amp;String {
+    let s = String::from("hello");
+
+    &amp;s
+}</code></pre>
+</figure>
+<p>Here’s the error:</p>
+<p>错误如下：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling ownership v0.1.0 (file:///projects/ownership)
+error[E0106]: missing lifetime specifier
+ --&gt; src/main.rs:5:16
+  |
+5 | fn dangle() -&gt; &amp;String {
+  |                ^ expected named lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value, but there is no value for it to be borrowed from
+help: consider using the `'static` lifetime, but this is uncommon unless you're returning a borrowed value from a `const` or a `static`
+  |
+5 | fn dangle() -&gt; &amp;'static String {
+  |                 +++++++
+help: instead, you are more likely to want to return an owned value
+  |
+5 - fn dangle() -&gt; &amp;String {
+5 + fn dangle() -&gt; String {
+  |
+
+error[E0515]: cannot return reference to local variable `s`
+ --&gt; src/main.rs:8:5
+  |
+8 |     &amp;s
+  |     ^^ returns a reference to data owned by the current function
+
+Some errors have detailed explanations: E0106, E0515.
+For more information about an error, try `rustc --explain E0106`.
+error: could not compile `ownership` (bin "ownership") due to 2 previous errors
+</code></pre>
+<p>This error message refers to a feature we haven’t covered yet: lifetimes. We’ll
+discuss lifetimes in detail in Chapter 10. But, if you disregard the parts
+about lifetimes, the message does contain the key to why this code is a problem:</p>
+<p>此错误涉及未涵盖的特性：生命周期（第10章详解）。若忽略生命周期部分，消息确实包含代码问题的关键信息：</p>
+<pre><code class="language-text">this function's return type contains a borrowed value, but there is no value
+for it to be borrowed from
+此函数返回类型包含借用值，但无被借用的值
+</code></pre>
+<p>Let’s take a closer look at exactly what’s happening at each stage of our
+<code>dangle</code> code:</p>
+<p>逐步分析<code>dangle</code>代码的执行过程：</p>
+<figure class="listing">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span><span class="boring">    let reference_to_nothing = dangle();
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn dangle() -&gt; &amp;String { // dangle returns a reference to a String
+
+    let s = String::from("hello"); // s is a new String
+
+    &amp;s // we return a reference to the String, s
+} // Here, s goes out of scope and is dropped, so its memory goes away.
+  // Danger!</code></pre>
+</figure>
+<p>Because <code>s</code> is created inside <code>dangle</code>, when the code of <code>dangle</code> is finished,
+<code>s</code> will be deallocated. But we tried to return a reference to it. That means
+this reference would be pointing to an invalid <code>String</code>. That’s no good! Rust
+won’t let us do this.</p>
+<p>由于<code>s</code>在<code>dangle</code>内部创建，当<code>dangle</code>代码执行完毕时，<code>s</code>会被释放。但我们试图返回对它的引用，这将指向无效的<code>String</code>。Rust不允许此操作。</p>
+<p>The solution here is to return the <code>String</code> directly:</p>
+<p>解决方案是直接返回<code>String</code>：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    let string = no_dangle();
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn no_dangle() -&gt; String {
+    let s = String::from("hello");
+
+    s
+}</code></pre></pre>
+<p>This works without any problems. Ownership is moved out, and nothing is
+deallocated.</p>
+<p>此代码正常运行。所有权被移出，且未释放任何内容。</p>
+<h3 id="the-rules-of-references-引用规则"><a class="header" href="#the-rules-of-references-引用规则">The Rules of References 引用规则</a></h3>
+<p>Let’s recap what we’ve discussed about references:</p>
+<p>回顾引用的核心规则：</p>
+<ul>
+<li>At any given time, you can have <em>either</em> one mutable reference <em>or</em> any
+number of immutable references.</li>
+<li>任意时刻，只能有<strong>一个</strong>可变引用<strong>或</strong>任意数量不可变引用</li>
+<li>References must always be valid.</li>
+<li>引用必须始终有效</li>
+</ul>
+<p>Next, we’ll look at a different kind of reference: slices.</p>
+<p>接下来我们将探讨另一种引用类型：切片。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch04-01-what-is-ownership.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch04-03-slices.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch04-01-what-is-ownership.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch04-03-slices.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,988 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Pattern Syntax 模式语法 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="pattern-syntax-模式语法"><a class="header" href="#pattern-syntax-模式语法">Pattern Syntax 模式语法</a></h2>
+<p>In this section, we gather all the syntax that is valid in patterns and discuss
+why and when you might want to use each one.</p>
+<p>本节汇总了模式中所有有效的语法，并讨论了为何以及何时使用每种语法。</p>
+<h3 id="matching-literals-匹配字面值"><a class="header" href="#matching-literals-匹配字面值">Matching Literals 匹配字面值</a></h3>
+<p>As you saw in Chapter 6, you can match patterns against literals directly. The
+following code gives some examples:</p>
+<p>如第6章所见，可以直接匹配字面值模式。以下代码展示了一些示例：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 1;
+
+    match x {
+        1 =&gt; println!("one"),
+        2 =&gt; println!("two"),
+        3 =&gt; println!("three"),
+        _ =&gt; println!("anything"),
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>This code prints <code>one</code> because the value in <code>x</code> is <code>1</code>. This syntax is useful
+when you want your code to take an action if it gets a particular concrete
+value.</p>
+<p>此代码打印 <code>one</code>，因为 <code>x</code> 中的值是 <code>1</code>。当希望代码在获取特定具体值时执行操作时，此语法非常有用。</p>
+<h3 id="matching-named-variables-匹配命名变量"><a class="header" href="#matching-named-variables-匹配命名变量">Matching Named Variables 匹配命名变量</a></h3>
+<p>Named variables are irrefutable patterns that match any value, and we’ve used
+them many times in this book. However, there is a complication when you use
+named variables in <code>match</code>, <code>if let</code>, or <code>while let</code> expressions. Because each
+of these kinds of expressions starts a new scope, variables declared as part of
+a pattern inside these expressions will shadow those with the same name outside
+the constructs, as is the case with all variables. In Listing 19-11, we declare
+a variable named <code>x</code> with the value <code>Some(5)</code> and a variable <code>y</code> with the value
+<code>10</code>. We then create a <code>match</code> expression on the value <code>x</code>. Look at the
+patterns in the match arms and <code>println!</code> at the end, and try to figure out
+what the code will print before running this code or reading further.</p>
+<p>命名变量是匹配任何值的无可辩驳模式，本书中已多次使用它们。然而，在 <code>match</code>、<code>if let</code> 或 <code>while let</code> 表达式中使用命名变量时存在复杂性。因为每种表达式都会开启新作用域，这些表达式内部作为模式一部分声明的变量将遮蔽外部同名变量，所有变量皆如此。在示例19-11中，声明了值为 <code>Some(5)</code> 的变量 <code>x</code> 和值为 <code>10</code> 的变量 <code>y</code>。然后在值 <code>x</code> 上创建 <code>match</code> 表达式。查看匹配分支中的模式及结尾的 <code>println!</code>，尝试在运行代码或继续阅读前推断代码将打印的内容。</p>
+<figure class="listing" id="listing-19-11">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) =&gt; println!("Got 50"),
+        Some(y) =&gt; println!("Matched, y = {y}"),
+        _ =&gt; println!("Default case, x = {x:?}"),
+    }
+
+    println!("at the end: x = {x:?}, y = {y}");
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-19-11">Listing 19-11</a>: A <code>match</code> expression with an arm that introduces a new variable which shadows an existing variable <code>y</code> 引入新变量的 <code>match</code> 表达式，该变量遮蔽了现有变量 <code>y</code></figcaption>
+</figure>
+<p>Let’s walk through what happens when the <code>match</code> expression runs. The pattern
+in the first match arm doesn’t match the defined value of <code>x</code>, so the code
+continues.</p>
+<p>逐步分析 <code>match</code> 表达式运行时的过程。第一个匹配分支的模式与 <code>x</code> 的定义值不匹配，因此代码继续执行。</p>
+<p>The pattern in the second match arm introduces a new variable named <code>y</code> that
+will match any value inside a <code>Some</code> value. Because we’re in a new scope inside
+the <code>match</code> expression, this is a new <code>y</code> variable, not the <code>y</code> we declared at
+the beginning with the value <code>10</code>. This new <code>y</code> binding will match any value
+inside a <code>Some</code>, which is what we have in <code>x</code>. Therefore, this new <code>y</code> binds to
+the inner value of the <code>Some</code> in <code>x</code>. That value is <code>5</code>, so the expression for
+that arm executes and prints <code>Matched, y = 5</code>.</p>
+<p>第二个匹配分支的模式引入了名为 <code>y</code> 的新变量，它将匹配 <code>Some</code> 值内部的任何值。因为在 <code>match</code> 表达式内部的新作用域中，这是一个新的 <code>y</code> 变量，而非开头声明的值为 <code>10</code> 的 <code>y</code>。此新 <code>y</code> 绑定将匹配 <code>Some</code> 内部的任何值，这正是 <code>x</code> 中的内容。因此，此新 <code>y</code> 绑定到 <code>x</code> 中 <code>Some</code> 的内部值。该值为 <code>5</code>，因此该分支的表达式执行并打印 <code>Matched, y = 5</code>。</p>
+<p>If <code>x</code> had been a <code>None</code> value instead of <code>Some(5)</code>, the patterns in the first
+two arms wouldn’t have matched, so the value would have matched to the
+underscore. We didn’t introduce the <code>x</code> variable in the pattern of the
+underscore arm, so the <code>x</code> in the expression is still the outer <code>x</code> that hasn’t
+been shadowed. In this hypothetical case, the <code>match</code> would print <code>Default case, x = None</code>.</p>
+<p>若 <code>x</code> 是 <code>None</code> 值而非 <code>Some(5)</code>，前两个分支的模式不会匹配，因此值会匹配下划线分支。未在下划线分支的模式中引入 <code>x</code> 变量，因此表达式中的 <code>x</code> 仍是未被遮蔽的外部 <code>x</code>。在此假设情况下，<code>match</code> 会打印 <code>Default case, x = None</code>。</p>
+<p>When the <code>match</code> expression is done, its scope ends, and so does the scope of
+the inner <code>y</code>. The last <code>println!</code> produces <code>at the end: x = Some(5), y = 10</code>.</p>
+<p>当 <code>match</code> 表达式结束时，其作用域结束，内部 <code>y</code> 的作用域也随之结束。最后的 <code>println!</code> 输出 <code>at the end: x = Some(5), y = 10</code>。</p>
+<p>To create a <code>match</code> expression that compares the values of the outer <code>x</code> and
+<code>y</code>, rather than introducing a new variable that shadows the existing <code>y</code>
+variable, we would need to use a match guard conditional instead. We’ll talk
+about match guards later in “Extra Conditionals with Match
+Guards”.</p>
+<p>要创建比较外部 <code>x</code> 和 <code>y</code> 值的 <code>match</code> 表达式（而非引入遮蔽现有 <code>y</code> 变量的新变量），需改用匹配守卫条件。稍后将在“匹配守卫的额外条件”中讨论匹配守卫。</p>
+<h3 id="multiple-patterns-多重模式"><a class="header" href="#multiple-patterns-多重模式">Multiple Patterns 多重模式</a></h3>
+<p>In <code>match</code> expressions, you can match multiple patterns using the <code>|</code> syntax,
+which is the pattern <em>or</em> operator. For example, in the following code we match
+the value of <code>x</code> against the match arms, the first of which has an <em>or</em> option,
+meaning if the value of <code>x</code> matches either of the values in that arm, that
+arm’s code will run:</p>
+<p><span class="highlight">[note]在 <code>match</code> 表达式中，可使用 <code>|</code> 语法匹配多个模式，即模式 <em>或</em> 运算符。</span>例如，以下代码将 <code>x</code> 值与匹配分支匹配，第一个分支有 <em>或</em> 选项，意味着若 <code>x</code> 值匹配该分支中的任一值，该分支的代码将运行：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 1;
+
+    match x {
+        1 | 2 =&gt; println!("one or two"),
+        3 =&gt; println!("three"),
+        _ =&gt; println!("anything"),
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>This code prints <code>one or two</code>.</p>
+<p>此代码打印 <code>one or two</code>。</p>
+<h3 id="matching-ranges-of-values-with--用--匹配值范围"><a class="header" href="#matching-ranges-of-values-with--用--匹配值范围">Matching Ranges of Values with <code>..=</code> 用 <code>..=</code> 匹配值范围</a></h3>
+<p>The <code>..=</code> syntax allows us to match to an inclusive range of values. In the
+following code, when a pattern matches any of the values within the given
+range, that arm will execute:</p>
+<p><span class="highlight">[note]<code>..=</code> 语法允许匹配包含端点值的范围。</span>以下代码中，当模式匹配给定范围内的任意值时，该分支将执行：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 5;
+
+    match x {
+        1..=5 =&gt; println!("one through five"),
+        _ =&gt; println!("something else"),
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>If <code>x</code> is <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>, or <code>5</code>, the first arm will match. This syntax is
+more convenient for multiple match values than using the <code>|</code> operator to
+express the same idea; if we were to use <code>|</code>, we would have to specify <code>1 | 2 | 3 | 4 | 5</code>. Specifying a range is much shorter, especially if we want to match,
+say, any number between 1 and 1,000!</p>
+<p>若 <code>x</code> 为 <code>1</code>、<code>2</code>、<code>3</code>、<code>4</code> 或 <code>5</code>，第一个分支将匹配。对于多匹配值，此语法比用 <code>|</code> 运算符表达相同概念更便捷；若使用 <code>|</code>，则需指定 <code>1 | 2 | 3 | 4 | 5</code>。指定范围更简短，尤其当需匹配如 1 到 1000 的任意数字时！</p>
+<p>The compiler checks that the range isn’t empty at compile time, and because the
+only types for which Rust can tell if a range is empty or not are <code>char</code> and
+numeric values, ranges are only allowed with numeric or <code>char</code> values.</p>
+<p><span class="highlight">[note]编译器在编译时检查范围是否为空。由于 Rust 能判断范围是否为空的唯一类型是 <code>char</code> 和数值，因此范围仅允许用于数值或 <code>char</code> 值。</span></p>
+<p>Here is an example using ranges of <code>char</code> values:</p>
+<p>以下示例使用 <code>char</code> 值范围：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 'c';
+
+    match x {
+        'a'..='j' =&gt; println!("early ASCII letter"),
+        'k'..='z' =&gt; println!("late ASCII letter"),
+        _ =&gt; println!("something else"),
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>Rust can tell that <code>'c'</code> is within the first pattern’s range and prints <code>early ASCII letter</code>.</p>
+<p>Rust 可判断 <code>'c'</code> 在第一个模式的范围内，因此打印 <code>early ASCII letter</code>。</p>
+<h3 id="destructuring-to-break-apart-values-解构以分解值"><a class="header" href="#destructuring-to-break-apart-values-解构以分解值">Destructuring to Break Apart Values 解构以分解值</a></h3>
+<p>We can also use patterns to destructure structs, enums, and tuples to use
+different parts of these values. Let’s walk through each value.</p>
+<p>也可使用模式解构结构体、枚举和元组，以使用这些值的不同部分。下面逐一分析。</p>
+<h4 id="destructuring-structs-解构结构体"><a class="header" href="#destructuring-structs-解构结构体">Destructuring Structs 解构结构体</a></h4>
+<p>Listing 19-12 shows a <code>Point</code> struct with two fields, <code>x</code> and <code>y</code>, that we can
+break apart using a pattern with a <code>let</code> statement.</p>
+<p>示例19-12展示了带 <code>x</code> 和 <code>y</code> 字段的 <code>Point</code> 结构体，可用带 <code>let</code> 语句的模式分解它。</p>
+<figure class="listing" id="listing-19-12">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust">struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x: a, y: b } = p;
+    assert_eq!(0, a);
+    assert_eq!(7, b);
+}</code></pre></pre>
+<figcaption><a href="#listing-19-12">Listing 19-12</a>: Destructuring a struct’s fields into separate variables 将结构体字段解构为独立变量</figcaption>
+</figure>
+<p>This code creates the variables <code>a</code> and <code>b</code> that match the values of the <code>x</code>
+and <code>y</code> fields of the <code>p</code> struct. This example shows that the names of the
+variables in the pattern don’t have to match the field names of the struct.
+However, it’s common to match the variable names to the field names to make it
+easier to remember which variables came from which fields. Because of this
+common usage, and because writing <code>let Point { x: x, y: y } = p;</code> contains a
+lot of duplication, Rust has a shorthand for patterns that match struct fields:
+you only need to list the name of the struct field, and the variables created
+from the pattern will have the same names. Listing 19-13 behaves in the same
+way as the code in Listing 19-12, but the variables created in the <code>let</code>
+pattern are <code>x</code> and <code>y</code> instead of <code>a</code> and <code>b</code>.</p>
+<p>此代码创建变量 <code>a</code> 和 <code>b</code>，分别匹配 <code>p</code> 结构体的 <code>x</code> 和 <code>y</code> 字段值。此例表明模式中的变量名不必与结构体字段名匹配。但通常将变量名与字段名匹配，以便记忆变量来源。因此常见用法中，写 <code>let Point { x: x, y: y } = p;</code> 包含大量重复，Rust 对匹配结构体字段的模式提供了<span class="highlight">[note]简写：仅需列出结构体字段名，模式创建的变量将同名</span>。示例19-13的行为与示例19-12的代码相同，但 <code>let</code> 模式创建的变量是 <code>x</code> 和 <code>y</code> 而非 <code>a</code> 和 <code>b</code>。</p>
+<figure class="listing" id="listing-19-13">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust">struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    let Point { x, y } = p;
+    assert_eq!(0, x);
+    assert_eq!(7, y);
+}</code></pre></pre>
+<figcaption><a href="#listing-19-13">Listing 19-13</a>: Destructuring struct fields using struct field shorthand 使用结构体字段简写法解构结构体字段</figcaption>
+</figure>
+<p>This code creates the variables <code>x</code> and <code>y</code> that match the <code>x</code> and <code>y</code> fields
+of the <code>p</code> variable. The outcome is that the variables <code>x</code> and <code>y</code> contain the
+values from the <code>p</code> struct.</p>
+<p>此代码创建变量 <code>x</code> 和 <code>y</code>，分别匹配 <code>p</code> 变量的 <code>x</code> 和 <code>y</code> 字段。结果是变量 <code>x</code> 和 <code>y</code> 包含来自 <code>p</code> 结构体的值。</p>
+<p>We can also destructure with literal values as part of the struct pattern
+rather than creating variables for all the fields. Doing so allows us to test
+some of the fields for particular values while creating variables to
+destructure the other fields.</p>
+<p><span class="highlight">[note]也可将字面值作为结构体模式的一部分进行解构，而非为所有字段创建变量。这样可测试部分字段的特定值，同时创建变量解构其他字段。</span></p>
+<p>In Listing 19-14, we have a <code>match</code> expression that separates <code>Point</code> values
+into three cases: points that lie directly on the <code>x</code> axis (which is true when
+<code>y = 0</code>), on the <code>y</code> axis (<code>x = 0</code>), or on neither axis.</p>
+<p>示例19-14中，<code>match</code> 表达式将 <code>Point</code> 值分为三种情况：位于 <code>x</code> 轴上的点（当 <code>y = 0</code> 时为真）、位于 <code>y</code> 轴上的点（<code>x = 0</code>）或不在任一轴上的点。</p>
+<figure class="listing" id="listing-19-14">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">struct Point {
+</span><span class="boring">    x: i32,
+</span><span class="boring">    y: i32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>fn main() {
+    let p = Point { x: 0, y: 7 };
+
+    match p {
+        Point { x, y: 0 } =&gt; println!("On the x axis at {x}"),
+        Point { x: 0, y } =&gt; println!("On the y axis at {y}"),
+        Point { x, y } =&gt; {
+            println!("On neither axis: ({x}, {y})");
+        }
+    }
+}</code></pre></pre>
+<figcaption><a href="#listing-19-14">Listing 19-14</a>: Destructuring and matching literal values in one pattern 在单个模式中同时解构和匹配字面</figcaption>
+</figure>
+<p>The first arm will match any point that lies on the <code>x</code> axis by specifying that
+the <code>y</code> field matches if its value matches the literal <code>0</code>. The pattern still
+creates an <code>x</code> variable that we can use in the code for this arm.</p>
+<p>第一个分支通过指定 <code>y</code> 字段匹配字面值 <code>0</code> 来匹配 <code>x</code> 轴上的任意点。模式仍会创建变量 <code>x</code> 供该分支代码使用。</p>
+<p>Similarly, the second arm matches any point on the <code>y</code> axis by specifying that
+the <code>x</code> field matches if its value is <code>0</code> and creates a variable <code>y</code> for the
+value of the <code>y</code> field. The third arm doesn’t specify any literals, so it
+matches any other <code>Point</code> and creates variables for both the <code>x</code> and <code>y</code> fields.</p>
+<p>类似地，第二个分支通过指定 <code>x</code> 字段为 <code>0</code> 来匹配 <code>y</code> 轴上的任意点，并为 <code>y</code> 字段值创建变量 <code>y</code>。第三个分支未指定字面值，因此匹配其他任意 <code>Point</code> 并为 <code>x</code> 和 <code>y</code> 字段创建变量。</p>
+<p>In this example, the value <code>p</code> matches the second arm by virtue of <code>x</code>
+containing a <code>0</code>, so this code will print <code>On the y axis at 7</code>.</p>
+<p>此例中，值 <code>p</code> 因 <code>x</code> 包含 <code>0</code> 而匹配第二个分支，因此代码将打印 <code>On the y axis at 7</code>。</p>
+<p>Remember that a <code>match</code> expression stops checking arms once it has found the
+first matching pattern, so even though <code>Point { x: 0, y: 0}</code> is on the <code>x</code> axis
+and the <code>y</code> axis, this code would only print <code>On the x axis at 0</code>.</p>
+<p>记住 <code>match</code> 表达式在找到第一个匹配模式后即停止检查分支，因此即使 <code>Point { x: 0, y: 0}</code> 同时在 <code>x</code> 轴和 <code>y</code> 轴上，此代码也仅会打印 <code>On the x axis at 0</code>。</p>
+<h4 id="destructuring-enums-解构枚举"><a class="header" href="#destructuring-enums-解构枚举">Destructuring Enums 解构枚举</a></h4>
+<p>We’ve destructured enums in this book (for example, Listing 6-5 in Chapter 6),
+but haven’t yet explicitly discussed that the pattern to destructure an enum
+corresponds to the way the data stored within the enum is defined. As an
+example, in Listing 19-15 we use the <code>Message</code> enum from Listing 6-2 and write
+a <code>match</code> with patterns that will destructure each inner value.</p>
+<p>本书中已解构枚举（如第6章示例6-5），但尚未明确讨论解构枚举的模式与枚举内定义的数据存储方式相对应。例如，示例19-15使用示例6-2的 <code>Message</code> 枚举，编写带模式的 <code>match</code> 以解构每个内部值。</p>
+<figure class="listing" id="listing-19-15">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust">enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(0, 160, 255);
+
+    match msg {
+        Message::Quit =&gt; {
+            println!("The Quit variant has no data to destructure.");
+        }
+        Message::Move { x, y } =&gt; {
+            println!("Move in the x direction {x} and in the y direction {y}");
+        }
+        Message::Write(text) =&gt; {
+            println!("Text message: {text}");
+        }
+        Message::ChangeColor(r, g, b) =&gt; {
+            println!("Change color to red {r}, green {g}, and blue {b}");
+        }
+    }
+}</code></pre></pre>
+<figcaption><a href="#listing-19-15">Listing 19-15</a>: Destructuring enum variants that hold different kinds of values 解构包含不同类型值的枚举变体</figcaption>
+</figure>
+<p>This code will print <code>Change color to red 0, green 160, and blue 255</code>. Try
+changing the value of <code>msg</code> to see the code from the other arms run.</p>
+<p>此代码将打印 <code>Change color to red 0, green 160, and blue 255</code>。尝试更改 <code>msg</code> 值以观察其他分支的代码运行。</p>
+<p>For enum variants without any data, like <code>Message::Quit</code>, we can’t destructure
+the value any further. We can only match on the literal <code>Message::Quit</code> value,
+and no variables are in that pattern.</p>
+<p>对于不含数据的枚举变体（如 <code>Message::Quit</code>），无法进一步解构值。仅能匹配字面值 <code>Message::Quit</code>，该模式不含变量。</p>
+<p>For struct-like enum variants, such as <code>Message::Move</code>, we can use a pattern
+similar to the pattern we specify to match structs. After the variant name, we
+place curly brackets and then list the fields with variables so we break apart
+the pieces to use in the code for this arm. Here we use the shorthand form as
+we did in Listing 19-13.</p>
+<p>对于类结构体枚举变体（如 <code>Message::Move</code>），可使用类似于匹配结构体的模式。在变体名后放置花括号，然后列出带变量的字段以分解部分值供该分支代码使用。此处使用示例19-13中的简写形式。</p>
+<p>For tuple-like enum variants, like <code>Message::Write</code> that holds a tuple with one
+element and <code>Message::ChangeColor</code> that holds a tuple with three elements, the
+pattern is similar to the pattern we specify to match tuples. The number of
+variables in the pattern must match the number of elements in the variant we’re
+matching.</p>
+<p>对于类元组枚举变体（如包含单元素元组的 <code>Message::Write</code> 和包含三元素元组的 <code>Message::ChangeColor</code>），模式类似于匹配元组的模式。模式中的变量数必须与匹配变体的元素数一致。</p>
+<h4 id="destructuring-nested-structs-and-enums--解构嵌套结构体和枚举"><a class="header" href="#destructuring-nested-structs-and-enums--解构嵌套结构体和枚举">Destructuring Nested Structs and Enums  解构嵌套结构体和枚举</a></h4>
+<p>So far, our examples have all been matching structs or enums one level deep,
+but matching can work on nested items too! For example, we can refactor the
+code in Listing 19-15 to support RGB and HSV colors in the <code>ChangeColor</code>
+message, as shown in Listing 19-16.</p>
+<p>目前的示例均解构单层结构体或枚举，但<span class="highlight">[note]匹配也可处理嵌套项</span>！例如，可重构示例19-15的代码以支持 <code>ChangeColor</code> 消息中的 RGB 和 HSV 颜色，如示例19-16所示。</p>
+<figure class="listing" id="listing-19-16">
+<pre><pre class="playground"><code class="language-rust">enum Color {
+    Rgb(i32, i32, i32),
+    Hsv(i32, i32, i32),
+}
+
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(Color),
+}
+
+fn main() {
+    let msg = Message::ChangeColor(Color::Hsv(0, 160, 255));
+
+    match msg {
+        Message::ChangeColor(Color::Rgb(r, g, b)) =&gt; {
+            println!("Change color to red {r}, green {g}, and blue {b}");
+        }
+        Message::ChangeColor(Color::Hsv(h, s, v)) =&gt; {
+            println!("Change color to hue {h}, saturation {s}, value {v}");
+        }
+        _ =&gt; (),
+    }
+}</code></pre></pre>
+<figcaption><a href="#listing-19-16">Listing 19-16</a>: Matching on nested enums 匹配嵌套枚举</figcaption>
+</figure>
+<p>The pattern of the first arm in the <code>match</code> expression matches a
+<code>Message::ChangeColor</code> enum variant that contains a <code>Color::Rgb</code> variant; then
+the pattern binds to the three inner <code>i32</code> values. The pattern of the second
+arm also matches a <code>Message::ChangeColor</code> enum variant, but the inner enum
+matches <code>Color::Hsv</code> instead. We can specify these complex conditions in one
+<code>match</code> expression, even though two enums are involved.</p>
+<p><code>match</code> 表达式第一个分支的模式匹配包含 <code>Color::Rgb</code> 变体的 <code>Message::ChangeColor</code> 枚举变体，随后模式绑定到三个内部 <code>i32</code> 值。第二个分支的模式也匹配 <code>Message::ChangeColor</code> 枚举变体，但内部枚举匹配 <code>Color::Hsv</code>。即使涉及两个枚举，也可在单个 <code>match</code> 表达式中指定这些复杂条件。</p>
+<h4 id="destructuring-structs-and-tuples-解构结构体和元组"><a class="header" href="#destructuring-structs-and-tuples-解构结构体和元组">Destructuring Structs and Tuples 解构结构体和元组</a></h4>
+<p>We can mix, match, and nest destructuring patterns in even more complex ways.
+The following example shows a complicated destructure where we nest structs and
+tuples inside a tuple and destructure all the primitive values out:</p>
+<p>可以更复杂的方式混合、匹配和嵌套解构模式。下例展示在元组内嵌套结构体和元组的复杂解构，并解构出所有原始值：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span><span class="boring">    struct Point {
+</span><span class="boring">        x: i32,
+</span><span class="boring">        y: i32,
+</span><span class="boring">    }
+</span><span class="boring">
+</span>    let ((feet, inches), Point { x, y }) = ((3, 10), Point { x: 3, y: -10 });
+<span class="boring">}</span></code></pre></pre>
+<p>This code lets us break complex types into their component parts so we can use
+the values we’re interested in separately.</p>
+<p>此代码将复杂类型分解为组成部分，以便分别使用关注的值。</p>
+<p>Destructuring with patterns is a convenient way to use pieces of values, such
+as the value from each field in a struct, separately from each other.</p>
+<p>使用模式解构是便捷使用值片段（如结构体各字段的值）的方式。</p>
+<h3 id="ignoring-values-in-a-pattern-忽略模式中的值"><a class="header" href="#ignoring-values-in-a-pattern-忽略模式中的值">Ignoring Values in a Pattern 忽略模式中的值</a></h3>
+<p>You’ve seen that it’s sometimes useful to ignore values in a pattern, such as
+in the last arm of a <code>match</code>, to get a catch-all that doesn’t actually do
+anything but does account for all remaining possible values. There are a few
+ways to ignore entire values or parts of values in a pattern: using the <code>_</code>
+pattern (which you’ve seen), using the <code>_</code> pattern within another pattern,
+using a name that starts with an underscore, or using <code>..</code> to ignore remaining
+parts of a value. Let’s explore how and why to use each of these patterns.</p>
+<p>有时忽略模式中的值很有用，例如 <code>match</code> 的最后一个分支中，用于获取实际不执行操作但涵盖所有剩余可能值的通配项。有几种方法可忽略整个值或部分值：使用 <code>_</code> 模式（已见过）、在其他模式内使用 <code>_</code>、使用下划线开头的名称或使用 <code>..</code> 忽略值的剩余部分。下面探讨每种模式的使用方法及原因。</p>
+<h4 id="an-entire-value-with-_-用-_-忽略整个值"><a class="header" href="#an-entire-value-with-_-用-_-忽略整个值">An Entire Value with <code>_</code> 用 <code>_</code> 忽略整个值</a></h4>
+<p>We’ve used the underscore as a wildcard pattern that will match any value but
+not bind to the value. This is especially useful as the last arm in a <code>match</code>
+expression, but we can also use it in any pattern, including function
+parameters, as shown in Listing 19-17.</p>
+<p>下划线用作通配符模式，可匹配任意值但不绑定值。这在 <code>match</code> 表达式的最后一个分支中尤其有用，但也<span class="highlight">[note]适用于任意模式，包括函数参数</span>，如示例19-17所示。</p>
+<figure class="listing" id="listing-19-17">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust">fn foo(_: i32, y: i32) {
+    println!("This code only uses the y parameter: {y}");
+}
+
+fn main() {
+    foo(3, 4);
+}</code></pre></pre>
+<figcaption><a href="#listing-19-17">Listing 19-17</a>: Using <code>_</code> in a function signature 在函数签名中使用 `_</figcaption>
+</figure>
+<p>This code will completely ignore the value <code>3</code> passed as the first argument,
+and will print <code>This code only uses the y parameter: 4</code>.</p>
+<p>此代码将完全忽略作为第一个参数传递的值 <code>3</code>，并打印 <code>This code only uses the y parameter: 4</code>。</p>
+<p>In most cases when you no longer need a particular function parameter, you
+would change the signature so it doesn’t include the unused parameter. Ignoring
+a function parameter can be especially useful in cases when, for example,
+you’re implementing a trait when you need a certain type signature but the
+function body in your implementation doesn’t need one of the parameters. You
+then avoid getting a compiler warning about unused function parameters, as you
+would if you used a name instead.</p>
+<p>多数情况下不再需要特定函数参数时，应更改签名以排除未用参数。忽略函数参数在特定场景下特别有用，例如实现特征时需要特定类型签名，但实现中的函数体不需要某个参数。这样可避免编译器关于未用函数参数的警告（若使用名称则会产生警告）。</p>
+<h4 id="parts-of-a-value-with-a-nested-_-用嵌套-_-忽略部分值"><a class="header" href="#parts-of-a-value-with-a-nested-_-用嵌套-_-忽略部分值">Parts of a Value with a Nested <code>_</code> 用嵌套 <code>_</code> 忽略部分值</a></h4>
+<p>We can also use <code>_</code> inside another pattern to ignore just part of a value, for
+example, when we want to test for only part of a value but have no use for the
+other parts in the corresponding code we want to run. Listing 19-18 shows code
+responsible for managing a setting’s value. The business requirements are that
+the user should not be allowed to overwrite an existing customization of a
+setting but can unset the setting and give it a value if it is currently unset.</p>
+<p><span class="highlight">[note]也可在其他模式内使用 <code>_</code> 以仅忽略值的部分内容</span>。例如当仅需测试值的部分内容，但在对应代码中不使用其他部分时。示例19-18展示了管理设置值的代码。业务要求是用户不应覆盖设置的现有自定义值，但可取消设置并在当前未设置时赋值。</p>
+<figure class="listing" id="listing-19-18">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let mut setting_value = Some(5);
+    let new_setting_value = Some(10);
+
+    match (setting_value, new_setting_value) {
+        (Some(_), Some(_)) =&gt; {
+            println!("Can't overwrite an existing customized value");
+        }
+        _ =&gt; {
+            setting_value = new_setting_value;
+        }
+    }
+
+    println!("setting is {setting_value:?}");
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-19-18">Listing 19-18</a>: Using an underscore within patterns that match <code>Some</code> variants when we don’t need to use the value inside the <code>Some</code> 在匹配 <code>Some</code> 变体的模式中使用下划线，而无需使用 <code>Some</code> 内部的值</figcaption>
+</figure>
+<p>This code will print <code>Can't overwrite an existing customized value</code> and then
+<code>setting is Some(5)</code>. In the first match arm, we don’t need to match on or use
+the values inside either <code>Some</code> variant, but we do need to test for the case
+when <code>setting_value</code> and <code>new_setting_value</code> are the <code>Some</code> variant. In that
+case, we print the reason for not changing <code>setting_value</code>, and it doesn’t get
+changed.</p>
+<p>此代码将打印 <code>Can't overwrite an existing customized value</code>，然后打印 <code>setting is Some(5)</code>。第一个匹配分支中，无需匹配或使用任一 <code>Some</code> 变体内部的值，但需测试 <code>setting_value</code> 和 <code>new_setting_value</code> 同为 <code>Some</code> 变体的情况。此时打印不更改 <code>setting_value</code> 的原因，且其值不变。</p>
+<p>In all other cases (if either <code>setting_value</code> or <code>new_setting_value</code> is <code>None</code>)
+expressed by the <code>_</code> pattern in the second arm, we want to allow
+<code>new_setting_value</code> to become <code>setting_value</code>.</p>
+<p>其他所有情况（即 <code>setting_value</code> 或 <code>new_setting_value</code> 为 <code>None</code>）由第二个分支的 <code>_</code> 模式表示，此时允许 <code>new_setting_value</code> 成为 <code>setting_value</code>。</p>
+<p>We can also use underscores in multiple places within one pattern to ignore
+particular values. Listing 19-19 shows an example of ignoring the second and
+fourth values in a tuple of five items.</p>
+<p>也可在单个模式中多处使用下划线以忽略特定值。示例19-19展示了忽略五元素元组中第二和第四个值的例子。</p>
+<figure class="listing" id="listing-19-19">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, _, third, _, fifth) =&gt; {
+            println!("Some numbers: {first}, {third}, {fifth}");
+        }
+    }
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-19-19">Listing 19-19</a>: Ignoring multiple parts of a tuple 忽略元组的多个部分</figcaption>
+</figure>
+<p>This code will print <code>Some numbers: 2, 8, 32</code>, and the values <code>4</code> and <code>16</code> will
+be ignored.</p>
+<p>此代码将打印 <code>Some numbers: 2, 8, 32</code>，且值 <code>4</code> 和 <code>16</code> 将被忽略。</p>
+<h4 id="an-unused-variable-by-starting-its-name-with-_-以-_-开头的名称忽略未用变量"><a class="header" href="#an-unused-variable-by-starting-its-name-with-_-以-_-开头的名称忽略未用变量">An Unused Variable by Starting Its Name with <code>_</code> 以 <code>_</code> 开头的名称忽略未用变量</a></h4>
+<p>If you create a variable but don’t use it anywhere, Rust will usually issue a
+warning because an unused variable could be a bug. However, sometimes it’s
+useful to be able to create a variable you won’t use yet, such as when you’re
+prototyping or just starting a project. In this situation, you can tell Rust
+not to warn you about the unused variable by starting the name of the variable
+with an underscore. In Listing 19-20, we create two unused variables, but when
+we compile this code, we should only get a warning about one of them.</p>
+<p>若创建变量但未使用，Rust 通常会警告，因为未用变量可能是错误。但有时能创建尚未使用的变量很有用（例如原型设计或项目启动时）。此时可在变量名前加下划线告知 Rust 勿警告未用变量。示例19-20创建了两个未用变量，但编译代码时应仅获关于其中一个的警告。</p>
+<figure class="listing" id="listing-19-20">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let _x = 5;
+    let y = 10;
+}</code></pre></pre>
+<figcaption><a href="#listing-19-20">Listing 19-20</a>: Starting a variable name with an underscore to avoid getting unused variable warnings 以下划线开头的变量名避免未用变量警告</figcaption>
+</figure>
+<p>Here, we get a warning about not using the variable <code>y</code>, but we don’t get a
+warning about not using <code>_x</code>.</p>
+<p>此处收到未用变量 <code>y</code> 的警告，但未收到关于 <code>_x</code> 的警告。</p>
+<p>Note that there is a subtle difference between using only <code>_</code> and using a name
+that starts with an underscore. The syntax <code>_x</code> still binds the value to the
+variable, whereas <code>_</code> doesn’t bind at all. To show a case where this
+distinction matters, Listing 19-21 will provide us with an error.</p>
+<p>注意仅用 <code>_</code> 与以下划线开头的名称有细微区别。<span class="highlight">[note]语法 <code>_x</code> 仍将值绑定到变量，而 <code>_</code> 完全不绑定</span>。为说明此区别的重要性，示例19-21将给出错误。</p>
+<figure class="listing" id="listing-19-21">
+<pre><code class="language-rust ignore does_not_compile"><span class="boring">fn main() {
+</span>    let s = Some(String::from("Hello!"));
+
+    if let Some(_s) = s {
+        println!("found a string");
+    }
+
+    println!("{s:?}");
+<span class="boring">}</span></code></pre>
+<figcaption><a href="#listing-19-21">Listing 19-21</a>: An unused variable starting with an underscore still binds the value, which might take ownership of the value. 以下划线开头的未用变量仍绑定值，可能获取值的所有权。</figcaption>
+</figure>
+<p>We’ll receive an error because the <code>s</code> value will still be moved into <code>_s</code>,
+which prevents us from using <code>s</code> again. However, using the underscore by itself
+doesn’t ever bind to the value. Listing 19-22 will compile without any errors
+because <code>s</code> doesn’t get moved into <code>_</code>.</p>
+<p>将收到错误，因为 <code>s</code> 值仍会移入 <code>_s</code>，导致无法再次使用 <code>s</code>。但单独使用下划线不会绑定值。示例19-22无错误编译，因为 <code>s</code> 未移入 <code>_</code>。</p>
+<figure class="listing" id="listing-19-22">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let s = Some(String::from("Hello!"));
+
+    if let Some(_) = s {
+        println!("found a string");
+    }
+
+    println!("{s:?}");
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-19-22">Listing 19-22</a>: Using an underscore does not bind the value. 使用下划线不绑定值。</figcaption>
+</figure>
+<p>This code works just fine because we never bind <code>s</code> to anything; it isn’t moved.</p>
+<p>此代码正常运行，因为从未将 <code>s</code> 绑定到任何内容，故其未被移动。</p>
+<h4 id="remaining-parts-of-a-value-with--用--忽略值的剩余部分"><a class="header" href="#remaining-parts-of-a-value-with--用--忽略值的剩余部分">Remaining Parts of a Value with <code>..</code> 用 <code>..</code> 忽略值的剩余部分</a></h4>
+<p>With values that have many parts, we can use the <code>..</code> syntax to use specific
+parts and ignore the rest, avoiding the need to list underscores for each
+ignored value. The <code>..</code> pattern ignores any parts of a value that we haven’t
+explicitly matched in the rest of the pattern. In Listing 19-23, we have a
+<code>Point</code> struct that holds a coordinate in three-dimensional space. In the
+<code>match</code> expression, we want to operate only on the <code>x</code> coordinate and ignore
+the values in the <code>y</code> and <code>z</code> fields.</p>
+<p>对于多部分的值，可用 <code>..</code> 语法使用特定部分并忽略其余部分，避免为每个忽略值单独列出下划线。<code>..</code> 模式忽略值中未在模式其余部分显式匹配的任何部分。示例19-23的 <code>Point</code> 结构体保存三维空间坐标。<code>match</code> 表达式中，希望仅操作 <code>x</code> 坐标并忽略 <code>y</code> 和 <code>z</code> 字段。</p>
+<figure class="listing" id="listing-19-23">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    struct Point {
+        x: i32,
+        y: i32,
+        z: i32,
+    }
+
+    let origin = Point { x: 0, y: 0, z: 0 };
+
+    match origin {
+        Point { x, .. } =&gt; println!("x is {x}"),
+    }
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-19-23">Listing 19-23</a>: Ignoring all fields of a <code>Point</code> except for <code>x</code> by using <code>..</code> 使用 <code>..</code> 忽略 <code>Point</code> 中除 <code>x</code> 外的所有字段使用 <code>..</code> 忽略 <code>Point</code> 中除 <code>x</code> 外的所有字段</figcaption>
+</figure>
+<p>We list the <code>x</code> value and then just include the <code>..</code> pattern. This is quicker
+than having to list <code>y: _</code> and <code>z: _</code>, particularly when we’re working with
+structs that have lots of fields in situations where only one or two fields are
+relevant.</p>
+<p><span class="highlight">[note]<span class="highlight">[note]列出 <code>x</code> 值后仅包含 <code>..</code> 模式。这比单独列出 <code>y: _</code> 和 <code>z: _</code> 更便捷</span>，尤其当处理多字段结构体且仅一两个字段相关时。</p>
+<p>The syntax <code>..</code> will expand to as many values as it needs to be. Listing 19-24
+shows how to use <code>..</code> with a tuple.</p>
+<p><code>..</code> 语法将扩展为所需数量的值。示例19-24展示如何<span class="highlight">[note]在元组中使用 <code>..</code></span>。</p>
+<figure class="listing" id="listing-19-24">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (first, .., last) =&gt; {
+            println!("Some numbers: {first}, {last}");
+        }
+    }
+}</code></pre></pre>
+<figcaption><a href="#listing-19-24">Listing 19-24</a>: Matching only the first and last values in a tuple and ignoring all other values 仅匹配元组的首尾值并忽略所有其他值</figcaption>
+</figure>
+<p>In this code, the first and last values are matched with <code>first</code> and <code>last</code>.
+The <code>..</code> will match and ignore everything in the middle.</p>
+<p>此代码中，首尾值分别与 <code>first</code> 和 <code>last</code> 匹配。<code>..</code> 将匹配并忽略中间的所有值。</p>
+<p>However, using <code>..</code> must be unambiguous. If it is unclear which values are
+intended for matching and which should be ignored, Rust will give us an error.
+Listing 19-25 shows an example of using <code>..</code> ambiguously, so it will not
+compile.</p>
+<p>但使用 <code>..</code> 必须无歧义。若无法明确哪些值用于匹配、哪些应忽略，Rust 将报错。示例19-25展示了歧义使用 <code>..</code> 的情况，因此无法编译。</p>
+<figure class="listing" id="listing-19-25">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore does_not_compile">fn main() {
+    let numbers = (2, 4, 8, 16, 32);
+
+    match numbers {
+        (.., second, ..) =&gt; {
+            println!("Some numbers: {second}")
+        },
+    }
+}</code></pre>
+<figcaption><a href="#listing-19-25">Listing 19-25</a>: An attempt to use <code>..</code> in an ambiguous way 尝试以歧义方式使用 <code>..</code></figcaption>
+</figure>
+<p>When we compile this example, we get this error:</p>
+<p>编译此示例时将报错：</p>
+<pre><code class="language-console">$ cargo run
+   Compiling patterns v0.1.0 (file:///projects/patterns)
+error: `..` can only be used once per tuple pattern
+ --&gt; src/main.rs:5:22
+  |
+5 |         (.., second, ..) =&gt; {
+  |          --          ^^ can only be used once per tuple pattern
+  |          |
+  |          previously used here
+
+error: could not compile `patterns` (bin "patterns") due to 1 previous error
+</code></pre>
+<p>It’s impossible for Rust to determine how many values in the tuple to ignore
+before matching a value with <code>second</code> and then how many further values to
+ignore thereafter. This code could mean that we want to ignore <code>2</code>, bind
+<code>second</code> to <code>4</code>, and then ignore <code>8</code>, <code>16</code>, and <code>32</code>; or that we want to ignore
+<code>2</code> and <code>4</code>, bind <code>second</code> to <code>8</code>, and then ignore <code>16</code> and <code>32</code>; and so forth.
+The variable name <code>second</code> doesn’t mean anything special to Rust, so we get a
+compiler error because using <code>..</code> in two places like this is ambiguous.</p>
+<p>Rust 无法确定在匹配 <code>second</code> 值前需忽略元组中的多少值，以及之后需忽略多少值。此代码可能表示：忽略 <code>2</code>，将 <code>second</code> 绑定到 <code>4</code>，然后忽略 <code>8</code>、<code>16</code> 和 <code>32</code>；或忽略 <code>2</code> 和 <code>4</code>，将 <code>second</code> 绑定到 <code>8</code>，然后忽略 <code>16</code> 和 <code>32</code>；等等。变量名 <code>second</code> 对 Rust 无特殊含义，因此因 <code>..</code> 在两处歧义使用导致编译器错误。</p>
+<h3 id="extra-conditionals-with-match-guards-匹配守卫的额外条件"><a class="header" href="#extra-conditionals-with-match-guards-匹配守卫的额外条件">Extra Conditionals with Match Guards 匹配守卫的额外条件</a></h3>
+<p>A <em>match guard</em> is an additional <code>if</code> condition, specified after the pattern in
+a <code>match</code> arm, that must also match for that arm to be chosen. Match guards are
+useful for expressing more complex ideas than a pattern alone allows. Note,
+however, that they are only available in <code>match</code> expressions, not <code>if let</code> or
+<code>while let</code> expressions.</p>
+<p><span class="highlight">[note]<em>匹配守卫</em> 是 <code>match</code> 分支中模式后的额外 <code>if</code> 条件</span>，也必须匹配才能选择该分支。匹配守卫用于表达比单独模式更复杂的逻辑。但注意其仅在 <code>match</code> 表达式中可用，不适用于 <code>if let</code> 或 <code>while let</code> 表达式。</p>
+<p>The condition can use variables created in the pattern. Listing 19-26 shows a
+<code>match</code> where the first arm has the pattern <code>Some(x)</code> and also has a match
+guard of <code>if x % 2 == 0</code> (which will be <code>true</code> if the number is even).</p>
+<p>条件可使用模式中创建的变量。示例19-26的 <code>match</code> 中，第一个分支有模式 <code>Some(x)</code> 和匹配守卫 <code>if x % 2 == 0</code>（当数字为偶数时为真）。</p>
+<figure class="listing" id="listing-19-26">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let num = Some(4);
+
+    match num {
+        Some(x) if x % 2 == 0 =&gt; println!("The number {x} is even"),
+        Some(x) =&gt; println!("The number {x} is odd"),
+        None =&gt; (),
+    }
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-19-26">Listing 19-26</a>: Adding a match guard to a pattern 为模式添加匹配守卫</figcaption>
+</figure>
+<p>This example will print <code>The number 4 is even</code>. When <code>num</code> is compared to the
+pattern in the first arm, it matches because <code>Some(4)</code> matches <code>Some(x)</code>. Then
+the match guard checks whether the remainder of dividing <code>x</code> by 2 is equal to
+0, and because it is, the first arm is selected.</p>
+<p>此例将打印 <code>The number 4 is even</code>。当 <code>num</code> 与第一个分支的模式比较时，因 <code>Some(4)</code> 匹配 <code>Some(x)</code> 而匹配。随后匹配守卫检查 <code>x</code> 除以2的余数是否为0，结果为真，因此选择第一个分支。</p>
+<p>If <code>num</code> had been <code>Some(5)</code> instead, the match guard in the first arm would
+have been <code>false</code> because the remainder of 5 divided by 2 is 1, which is not
+equal to 0. Rust would then go to the second arm, which would match because the
+second arm doesn’t have a match guard and therefore matches any <code>Some</code> variant.</p>
+<p>若 <code>num</code> 为 <code>Some(5)</code>，第一个分支的匹配守卫为假（因5除以2余1不为0）。Rust 将跳至第二个分支（无匹配守卫，故匹配任意 <code>Some</code> 变体）。</p>
+<p>There is no way to express the <code>if x % 2 == 0</code> condition within a pattern, so
+the match guard gives us the ability to express this logic. The downside of
+this additional expressiveness is that the compiler doesn’t try to check for
+exhaustiveness when match guard expressions are involved.</p>
+<p>无法在模式内表达 <code>if x % 2 == 0</code> 条件，因此匹配守卫提供了表达此逻辑的能力。但额外表达力的代价是：涉及匹配守卫表达式时，编译器不会检查穷尽性。</p>
+<p>In Listing 19-11, we mentioned that we could use match guards to solve our
+pattern-shadowing problem. Recall that we created a new variable inside the
+pattern in the <code>match</code> expression instead of using the variable outside the
+<code>match</code>. That new variable meant we couldn’t test against the value of the
+outer variable. Listing 19-27 shows how we can use a match guard to fix this
+problem.</p>
+<p>示例19-11中提到可用匹配守卫解决模式遮蔽问题。回忆中在 <code>match</code> 表达式的模式内创建了新变量，而非使用外部变量。新变量导致无法测试外部变量的值。示例19-27展示了如何用匹配守卫修复此问题。</p>
+<figure class="listing" id="listing-19-27">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let x = Some(5);
+    let y = 10;
+
+    match x {
+        Some(50) =&gt; println!("Got 50"),
+        Some(n) if n == y =&gt; println!("Matched, n = {n}"),
+        _ =&gt; println!("Default case, x = {x:?}"),
+    }
+
+    println!("at the end: x = {x:?}, y = {y}");
+}</code></pre></pre>
+<figcaption><a href="#listing-19-27">Listing 19-27</a>: Using a match guard to test for equality with an outer variable 使用匹配守卫测试与外部变量的相等性</figcaption>
+</figure>
+<p>This code will now print <code>Default case, x = Some(5)</code>. The pattern in the second
+match arm doesn’t introduce a new variable <code>y</code> that would shadow the outer <code>y</code>,
+meaning we can use the outer <code>y</code> in the match guard. Instead of specifying the
+pattern as <code>Some(y)</code>, which would have shadowed the outer <code>y</code>, we specify
+<code>Some(n)</code>. This creates a new variable <code>n</code> that doesn’t shadow anything because
+there is no <code>n</code> variable outside the <code>match</code>.</p>
+<p>此代码现在将打印 <code>Default case, x = Some(5)</code>。第二个匹配分支的模式未引入遮蔽外部 <code>y</code> 的新变量 <code>y</code>，意味着可在匹配守卫中使用外部 <code>y</code>。未将模式指定为 <code>Some(y)</code>（会遮蔽外部 <code>y</code>），而是指定 <code>Some(n)</code>。这会创建不遮蔽任何内容的新变量 <code>n</code>（因外部无 <code>n</code> 变量）。</p>
+<p>The match guard <code>if n == y</code> is not a pattern and therefore doesn’t introduce new
+variables. This <code>y</code> <em>is</em> the outer <code>y</code> rather than a new <code>y</code> shadowing it, and
+we can look for a value that has the same value as the outer <code>y</code> by comparing
+<code>n</code> to <code>y</code>.</p>
+<p>匹配守卫 <code>if n == y</code> 非模式，故不引入新变量。此处的 <code>y</code> 是外部 <code>y</code> 而非新遮蔽的 <code>y</code>，可通过比较 <code>n</code> 和 <code>y</code> 来查找与外部 <code>y</code> 同值的值。</p>
+<p>You can also use the <em>or</em> operator <code>|</code> in a match guard to specify multiple
+patterns; the match guard condition will apply to all the patterns. Listing
+19-28 shows the precedence when combining a pattern that uses <code>|</code> with a match
+guard. The important part of this example is that the <code>if y</code> match guard
+applies to <code>4</code>, <code>5</code>, <em>and</em> <code>6</code>, even though it might look like <code>if y</code> only
+applies to <code>6</code>.</p>
+<p>也可在匹配守卫中用 <em>或</em> 运算符 <code>|</code> 指定多模式；匹配守卫条件将应用于所有模式。示例19-28展示了结合使用带 <code>|</code> 的模式与匹配守卫时的优先级。此例重点是 <code>if y</code> 匹配守卫应用于 <code>4</code>、<code>5</code> 和 <code>6</code>，尽管看似仅应用于 <code>6</code>。</p>
+<figure class="listing" id="listing-19-28">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    let x = 4;
+    let y = false;
+
+    match x {
+        4 | 5 | 6 if y =&gt; println!("yes"),
+        _ =&gt; println!("no"),
+    }
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-19-28">Listing 19-28</a>: Combining multiple patterns with a match guard 结合匹配守卫的多模式</figcaption>
+</figure>
+<p>The match condition states that the arm only matches if the value of <code>x</code> is
+equal to <code>4</code>, <code>5</code>, or <code>6</code> <em>and</em> if <code>y</code> is <code>true</code>. When this code runs, the
+pattern of the first arm matches because <code>x</code> is <code>4</code>, but the match guard <code>if y</code>
+is <code>false</code>, so the first arm is not chosen. The code moves on to the second
+arm, which does match, and this program prints <code>no</code>. The reason is that the
+<code>if</code> condition applies to the whole pattern <code>4 | 5 | 6</code>, not just to the last
+value <code>6</code>. In other words, the precedence of a match guard in relation to a
+pattern behaves like this:</p>
+<p>匹配条件要求仅当 <code>x</code> 值为 <code>4</code>、<code>5</code> 或 <code>6</code> 且 <code>y</code> 为 <code>true</code> 时匹配分支。运行此代码时，第一个分支的模式因 <code>x</code> 为 <code>4</code> 而匹配，但匹配守卫 <code>if y</code> 为假，故不选第一分支。代码跳至第二分支（匹配），程序打印 <code>no</code>。原因是 <code>if</code> 条件应用于整个模式 <code>4 | 5 | 6</code>，而非仅最后一个值 <code>6</code>。换言之，匹配守卫相对于模式的优先级行为如下：</p>
+<pre><code class="language-text">(4 | 5 | 6) if y =&gt; ...
+</code></pre>
+<p>rather than this:</p>
+<p>而非：</p>
+<pre><code class="language-text">4 | 5 | (6 if y) =&gt; ...
+</code></pre>
+<p>After running the code, the precedence behavior is evident: if the match guard
+were applied only to the final value in the list of values specified using the
+<code>|</code> operator, the arm would have matched and the program would have printed
+<code>yes</code>.</p>
+<p>运行代码后，优先级行为显而易见：若匹配守卫仅应用于 <code>|</code> 运算符指定的值列表中的末值，则分支会匹配且程序将打印 <code>yes</code>。</p>
+<h3 id="-bindings--绑定"><a class="header" href="#-bindings--绑定"><code>@</code> Bindings <code>@</code> 绑定</a></h3>
+<p>The <em>at</em> operator <code>@</code> lets us create a variable that holds a value at the same
+time we’re testing that value for a pattern match. In Listing 19-29, we want to
+test that a <code>Message::Hello</code> <code>id</code> field is within the range <code>3..=7</code>. We also
+want to bind the value to the variable <code>id</code> so we can use it in the code
+associated with the arm.</p>
+<p><span class="highlight">[note]<em>at</em> 运算符 <code>@</code> 可在测试值匹配模式的同时创建保存该值的变量。</span>示例19-29中，希望测试 <code>Message::Hello</code> 的 <code>id</code> 字段是否在范围 <code>3..=7</code> 内。同时也希望将值绑定到变量 <code>id</code> 以在分支关联代码中使用。</p>
+<figure class="listing" id="listing-19-29">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">fn main() {
+</span>    enum Message {
+        Hello { id: i32 },
+    }
+
+    let msg = Message::Hello { id: 5 };
+
+    match msg {
+        Message::Hello { id: id @ 3..=7 } =&gt; {
+            println!("Found an id in range: {id}")
+        }
+        Message::Hello { id: 10..=12 } =&gt; {
+            println!("Found an id in another range")
+        }
+        Message::Hello { id } =&gt; println!("Found some other id: {id}"),
+    }
+<span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-19-29">Listing 19-29</a>: Using <code>@</code> to bind to a value in a pattern while also testing it 使用 <code>@</code> 在测试同时绑定模式中的值</figcaption>
+</figure>
+<p>This example will print <code>Found an id in range: 5</code>. By specifying <code>id @</code> before
+the range <code>3..=7</code>, we’re capturing whatever value matched the range in a
+variable named <code>id</code> while also testing that the value matched the range pattern.</p>
+<p>此例将打印 <code>Found an id in range: 5</code>。通过在范围 <code>3..=7</code> 前指定 <code>id @</code>，可在测试值匹配范围模式的同时，将匹配该范围的值捕获到名为 <code>id</code> 的变量中。</p>
+<p>In the second arm, where we only have a range specified in the pattern, the code
+associated with the arm doesn’t have a variable that contains the actual value
+of the <code>id</code> field. The <code>id</code> field’s value could have been 10, 11, or 12, but
+the code that goes with that pattern doesn’t know which it is. The pattern code
+isn’t able to use the value from the <code>id</code> field, because we haven’t saved the
+<code>id</code> value in a variable.</p>
+<p><span class="highlight">[note]第二个分支的模式中仅指定了范围，分支关联代码无包含 <code>id</code> 字段实际值的变量。</span><code>id</code> 字段的值可能为10、11或12，但该分支的代码不知道具体值。模式代码无法使用 <code>id</code> 字段的值，因为未将 <code>id</code> 值存入变量。</p>
+<p>In the last arm, where we’ve specified a variable without a range, we do have
+the value available to use in the arm’s code in a variable named <code>id</code>. The
+reason is that we’ve used the struct field shorthand syntax. But we haven’t
+applied any test to the value in the <code>id</code> field in this arm, as we did with the
+first two arms: any value would match this pattern.</p>
+<p>最后一个分支中指定了无范围的变量，分支代码可用变量 <code>id</code> 中的值。原因是使用了结构体字段简写语法。但此分支未对 <code>id</code> 字段值应用任何测试（如前两个分支）：任意值均匹配此模式。</p>
+<p>Using <code>@</code> lets us test a value and save it in a variable within one pattern.</p>
+<p>使用 <code>@</code> 可在单个模式中测试值并保存到变量。</p>
+<h2 id="summary-总结"><a class="header" href="#summary-总结">Summary 总结</a></h2>
+<p>Rust’s patterns are very useful in distinguishing between different kinds of
+data. When used in <code>match</code> expressions, Rust ensures your patterns cover every
+possible value, or your program won’t compile. Patterns in <code>let</code> statements and
+function parameters make those constructs more useful, enabling the
+destructuring of values into smaller parts and assigning those parts to
+variables. We can create simple or complex patterns to suit our needs.</p>
+<p>Rust 的模式在区分不同类型数据时非常有用。在 <code>match</code> 表达式中使用时，Rust 确保模式覆盖所有可能值，否则程序无法编译。<code>let</code> 语句和函数参数中的模式增强了这些结构的功能，支持将值解构为更小部分并分配给变量。可根据需求创建简单或复杂的模式。</p>
+<p>Next, for the penultimate chapter of the book, we’ll look at some advanced
+aspects of a variety of Rust’s features.</p>
+<p>接下来，本书倒数第二章将探讨 Rust 各类特性的高级内容。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch19-02-refutability.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch20-00-advanced-features.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch19-02-refutability.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch20-00-advanced-features.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>

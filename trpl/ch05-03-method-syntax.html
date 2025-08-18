@@ -1,0 +1,597 @@
+<!DOCTYPE HTML>
+<html lang="zh-Hans" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Method Syntax 方法 - Rust 编程语言</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="ferris.css">
+        <link rel="stylesheet" href="theme/2018-edition.css">
+        <link rel="stylesheet" href="theme/semantic-notes.css">
+        <link rel="stylesheet" href="theme/listing.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust 编程语言</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="method-syntax-方法"><a class="header" href="#method-syntax-方法">Method Syntax 方法</a></h2>
+<p><em>Methods</em> are similar to functions: we declare them with the <code>fn</code> keyword and a
+name, they can have parameters and a return value, and they contain some code
+that’s run when the method is called from somewhere else. Unlike functions,
+methods are defined within the context of a struct (or an enum or a trait
+object, which we cover in Chapter 6 and Chapter
+18, respectively), and their first parameter is
+always <code>self</code>, which represents the instance of the struct the method is being
+called on.</p>
+<p><strong>方法</strong>（method）与函数类似：使用 <code>fn</code> 关键字声明并命名，可包含参数和返回值，并拥有在方法被调用时执行的代码。与函数不同之处在于，方法定义在结构体（或枚举、trait 对象，我们将在第 6 章和第 18 章分别介绍）的上下文中，且它们的第一个参数始终是 <code>self</code>，表示调用该方法的结构体实例。</p>
+<h3 id="defining-methods-定义方法"><a class="header" href="#defining-methods-定义方法">Defining Methods 定义方法</a></h3>
+<p>Let’s change the <code>area</code> function that has a <code>Rectangle</code> instance as a parameter
+and instead make an <code>area</code> method defined on the <code>Rectangle</code> struct, as shown
+in Listing 5-13.</p>
+<p>让我们将接受 <code>Rectangle</code> 实例作为参数的 <code>area</code> 函数，改为定义在 <code>Rectangle</code> 结构体上的 <code>area</code> 方法，如示例 5-13 所示。</p>
+<figure class="listing" id="listing-5-13">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&amp;self) -&gt; u32 {
+        self.width * self.height
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        rect1.area()
+    );
+}</code></pre></pre>
+<figcaption><a href="#listing-5-13">Listing 5-13</a>: Defining an <code>area</code> method on the <code>Rectangle</code> struct 在 <code>Rectangle</code> 结构体上定义 <code>area</code> 方法</figcaption>
+</figure>
+<p>To define the function within the context of <code>Rectangle</code>, we start an <code>impl</code>
+(implementation) block for <code>Rectangle</code>. Everything within this <code>impl</code> block
+will be associated with the <code>Rectangle</code> type. Then we move the <code>area</code> function
+within the <code>impl</code> curly brackets and change the first (and in this case, only)
+parameter to be <code>self</code> in the signature and everywhere within the body. In
+<code>main</code>, where we called the <code>area</code> function and passed <code>rect1</code> as an argument,
+we can instead use <em>method syntax</em> to call the <code>area</code> method on our <code>Rectangle</code>
+instance. The method syntax goes after an instance: we add a dot followed by
+the method name, parentheses, and any arguments.</p>
+<p>要在 <code>Rectangle</code> 的上下文中定义函数，我们需为 <code>Rectangle</code> 开启一个 <code>impl</code>（实现）块。该 <code>impl</code> 块内的所有内容都将与 <code>Rectangle</code> 类型关联。接着将 <code>area</code> 函数移至 <code>impl</code> 的花括号内，并将签名和函数体中的第一个（本例中也是唯一一个）参数改为 <code>self</code>。在 <code>main</code> 函数中，原先调用 <code>area</code> 函数并传入 <code>rect1</code> 作为参数的地方，现在可使用<strong>方法语法</strong>（method syntax）在 <code>Rectangle</code> 实例上调用 <code>area</code> 方法。方法语法位于实例之后：添加点号 <code>.</code>，后接方法名、括号及参数。</p>
+<p>In the signature for <code>area</code>, we use <code>&amp;self</code> instead of <code>rectangle: &amp;Rectangle</code>.
+The <code>&amp;self</code> is actually short for <code>self: &amp;Self</code>. Within an <code>impl</code> block, the
+type <code>Self</code> is an alias for the type that the <code>impl</code> block is for. Methods must
+have a parameter named <code>self</code> of type <code>Self</code> for their first parameter, so Rust
+lets you abbreviate this with only the name <code>self</code> in the first parameter spot.
+Note that we still need to use the <code>&amp;</code> in front of the <code>self</code> shorthand to
+indicate that this method borrows the <code>Self</code> instance, just as we did in
+<code>rectangle: &amp;Rectangle</code>. Methods can take ownership of <code>self</code>, borrow <code>self</code>
+immutably, as we’ve done here, or borrow <code>self</code> mutably, just as they can any
+other parameter.</p>
+<p>在 <code>area</code> 的签名中，我们使用 <code>&amp;self</code> 替代了 <code>rectangle: &amp;Rectangle</code>。<span class="highlight">[note]<code>&amp;self</code> 实际上是 <code>self: &amp;Self</code> 的简写。在 <code>impl</code> 块中，<code>Self</code> 类型是该 <code>impl</code> 块所属类型的别名。</span>方法的第一个参数必须是名为 <code>self</code> 且类型为 <code>Self</code> 的参数，因此 Rust 允许在第一个参数位置仅使用 <code>self</code> 作为缩写。注意我们仍需在 <code>self</code> 简写前添加 <code>&amp;</code> 表示此方法借用了 <code>Self</code> 实例，正如我们在 <code>rectangle: &amp;Rectangle</code> 中所做的那样。方法可以获取 <code>self</code> 的所有权、不可变借用 <code>self</code>（如本例），或可变借用 <code>self</code>，与其他参数的处理方式一致。</p>
+<p>We chose <code>&amp;self</code> here for the same reason we used <code>&amp;Rectangle</code> in the function
+version: we don’t want to take ownership, and we just want to read the data in
+the struct, not write to it. If we wanted to change the instance that we’ve
+called the method on as part of what the method does, we’d use <code>&amp;mut self</code> as
+the first parameter. Having a method that takes ownership of the instance by
+using just <code>self</code> as the first parameter is rare; this technique is usually
+used when the method transforms <code>self</code> into something else and you want to
+prevent the caller from using the original instance after the transformation.</p>
+<p>此处选择 <code>&amp;self</code> 的原因与函数版本中使用 <code>&amp;Rectangle</code> 相同：我们不想获取所有权，仅需读取结构体数据而不写入。若想在方法执行过程中修改调用方法的实例，则需将第一个参数设为 <code>&amp;mut self</code>。使用仅含 <code>self</code> 作为第一个参数的方法获取实例所有权的情况较为罕见；通常用于方法将 <code>self</code> 转换为其他内容且需防止调用者在转换后使用原实例的场景。</p>
+<p>The main reason for using methods instead of functions, in addition to
+providing method syntax and not having to repeat the type of <code>self</code> in every
+method’s signature, is for organization. We’ve put all the things we can do
+with an instance of a type in one <code>impl</code> block rather than making future users
+of our code search for capabilities of <code>Rectangle</code> in various places in the
+library we provide.</p>
+<p>使用方法而非函数的主要原因，除了提供方法语法及避免在每个方法签名中重复 <code>self</code> 的类型外，还在于组织性。我们将类型实例能执行的所有操作集中在一个 <code>impl</code> 块中，避免代码使用者在我们提供的库中四处查找 <code>Rectangle</code> 的功能。</p>
+<p>Note that we can choose to give a method the same name as one of the struct’s
+fields. For example, we can define a method on <code>Rectangle</code> that is also named
+<code>width</code>:</p>
+<p>注意，我们可以选择为方法赋予与结构体字段相同的名称。例如，可在 <code>Rectangle</code> 上定义一个同样名为 <code>width</code> 的方法：</p>
+<figure class="listing">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn width(&amp;self) -&gt; bool {
+        self.width &gt; 0
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    if rect1.width() {
+        println!("The rectangle has a nonzero width; it is {}", rect1.width);
+    }
+}</code></pre></pre>
+</figure>
+<p>Here, we’re choosing to make the <code>width</code> method return <code>true</code> if the value in
+the instance’s <code>width</code> field is greater than <code>0</code> and <code>false</code> if the value is
+<code>0</code>: we can use a field within a method of the same name for any purpose. In
+<code>main</code>, when we follow <code>rect1.width</code> with parentheses, Rust knows we mean the
+method <code>width</code>. When we don’t use parentheses, Rust knows we mean the field
+<code>width</code>.</p>
+<p>在此，若实例的 <code>width</code> 字段值大于 <code>0</code>，则让 <code>width</code> 方法返回 <code>true</code>；若值为 <code>0</code> 则返回 <code>false</code>：在方法中可使用同名字段实现任何目的。在 <code>main</code> 中，当在 <code>rect1.width</code> 后添加括号时，Rust 知道我们指的是 <code>width</code> 方法；不加括号时，则指 <code>width</code> 字段。</p>
+<p>Often, but not always, when we give a method the same name as a field we want
+it to only return the value in the field and do nothing else. Methods like this
+are called <em>getters</em>, and Rust does not implement them automatically for struct
+fields as some other languages do. Getters are useful because you can make the
+field private but the method public, and thus enable read-only access to that
+field as part of the type’s public API. We will discuss what public and private
+are and how to designate a field or method as public or private in Chapter 7.</p>
+<p>通常（非绝对），当方法名与字段名相同时，我们希望它仅返回字段值而不做其他操作。此类方法称为 <strong>getter</strong>，Rust 不会像其他语言那样自动为结构体字段实现它们。Getters 很有用，因为可将字段设为私有而方法公开，从而通过类型的公共 API 提供对该字段的只读访问权限。我们将在第 7 章讨论公有与私有的概念及如何将字段或方法标记为公有或私有。</p>
+<section class="note" aria-role="note">
+<h3 id="wheres-the---operator---运算符在哪"><a class="header" href="#wheres-the---operator---运算符在哪">Where’s the <code>-&gt;</code> Operator? <code>-&gt;</code> 运算符在哪？</a></h3>
+<p>In C and C++, two different operators are used for calling methods: you use
+<code>.</code> if you’re calling a method on the object directly and <code>-&gt;</code> if you’re
+calling the method on a pointer to the object and need to dereference the
+pointer first. In other words, if <code>object</code> is a pointer,
+<code>object-&gt;something()</code> is similar to <code>(*object).something()</code>.</p>
+<p>在 C/C++ 中，调用方法使用两种运算符：直接调用对象方法时用 <code>.</code>，调用指针对象的方法时用 <code>-&gt;</code>（需先解引用指针）。换言之，若 <code>object</code> 是指针，则 <code>object-&gt;something()</code> 类似于 <code>(*object).something()</code>。</p>
+<p>Rust doesn’t have an equivalent to the <code>-&gt;</code> operator; instead, Rust has a
+feature called <em>automatic referencing and dereferencing</em>. Calling methods is
+one of the few places in Rust with this behavior.</p>
+<p><span class="highlight">[note]Rust 没有等效的 <code>-&gt;</code> 运算符，而是提供了<strong>自动引用与解引用</strong>（automatic referencing and dereferencing）功能。方法调用是 Rust 中少数具有此行为的场景之一。</span></p>
+<p>Here’s how it works: when you call a method with <code>object.something()</code>, Rust
+automatically adds in <code>&amp;</code>, <code>&amp;mut</code>, or <code>*</code> so <code>object</code> matches the signature of
+the method. In other words, the following are the same:</p>
+<p>其工作原理如下：当使用 <code>object.()</code> 调用方法时，Rust 会自动添加 <code>&amp;</code>、<code>&amp;mut</code> 或 <code>*</code> 以使 <code>object</code> 匹配方法的签名。换言之，以下两种写法等价：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">#[derive(Debug,Copy,Clone)]
+</span><span class="boring">struct Point {
+</span><span class="boring">    x: f64,
+</span><span class="boring">    y: f64,
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">impl Point {
+</span><span class="boring">   fn distance(&amp;self, other: &amp;Point) -&gt; f64 {
+</span><span class="boring">       let x_squared = f64::powi(other.x - self.x, 2);
+</span><span class="boring">       let y_squared = f64::powi(other.y - self.y, 2);
+</span><span class="boring">
+</span><span class="boring">       f64::sqrt(x_squared + y_squared)
+</span><span class="boring">   }
+</span><span class="boring">}
+</span><span class="boring">let p1 = Point { x: 0.0, y: 0.0 };
+</span><span class="boring">let p2 = Point { x: 5.0, y: 6.5 };
+</span>p1.distance(&amp;p2);
+(&amp;p1).distance(&amp;p2);
+<span class="boring">}</span></code></pre></pre>
+<p>The first one looks much cleaner. This automatic referencing behavior works
+because methods have a clear receiver—the type of <code>self</code>. Given the receiver
+and name of a method, Rust can figure out definitively whether the method is
+reading (<code>&amp;self</code>), mutating (<code>&amp;mut self</code>), or consuming (<code>self</code>). The fact
+that Rust makes borrowing implicit for method receivers is a big part of
+making ownership ergonomic in practice.</p>
+<p>第一种形式更简洁。这种自动引用行为有效是因为方法具有明确的接收者（<code>self</code> 的类型）。根据接收者和方法名，Rust 可明确判断方法是读取（<code>&amp;self</code>）、修改（<code>&amp;mut self</code>）还是消费（<code>self</code>）。Rust 对方法接收者隐式处理借用的特性，是实现所有权实践人体工程学的重要部分。</p>
+</section>
+<h3 id="methods-with-more-parameters-带更多参数的方法"><a class="header" href="#methods-with-more-parameters-带更多参数的方法">Methods with More Parameters 带更多参数的方法</a></h3>
+<p>Let’s practice using methods by implementing a second method on the <code>Rectangle</code>
+struct. This time we want an instance of <code>Rectangle</code> to take another instance
+of <code>Rectangle</code> and return <code>true</code> if the second <code>Rectangle</code> can fit completely
+within <code>self</code> (the first <code>Rectangle</code>); otherwise, it should return <code>false</code>.
+That is, once we’ve defined the <code>can_hold</code> method, we want to be able to write
+the program shown in Listing 5-14.</p>
+<p>让我们通过为 <code>Rectangle</code> 结构体实现第二个方法 <code>can_hold</code> 来练习方法的使用。此方法接受另一个 <code>Rectangle</code> 实例，若该实例能完全容纳在 <code>self</code>（第一个 <code>Rectangle</code>）内则返回 <code>true</code>，否则返回 <code>false</code>。定义 <code>can_hold</code> 方法后，我们希望编写如示例 5-14 所示的程序。</p>
+<figure class="listing" id="listing-5-14">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><code class="language-rust ignore">fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    let rect2 = Rectangle {
+        width: 10,
+        height: 40,
+    };
+    let rect3 = Rectangle {
+        width: 60,
+        height: 45,
+    };
+
+    println!("Can rect1 hold rect2? {}", rect1.can_hold(&amp;rect2));
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&amp;rect3));
+}</code></pre>
+<figcaption><a href="#listing-5-14">Listing 5-14</a>: Using the as-yet-unwritten <code>can_hold</code> method 使用尚未编写的 <code>can_hold</code> 方法</figcaption>
+</figure>
+<p>The expected output would look like the following because both dimensions of
+<code>rect2</code> are smaller than the dimensions of <code>rect1</code>, but <code>rect3</code> is wider than
+<code>rect1</code>:</p>
+<p>由于 <code>rect2</code> 的尺寸小于 <code>rect1</code> 而 <code>rect3</code> 比 <code>rect1</code> 宽，预期输出如下：</p>
+<pre><code class="language-text">Can rect1 hold rect2? true
+Can rect1 hold rect3? false
+</code></pre>
+<p>We know we want to define a method, so it will be within the <code>impl Rectangle</code>
+block. The method name will be <code>can_hold</code>, and it will take an immutable borrow
+of another <code>Rectangle</code> as a parameter. We can tell what the type of the
+parameter will be by looking at the code that calls the method:
+<code>rect1.can_hold(&amp;rect2)</code> passes in <code>&amp;rect2</code>, which is an immutable borrow to
+<code>rect2</code>, an instance of <code>Rectangle</code>. This makes sense because we only need to
+read <code>rect2</code> (rather than write, which would mean we’d need a mutable borrow),
+and we want <code>main</code> to retain ownership of <code>rect2</code> so we can use it again after
+calling the <code>can_hold</code> method. The return value of <code>can_hold</code> will be a
+Boolean, and the implementation will check whether the width and height of
+<code>self</code> are greater than the width and height of the other <code>Rectangle</code>,
+respectively. Let’s add the new <code>can_hold</code> method to the <code>impl</code> block from
+Listing 5-13, shown in Listing 5-15.</p>
+<p>我们想定义方法，因此它将位于 <code>impl Rectangle</code> 块中。方法名为 <code>can_hold</code>，参数为另一个 <code>Rectangle</code> 的不可变借用。通过调用代码 <code>rect1.can_hold(&amp;rect2)</code> 可知参数类型：传入的 <code>&amp;rect2</code> 是对 <code>rect2</code>（<code>Rectangle</code> 实例）的不可变借用。这很合理，因为我们只需读取 <code>rect2</code>（无需写入，否则需可变借用），且希望 <code>main</code> 保留 <code>rect2</code> 的所有权以便在调用 <code>can_hold</code> 后再次使用。<code>can_hold</code> 的返回值是布尔值，其实现将检查 <code>self</code> 的宽高是否分别大于另一个 <code>Rectangle</code> 的宽高。让我们将新的 <code>can_hold</code> 方法添加到示例 5-13 的 <code>impl</code> 块中，如示例 5-15 所示。</p>
+<figure class="listing" id="listing-5-15">
+<span class="file-name">Filename: src/main.rs</span>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn area(&amp;self) -&gt; u32 {
+        self.width * self.height
+    }
+
+    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let rect1 = Rectangle {
+</span><span class="boring">        width: 30,
+</span><span class="boring">        height: 50,
+</span><span class="boring">    };
+</span><span class="boring">    let rect2 = Rectangle {
+</span><span class="boring">        width: 10,
+</span><span class="boring">        height: 40,
+</span><span class="boring">    };
+</span><span class="boring">    let rect3 = Rectangle {
+</span><span class="boring">        width: 60,
+</span><span class="boring">        height: 45,
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    println!("Can rect1 hold rect2? {}", rect1.can_hold(&amp;rect2));
+</span><span class="boring">    println!("Can rect1 hold rect3? {}", rect1.can_hold(&amp;rect3));
+</span><span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-5-15">Listing 5-15</a>: Implementing the <code>can_hold</code> method on <code>Rectangle</code> that takes another <code>Rectangle</code> instance as a parameter 在 <code>Rectangle</code> 上实现 <code>can_hold</code> 方法，该方法接受另一个 <code>Rectangle</code> 实例作为参数</figcaption>
+</figure>
+<p>When we run this code with the <code>main</code> function in Listing 5-14, we’ll get our
+desired output. Methods can take multiple parameters that we add to the
+signature after the <code>self</code> parameter, and those parameters work just like
+parameters in functions.</p>
+<p>结合示例 5-14 的 <code>main</code> 函数运行此代码，将得到预期输出。方法可接受多个参数，这些参数添加在 <code>self</code> 参数后的签名中，其工作方式与函数参数一致。</p>
+<h3 id="associated-functions-关联函数"><a class="header" href="#associated-functions-关联函数">Associated Functions 关联函数</a></h3>
+<p>All functions defined within an <code>impl</code> block are called <em>associated functions</em>
+because they’re associated with the type named after the <code>impl</code>. We can define
+associated functions that don’t have <code>self</code> as their first parameter (and thus
+are not methods) because they don’t need an instance of the type to work with.
+We’ve already used one function like this: the <code>String::from</code> function that’s
+defined on the <code>String</code> type.</p>
+<p>所有定义在 <code>impl</code> 块中的函数称为<strong>关联函数</strong>（associated function），因为它们与 <code>impl</code> 后的类型相关联。<span class="highlight">[note]可定义不以 <code>self</code> 为第一参数的关联函数</span>（因此不是方法），因为它们不需要类型的实例来工作。我们已使用过此类函数：定义在 <code>String</code> 类型上的 <code>String::from</code> 函数。</p>
+<p>Associated functions that aren’t methods are often used for constructors that
+will return a new instance of the struct. These are often called <code>new</code>, but
+<code>new</code> isn’t a special name and isn’t built into the language. For example, we
+could choose to provide an associated function named <code>square</code> that would have
+one dimension parameter and use that as both width and height, thus making it
+easier to create a square <code>Rectangle</code> rather than having to specify the same
+value twice:</p>
+<p>非方法的关联函数常用于返回结构体新实例的构造函数，通常命名为 <code>new</code>，但 <code>new</code> 并非语言内置关键字。例如，可提供名为 <code>square</code> 的关联函数，它接受一个维度参数并同时作为宽高，从而更便捷地创建正方形 <code>Rectangle</code>，无需重复指定相同值：</p>
+<p><span class="filename">Filename: src/main.rs</span></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn square(size: u32) -&gt; Self {
+        Self {
+            width: size,
+            height: size,
+        }
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let sq = Rectangle::square(3);
+</span><span class="boring">}</span></code></pre></pre>
+<p>The <code>Self</code> keywords in the return type and in the body of the function are
+aliases for the type that appears after the <code>impl</code> keyword, which in this case
+is <code>Rectangle</code>.</p>
+<p>函数返回值类型和函数体中的 <code>Self</code> 关键字是 <code>impl</code> 关键字后类型（本例为 <code>Rectangle</code>）的别名。</p>
+<p>To call this associated function, we use the <code>::</code> syntax with the struct name;
+<code>let sq = Rectangle::square(3);</code> is an example. This function is namespaced by
+the struct: the <code>::</code> syntax is used for both associated functions and
+namespaces created by modules. We’ll discuss modules in Chapter 7.</p>
+<p>调用此关联函数需使用结构体名加 <code>::</code> 语法：例如 <code>let sq = Rectangle::square(3);</code>。此函数由结构体命名空间限定：<code>::</code> 语法既用于关联函数，也用于模块创建的命名空间。我们将在第 7 章讨论模块。</p>
+<h3 id="multiple-impl-blocks-多个-impl-块"><a class="header" href="#multiple-impl-blocks-多个-impl-块">Multiple <code>impl</code> Blocks 多个 <code>impl</code> 块</a></h3>
+<p>Each struct is allowed to have multiple <code>impl</code> blocks. For example, Listing
+5-15 is equivalent to the code shown in Listing 5-16, which has each method in
+its own <code>impl</code> block.</p>
+<p>每个结构体允许有多个 <code>impl</code> 块。例如，示例 5-15 的代码等价于示例 5-16（每个方法位于独立的 <code>impl</code> 块中）。</p>
+<figure class="listing" id="listing-5-16">
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Rectangle {
+</span><span class="boring">    width: u32,
+</span><span class="boring">    height: u32,
+</span><span class="boring">}
+</span><span class="boring">
+</span>impl Rectangle {
+    fn area(&amp;self) -&gt; u32 {
+        self.width * self.height
+    }
+}
+
+impl Rectangle {
+    fn can_hold(&amp;self, other: &amp;Rectangle) -&gt; bool {
+        self.width &gt; other.width &amp;&amp; self.height &gt; other.height
+    }
+}
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let rect1 = Rectangle {
+</span><span class="boring">        width: 30,
+</span><span class="boring">        height: 50,
+</span><span class="boring">    };
+</span><span class="boring">    let rect2 = Rectangle {
+</span><span class="boring">        width: 10,
+</span><span class="boring">        height: 40,
+</span><span class="boring">    };
+</span><span class="boring">    let rect3 = Rectangle {
+</span><span class="boring">        width: 60,
+</span><span class="boring">        height: 45,
+</span><span class="boring">    };
+</span><span class="boring">
+</span><span class="boring">    println!("Can rect1 hold rect2? {}", rect1.can_hold(&amp;rect2));
+</span><span class="boring">    println!("Can rect1 hold rect3? {}", rect1.can_hold(&amp;rect3));
+</span><span class="boring">}</span></code></pre></pre>
+<figcaption><a href="#listing-5-16">Listing 5-16</a>: Rewriting Listing 5-15 using multiple <code>impl</code> blocks 使用多个 <code>impl</code> 块重写示例 5-15</figcaption>
+</figure>
+<p>There’s no reason to separate these methods into multiple <code>impl</code> blocks here,
+but this is valid syntax. We’ll see a case in which multiple <code>impl</code> blocks are
+useful in Chapter 10, where we discuss generic types and traits.</p>
+<p>此处无需将这些方法拆分到多个 <code>impl</code> 块，但这是有效语法。在第 10 章讨论泛型和 trait 时，我们会看到多 <code>impl</code> 块的应用场景。</p>
+<h2 id="summary-总结"><a class="header" href="#summary-总结">Summary 总结</a></h2>
+<p>Structs let you create custom types that are meaningful for your domain. By
+using structs, you can keep associated pieces of data connected to each other
+and name each piece to make your code clear. In <code>impl</code> blocks, you can define
+functions that are associated with your type, and methods are a kind of
+associated function that let you specify the behavior that instances of your
+structs have.</p>
+<p>结构体让你能创建自定义类型以契合问题域。通过结构体，可将关联数据保持连接状态，并为各部分命名使代码清晰。在 <code>impl</code> 块中，可定义与类型关联的函数，而方法作为一种关联函数，能指定结构体实例的行为。</p>
+<p>But structs aren’t the only way you can create custom types: let’s turn to
+Rust’s enum feature to add another tool to your toolbox.</p>
+<p>但结构体并非创建自定义类型的唯一方式：接下来我们将介绍 Rust 的枚举功能，为你的工具箱再添利器。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="ch05-02-example-structs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="ch06-00-enums.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="ch05-02-example-structs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="ch06-00-enums.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="ferris.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
