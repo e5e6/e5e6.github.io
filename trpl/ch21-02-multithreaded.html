@@ -304,7 +304,7 @@ interface first can help guide your design. Write the API of the code so it’s
 structured in the way you want to call it; then implement the functionality
 within that structure rather than implementing the functionality and then
 designing the public API.</p>
-<p>在开始实现线程池前，我们先讨论使用池的预期形式。设计代码时，先编写客户端接口有助于指导设计。编写代码的API使其符合调用方式，然后在该结构中实现功能，而不是先实现功能再设计公共API。</p>
+<p>在开始实现线程池前，我们先讨论使用池的预期形式。<span class="highlight">[note]设计代码时，先编写客户端接口有助于指导设计。编写代码的API使其符合调用方式，然后在该结构中实现功能，而不是先实现功能再设计公共API。</span></p>
 <p>Similar to how we used test-driven development in the project in Chapter 12,
 we’ll use compiler-driven development here. We’ll write the code that calls the
 functions we want, and then we’ll look at errors from the compiler to determine
@@ -1504,9 +1504,9 @@ lock. However, this implementation can also result in the lock being held
 longer than intended if we aren’t mindful of the lifetime of the
 <code>MutexGuard&lt;T&gt;</code>.</p>
 <p>此代码能编译运行，但不会产生预期的线程行为：慢请求仍会导致其他请求等待处理。原因有些微妙：<code>Mutex</code> 结构体没有公共 <code>unlock</code> 方法，因为锁的所有权基于 <code>lock</code> 方法返回的 <code>LockResult&lt;MutexGuard&lt;T&gt;&gt;</code> 中的 <code>MutexGuard&lt;T&gt;</code> 的生命周期。在编译时，借用检查器可以强制执行规则：除非持有锁，否则无法访问由 <code>Mutex</code> 保护的资源。但如果未注意 <code>MutexGuard&lt;T&gt;</code> 的生命周期，此实现也可能导致锁持有时间超过预期。</p>
-<p>The code in Listing 21-20 that uses <code>let job = receiver.lock().unwrap().recv().unwrap();</code> works because with <code>let</code>, any
+<p>The code in Listing 21-20 that uses <code>let job =  receiver.lock().unwrap().recv().unwrap();</code> works because with <code>let</code>, any
 temporary values used in the expression on the right hand side of the equal
-sign are immediately dropped when the <code>let</code> statement ends. However, <code>while let</code> (and <code>if let</code> and <code>match</code>) does not drop temporary values until the end of
+sign are immediately dropped when the <code>let</code> statement ends. However, <code>while  let</code> (and <code>if let</code> and <code>match</code>) does not drop temporary values until the end of
 the associated block. In Listing 21-21, the lock remains held for the duration
 of the call to <code>job()</code>, meaning other <code>Worker</code> instances cannot receive jobs.</p>
 <p>代码清单21-20使用 <code>let job = receiver.lock().unwrap().recv().unwrap();</code> 是可行的，因为对于 <code>let</code>，等号右侧表达式中的任何临时值在 <code>let</code> 语句结束时立即被丢弃。但 <code>while let</code>（以及 <code>if let</code> 和 <code>match</code>）直到关联块结束才丢弃临时值。在代码清单21-21中，锁在调用 <code>job()</code> 期间保持持有，意味着其他 <code>Worker</code> 实例无法接收任务。</p>

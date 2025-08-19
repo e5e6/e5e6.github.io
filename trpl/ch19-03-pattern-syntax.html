@@ -245,7 +245,7 @@ that arm executes and prints <code>Matched, y = 5</code>.</p>
 two arms wouldn’t have matched, so the value would have matched to the
 underscore. We didn’t introduce the <code>x</code> variable in the pattern of the
 underscore arm, so the <code>x</code> in the expression is still the outer <code>x</code> that hasn’t
-been shadowed. In this hypothetical case, the <code>match</code> would print <code>Default case, x = None</code>.</p>
+been shadowed. In this hypothetical case, the <code>match</code> would print <code>Default case,  x = None</code>.</p>
 <p>若 <code>x</code> 是 <code>None</code> 值而非 <code>Some(5)</code>，前两个分支的模式不会匹配，因此值会匹配下划线分支。未在下划线分支的模式中引入 <code>x</code> 变量，因此表达式中的 <code>x</code> 仍是未被遮蔽的外部 <code>x</code>。在此假设情况下，<code>match</code> 会打印 <code>Default case, x = None</code>。</p>
 <p>When the <code>match</code> expression is done, its scope ends, and so does the scope of
 the inner <code>y</code>. The last <code>println!</code> produces <code>at the end: x = Some(5), y = 10</code>.</p>
@@ -289,7 +289,7 @@ range, that arm will execute:</p>
 <span class="boring">}</span></code></pre></pre>
 <p>If <code>x</code> is <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>, or <code>5</code>, the first arm will match. This syntax is
 more convenient for multiple match values than using the <code>|</code> operator to
-express the same idea; if we were to use <code>|</code>, we would have to specify <code>1 | 2 | 3 | 4 | 5</code>. Specifying a range is much shorter, especially if we want to match,
+express the same idea; if we were to use <code>|</code>, we would have to specify <code>1 | 2 |  3 | 4 | 5</code>. Specifying a range is much shorter, especially if we want to match,
 say, any number between 1 and 1,000!</p>
 <p>若 <code>x</code> 为 <code>1</code>、<code>2</code>、<code>3</code>、<code>4</code> 或 <code>5</code>，第一个分支将匹配。对于多匹配值，此语法比用 <code>|</code> 运算符表达相同概念更便捷；若使用 <code>|</code>，则需指定 <code>1 | 2 | 3 | 4 | 5</code>。指定范围更简短，尤其当需匹配如 1 到 1000 的任意数字时！</p>
 <p>The compiler checks that the range isn’t empty at compile time, and because the
@@ -307,7 +307,7 @@ numeric values, ranges are only allowed with numeric or <code>char</code> values
         _ =&gt; println!("something else"),
     }
 <span class="boring">}</span></code></pre></pre>
-<p>Rust can tell that <code>'c'</code> is within the first pattern’s range and prints <code>early ASCII letter</code>.</p>
+<p>Rust can tell that <code>'c'</code> is within the first pattern’s range and prints <code>early  ASCII letter</code>.</p>
 <p>Rust 可判断 <code>'c'</code> 在第一个模式的范围内，因此打印 <code>early ASCII letter</code>。</p>
 <h3 id="destructuring-to-break-apart-values-解构以分解值"><a class="header" href="#destructuring-to-break-apart-values-解构以分解值">Destructuring to Break Apart Values 解构以分解值</a></h3>
 <p>We can also use patterns to destructure structs, enums, and tuples to use
@@ -703,7 +703,7 @@ the values in the <code>y</code> and <code>z</code> fields.</p>
 than having to list <code>y: _</code> and <code>z: _</code>, particularly when we’re working with
 structs that have lots of fields in situations where only one or two fields are
 relevant.</p>
-<p><span class="highlight">[note]<span class="highlight">[note]列出 <code>x</code> 值后仅包含 <code>..</code> 模式。这比单独列出 <code>y: _</code> 和 <code>z: _</code> 更便捷</span>，尤其当处理多字段结构体且仅一两个字段相关时。</p>
+<p><span class="highlight">[note]列出 <code>x</code> 值后仅包含 <code>..</code> 模式。这比单独列出 <code>y: _</code> 和 <code>z: _</code> 更便捷</span>，尤其当处理多字段结构体且仅一两个字段相关时。</p>
 <p>The syntax <code>..</code> will expand to as many values as it needs to be. Listing 19-24
 shows how to use <code>..</code> with a tuple.</p>
 <p><code>..</code> 语法将扩展为所需数量的值。示例19-24展示如何<span class="highlight">[note]在元组中使用 <code>..</code></span>。</p>

@@ -298,9 +298,9 @@ way to write the equivalent of a <code>match</code> that only matches one case.
 Optionally, <code>if let</code> can have a corresponding <code>else</code> containing code to run if
 the pattern in the <code>if let</code> doesn’t match.</p>
 <p>在第 6 章中，我们讨论了如何使用 <code>if let</code> 表达式，主要是作为仅匹配一种情况的 <code>match</code> 表达式的简写方式。可选地，<code>if let</code> 可以有一个对应的 <code>else</code>，包含在 <code>if let</code> 中的模式不匹配时运行的代码。</p>
-<p>Listing 19-3 shows that it’s also possible to mix and match <code>if let</code>, <code>else if</code>, and <code>else if let</code> expressions. Doing so gives us more flexibility than a
+<p>Listing 19-3 shows that it’s also possible to mix and match <code>if let</code>, <code>else  if</code>, and <code>else if let</code> expressions. Doing so gives us more flexibility than a
 <code>match</code> expression in which we can express only one value to compare with the
-patterns. Also, Rust doesn’t require that the conditions in a series of <code>if let</code>, <code>else if</code>, and <code>else if let</code> arms relate to each other.</p>
+patterns. Also, Rust doesn’t require that the conditions in a series of <code>if  let</code>, <code>else if</code>, and <code>else if let</code> arms relate to each other.</p>
 <p>示例 19-3 表明，<span class="highlight">[note]混合搭配 <code>if let</code>、<code>else if</code> 和 <code>else if let</code> 表达式也是可能的</span>。这样做比 <code>match</code> 表达式提供了更大的灵活性，在 <code>match</code> 中我们只能表达一个与模式比较的值。此外，Rust 不要求一系列 <code>if let</code>、<code>else if</code> 和 <code>else if let</code> 分支中的条件相互关联。</p>
 <p>The code in Listing 19-3 determines what color to make your background based on
 a series of checks for several conditions. For this example, we’ve created
@@ -338,12 +338,12 @@ the value of the number. If none of these conditions apply, the background
 color is blue.</p>
 <p>如果用户指定了最喜欢的颜色，则该颜色将用作背景色。如果未指定最喜欢的颜色且今天是星期二，则背景颜色为绿色。否则，如果用户将其年龄指定为字符串，并且我们可以成功将其解析为数字，则颜色根据数字的值是紫色或橙色。如果这些条件都不适用，则背景颜色为蓝色。</p>
 <p>This conditional structure lets us support complex requirements. With the
-hardcoded values we have here, this example will print <code>Using purple as the background color</code>.</p>
-<p>这种条件结构使我们能够支持复杂的需求。使用我们在此处设置的硬编码值，此示例将打印 <code>Using purple as the background color</code>。</p>
+hardcoded values we have here, this example will print <code>Using purple as the  background color</code>.</p>
+<p>这种条件结构使我们能够支持复杂的需求。使用我们在此处设置的硬编码值，此示例将打印 <code>Using purple as the  background color</code>。</p>
 <p>You can see that <code>if let</code> can also introduce new variables that shadow existing
 variables in the same way that <code>match</code> arms can: the line <code>if let Ok(age) = age</code>
 introduces a new <code>age</code> variable that contains the value inside the <code>Ok</code> variant,
-shadowing the existing <code>age</code> variable. This means we need to place the <code>if age &gt; 30</code> condition within that block: we can’t combine these two conditions into <code>if let Ok(age) = age &amp;&amp; age &gt; 30</code>. The new <code>age</code> we want to compare to 30 isn’t
+shadowing the existing <code>age</code> variable. This means we need to place the <code>if age &gt;  30</code> condition within that block: we can’t combine these two conditions into <code>if  let Ok(age) = age &amp;&amp; age &gt; 30</code>. The new <code>age</code> we want to compare to 30 isn’t
 valid until the new scope starts with the curly bracket.</p>
 <p>你可以看到 <code>if let</code> 也可以引入遮蔽现有变量的新变量，其方式与 <code>match</code> 分支相同：行 <code>if let Ok(age) = age</code> 引入了一个新的 <code>age</code> 变量，该变量包含 <code>Ok</code> 变体中的值，遮蔽了现有的 <code>age</code> 变量。这意味着我们需要将 <code>if age &gt; 30</code> 条件放在该代码块内：我们不能将这两个条件组合成 <code>if let Ok(age) = age &amp;&amp; age &gt; 30</code>。我们想要与 30 比较的新 <code>age</code> 在新作用域（以大括号开始）之前是无效的。</p>
 <p>The downside of using <code>if let</code> expressions is that the compiler doesn’t check

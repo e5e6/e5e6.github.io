@@ -191,7 +191,7 @@ of Chapter 1 to install or update Rust.</p>
 文件中配置 <code>edition = "2024"</code> 以启用 Rust 2024 版次的惯用语法。如需安装或更新 Rust，
 请参阅第 1 章的“安装“章节。</p>
 <p>The HTML format is available online at https://doc.rust-lang.org/stable/book/
-and offline with installations of Rust made with <code>rustup</code>; run <code>rustup doc  --book</code> to open.</p>
+and offline with installations of Rust made with <code>rustup</code>; run <code>rustup doc --book</code> to open.</p>
 <p>HTML 格式版本可在线访问：https://doc.rust-lang.org/stable/book/
 通过 <code>rustup</code> 安装 Rust 的用户可离线查阅，执行命令 <code>rustup doc --book</code> 即可打开。</p>
 <p>Several community translations are also available.</p>
@@ -740,7 +740,7 @@ From here, you run the <em>main</em> or <em>main.exe</em> file, like this:</p>
 <p>这会显示扩展名为 <em>.rs</em> 的源代码文件、可执行文件（Windows 上是 <em>main.exe</em>，其他平台是 <em>main</em>），以及在 Windows 上还会显示包含调试信息的 <em>.pdb</em> 文件。此时可运行 <em>main</em> 或 <em>main.exe</em> 文件：</p>
 <pre><code class="language-console">$ ./main # or .\main on Windows
 </code></pre>
-<p>If your <em>main.rs</em> is your “Hello, world!” program, this line prints <code>Hello,  world!</code> to your terminal.</p>
+<p>If your <em>main.rs</em> is your “Hello, world!” program, this line prints <code>Hello, world!</code> to your terminal.</p>
 <p>如果你的 <em>main.rs</em> 是 “Hello, world!” 程序，此行会将 <code>Hello, world!</code> 打印到终端。</p>
 <p>If you’re more familiar with a dynamic language, such as Ruby, Python, or
 JavaScript, you might not be used to compiling and running a program as
@@ -779,7 +779,7 @@ following in your terminal:</p>
 <p>由于绝大多数 Rust 项目都使用 Cargo，本书后续内容也假定你在使用 Cargo。如果你使用了“安装”章节中讨论的官方安装程序，安装 Rust 时会附带安装 Cargo。如果你通过其他方式安装了 Rust，请在终端中输入以下命令来检查是否安装了 Cargo：</p>
 <pre><code class="language-console">$ cargo --version
 </code></pre>
-<p>If you see a version number, you have it! If you see an error, such as <code>command  not found</code>, look at the documentation for your method of installation to
+<p>If you see a version number, you have it! If you see an error, such as <code>command not found</code>, look at the documentation for your method of installation to
 determine how to install Cargo separately.</p>
 <p>如果你看到版本号，说明已安装！如果看到错误（例如 <code>command not found</code>），请查阅你所用安装方式的文档以确定如何单独安装 Cargo。</p>
 <h3 id="creating-a-project-with-cargo-使用-cargo-创建项目"><a class="header" href="#creating-a-project-with-cargo-使用-cargo-创建项目">Creating a Project with Cargo 使用 Cargo 创建项目</a></h3>
@@ -879,7 +879,7 @@ a directory named <em>debug</em>. You can run the executable with this command:<
 <pre><code class="language-console">$ ./target/debug/hello_cargo # or .\target\debug\hello_cargo.exe on Windows
 Hello, world!
 </code></pre>
-<p>If all goes well, <code>Hello, world!</code> should print to the terminal. Running <code>cargo  build</code> for the first time also causes Cargo to create a new file at the top
+<p>If all goes well, <code>Hello, world!</code> should print to the terminal. Running <code>cargo build</code> for the first time also causes Cargo to create a new file at the top
 level: <em>Cargo.lock</em>. This file keeps track of the exact versions of
 dependencies in your project. This project doesn’t have dependencies, so the
 file is a bit sparse. You won’t ever need to change this file manually; Cargo
@@ -894,7 +894,7 @@ code and then run the resultant executable all in one command:</p>
      Running `target/debug/hello_cargo`
 Hello, world!
 </code></pre>
-<p>Using <code>cargo run</code> is more convenient than having to remember to run <code>cargo  build</code> and then use the whole path to the binary, so most developers use <code>cargo  run</code>.</p>
+<p>Using <code>cargo run</code> is more convenient than having to remember to run <code>cargo build</code> and then use the whole path to the binary, so most developers use <code>cargo run</code>.</p>
 <p>使用 <code>cargo run</code> 比必须记住先运行 <code>cargo build</code> 然后再使用二进制文件的完整路径更方便，因此大多数开发者使用 <code>cargo run</code>。</p>
 <p>Notice that this time we didn’t see output indicating that Cargo was compiling
 <code>hello_cargo</code>. Cargo figured out that the files hadn’t changed, so it didn’t
@@ -944,7 +944,7 @@ matter which operating system you’re working on. So, at this point, we’ll no
 longer provide specific instructions for Linux and macOS versus Windows.</p>
 <p>使用 Cargo 的另一个优点是，无论你在哪个操作系统上工作，命令都是相同的。因此，从现在开始，我们将不再提供针对 Linux、macOS 与 Windows 的具体说明。</p>
 <h3 id="building-for-release-构建发布版本"><a class="header" href="#building-for-release-构建发布版本">Building for Release 构建发布版本</a></h3>
-<p>When your project is finally ready for release, you can use <code>cargo build  --release</code> to compile it with optimizations. This command will create an
+<p>When your project is finally ready for release, you can use <code>cargo build --release</code> to compile it with optimizations. This command will create an
 executable in <em>target/release</em> instead of <em>target/debug</em>. The optimizations
 make your Rust code run faster, but turning them on lengthens the time it takes
 for your program to compile. This is why there are two different profiles: one
@@ -2865,7 +2865,7 @@ named <code>unit_label</code> and is type <code>char</code>. The function then p
 both the <code>value</code> and the <code>unit_label</code>.</p>
 <p>此示例创建了一个名为 <code>print_labeled_measurement</code> 的函数，它有两个参数。第一个参数名为 <code>value</code>，类型是 <code>i32</code>。第二个参数名为 <code>unit_label</code>，类型是 <code>char</code>。然后该函数打印包含 <code>value</code> 和 <code>unit_label</code> 的文本。</p>
 <p>Let’s try running this code. Replace the program currently in your <em>functions</em>
-project’s <em>src/main.rs</em> file with the preceding example and run it using <code>cargo  run</code>:</p>
+project’s <em>src/main.rs</em> file with the preceding example and run it using <code>cargo run</code>:</p>
 <p>尝试运行此代码。用前面的示例替换您 <em>functions</em> 项目中 <em>src/main.rs</em> 文件的当前内容，并用 <code>cargo run</code> 运行：</p>
 <pre><code class="language-console">$ cargo run
    Compiling functions v0.1.0 (file:///projects/functions)
@@ -4215,7 +4215,7 @@ function return value is gone. Second, note that we pass <code>&amp;s1</code> in
 to some value without taking ownership of it. Figure 4-6 depicts this concept.</p>
 <p>首先注意变量声明和函数返回值中的所有元组代码都消失了。其次，我们向<code>calculate_length</code>传递<code>&amp;s1</code>，在函数定义中接收<code>&amp;String</code>而非<code>String</code>。这些<code>&amp;</code>符号表示<strong>引用</strong>，它们允许你引用某个值而不获取其所有权。图4-6描绘了这一概念。</p>
 <img alt="" src="img/trpl04-06.svg" class="center" />
-<p><span class="caption">Figure 4-6: A diagram of <code>&amp;String s</code> pointing at <code>String  s1</code> 指向<code>String s1</code>的<code>&amp;String s</code>示意图</span></p>
+<p><span class="caption">Figure 4-6: A diagram of <code>&amp;String s</code> pointing at <code>String s1</code> 指向<code>String s1</code>的<code>&amp;String s</code>示意图</span></p>
 <section class="note" aria-role="note">
 <p>Note: The opposite of referencing by using <code>&amp;</code> is <em>dereferencing</em>, which is
 accomplished with the dereference operator, <code>*</code>. We’ll see some uses of the
@@ -4319,7 +4319,7 @@ fn change(some_string: &amp;mut String) {
     some_string.push_str(", world");
 }</code></pre></pre>
 </figure>
-<p>First we change <code>s</code> to be <code>mut</code>. Then we create a mutable reference with <code>&amp;mut  s</code> where we call the <code>change</code> function, and update the function signature to
+<p>First we change <code>s</code> to be <code>mut</code>. Then we create a mutable reference with <code>&amp;mut s</code> where we call the <code>change</code> function, and update the function signature to
 accept a mutable reference with <code>some_string: &amp;mut String</code>. This makes it very
 clear that the <code>change</code> function will mutate the value it borrows.</p>
 <p>首先将<code>s</code>改为<code>mut</code>。在调用<code>change</code>函数时用<code>&amp;mut s</code>创建可变引用，并将函数签名更新为<code>some_string: &amp;mut String</code>以接收可变引用。这明确表示<code>change</code>函数将修改其借用的值。</p>
@@ -5597,7 +5597,7 @@ implementation of <code>Display</code> to use with <code>println!</code> and the
 <pre><code class="language-text">   = help: the trait `std::fmt::Display` is not implemented for `Rectangle`
    = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
 </code></pre>
-<p>Let’s try it! The <code>println!</code> macro call will now look like <code>println!("rect1 is  {rect1:?}");</code>. Putting the specifier <code>:?</code> inside the curly brackets tells
+<p>Let’s try it! The <code>println!</code> macro call will now look like <code>println!("rect1 is {rect1:?}");</code>. Putting the specifier <code>:?</code> inside the curly brackets tells
 <code>println!</code> we want to use an output format called <code>Debug</code>. The <code>Debug</code> trait
 enables us to print our struct in a way that is useful for developers so we can
 see its value while we’re debugging our code.</p>
@@ -7395,7 +7395,7 @@ say you declare a “garden” module with <code>mod garden;</code>. The compile
 for the module’s code in these places:</li>
 <li><strong>声明模块</strong>：在箱根文件中，可用 <code>mod garden;</code> 声明新模块。编译器会在以下位置查找模块代码：
 <ul>
-<li>Inline, within curly brackets that replace the semicolon following <code>mod  garden</code></li>
+<li>Inline, within curly brackets that replace the semicolon following <code>mod garden</code></li>
 <li>在 <code>mod garden</code> 后的花括号内（替代分号）</li>
 <li>In the file <em>src/garden.rs</em></li>
 <li>在文件 <em>src/garden.rs</em></li>
@@ -7431,7 +7431,7 @@ instead of <code>mod</code>. To make items within a public module public as well
 <li><strong>私有 vs 公有</strong>：模块内代码默认对其父模块私有。使用 <code>pub mod</code> 替代 <code>mod</code> 可公开模块。对公有模块中的条目使用 <code>pub</code> 可进一步公开它们。</li>
 <li><strong>The <code>use</code> keyword</strong>: Within a scope, the <code>use</code> keyword creates shortcuts to
 items to reduce repetition of long paths. In any scope that can refer to
-<code>crate::garden::vegetables::Asparagus</code>, you can create a shortcut with <code>use  crate::garden::vegetables::Asparagus;</code> and from then on you only need to
+<code>crate::garden::vegetables::Asparagus</code>, you can create a shortcut with <code>use crate::garden::vegetables::Asparagus;</code> and from then on you only need to
 write <code>Asparagus</code> to make use of that type in the scope.</li>
 <li><strong><code>use</code> 关键字</strong>：在作用域内，<code>use</code> 为条目创建快捷方式以减少长路径重复。在能访问 <code>crate::garden::vegetables::Asparagus</code> 的作用域中，使用 <code>use crate::garden::vegetables::Asparagus;</code> 创建快捷方式后，只需写 <code>Asparagus</code> 即可使用该类型。</li>
 </ul>
@@ -7496,7 +7496,7 @@ chefs and cooks work in the kitchen, dishwashers clean up, and managers do
 administrative work.</p>
 <p>餐饮业中，餐厅分为<strong>前厅</strong>（front of house）和<strong>后厨</strong>（back of house）。前厅接待顾客，包含领位区、服务员处理点单/付款区、调酒师制作饮品区；后厨是厨师工作区，包含洗碗区和管理员办公区。</p>
 <p>To structure our crate in this way, we can organize its functions into nested
-modules. Create a new library named <code>restaurant</code> by running <code>cargo new  restaurant --lib</code>. Then enter the code in Listing 7-1 into <em>src/lib.rs</em> to
+modules. Create a new library named <code>restaurant</code> by running <code>cargo new restaurant --lib</code>. Then enter the code in Listing 7-1 into <em>src/lib.rs</em> to
 define some modules and function signatures; this code is the front of house
 section.</p>
 <p>为按此结构组织箱，我们将函数分层嵌套到模块中。运行 <code>cargo new restaurant --lib</code> 创建名为 <code>restaurant</code> 的新库。将示例 7-1 的代码写入 <em>src/lib.rs</em> 以定义模块和函数签名（这部分代码对应前厅模块）：</p>
@@ -17885,7 +17885,7 @@ another vector with <code>collect</code>. Much simpler! Feel free to make the sa
 to use iterator methods in the <code>search_case_insensitive</code> function as well.</p>
 <p>回顾 <code>search</code> 函数的目的是返回 <code>contents</code> 中包含 <code>query</code> 的所有行。类似于示例 13-16 的 <code>filter</code> 用法，此代码使用 <code>filter</code> 适配器仅保留满足 <code>line.contains(query)</code> 的行。接着用 <code>collect</code> 将匹配行收集到新向量中。如此简洁多了！可对 <code>search_case_insensitive</code> 函数进行相同修改以使用迭代器方法。</p>
 <p>For a further improvement, return an iterator from the <code>search</code> function by
-removing the call to <code>collect</code> and changing the return type to <code>impl Iterator&lt;Item = &amp;'a str&gt;</code> so that the function becomes an iterator adapter.
+removing the call to <code>collect</code> and changing the return type to <code>impl  Iterator&lt;Item = &amp;'a str&gt;</code> so that the function becomes an iterator adapter.
 Note that you’ll also need to update the tests! Search through a large file
 using your <code>minigrep</code> tool before and after making this change to observe the
 difference in behavior. Before this change, the program won’t print any results
@@ -27778,9 +27778,9 @@ way to write the equivalent of a <code>match</code> that only matches one case.
 Optionally, <code>if let</code> can have a corresponding <code>else</code> containing code to run if
 the pattern in the <code>if let</code> doesn’t match.</p>
 <p>在第 6 章中，我们讨论了如何使用 <code>if let</code> 表达式，主要是作为仅匹配一种情况的 <code>match</code> 表达式的简写方式。可选地，<code>if let</code> 可以有一个对应的 <code>else</code>，包含在 <code>if let</code> 中的模式不匹配时运行的代码。</p>
-<p>Listing 19-3 shows that it’s also possible to mix and match <code>if let</code>, <code>else if</code>, and <code>else if let</code> expressions. Doing so gives us more flexibility than a
+<p>Listing 19-3 shows that it’s also possible to mix and match <code>if let</code>, <code>else  if</code>, and <code>else if let</code> expressions. Doing so gives us more flexibility than a
 <code>match</code> expression in which we can express only one value to compare with the
-patterns. Also, Rust doesn’t require that the conditions in a series of <code>if let</code>, <code>else if</code>, and <code>else if let</code> arms relate to each other.</p>
+patterns. Also, Rust doesn’t require that the conditions in a series of <code>if  let</code>, <code>else if</code>, and <code>else if let</code> arms relate to each other.</p>
 <p>示例 19-3 表明，<span class="highlight">[note]混合搭配 <code>if let</code>、<code>else if</code> 和 <code>else if let</code> 表达式也是可能的</span>。这样做比 <code>match</code> 表达式提供了更大的灵活性，在 <code>match</code> 中我们只能表达一个与模式比较的值。此外，Rust 不要求一系列 <code>if let</code>、<code>else if</code> 和 <code>else if let</code> 分支中的条件相互关联。</p>
 <p>The code in Listing 19-3 determines what color to make your background based on
 a series of checks for several conditions. For this example, we’ve created
@@ -27818,12 +27818,12 @@ the value of the number. If none of these conditions apply, the background
 color is blue.</p>
 <p>如果用户指定了最喜欢的颜色，则该颜色将用作背景色。如果未指定最喜欢的颜色且今天是星期二，则背景颜色为绿色。否则，如果用户将其年龄指定为字符串，并且我们可以成功将其解析为数字，则颜色根据数字的值是紫色或橙色。如果这些条件都不适用，则背景颜色为蓝色。</p>
 <p>This conditional structure lets us support complex requirements. With the
-hardcoded values we have here, this example will print <code>Using purple as the background color</code>.</p>
-<p>这种条件结构使我们能够支持复杂的需求。使用我们在此处设置的硬编码值，此示例将打印 <code>Using purple as the background color</code>。</p>
+hardcoded values we have here, this example will print <code>Using purple as the  background color</code>.</p>
+<p>这种条件结构使我们能够支持复杂的需求。使用我们在此处设置的硬编码值，此示例将打印 <code>Using purple as the  background color</code>。</p>
 <p>You can see that <code>if let</code> can also introduce new variables that shadow existing
 variables in the same way that <code>match</code> arms can: the line <code>if let Ok(age) = age</code>
 introduces a new <code>age</code> variable that contains the value inside the <code>Ok</code> variant,
-shadowing the existing <code>age</code> variable. This means we need to place the <code>if age &gt; 30</code> condition within that block: we can’t combine these two conditions into <code>if let Ok(age) = age &amp;&amp; age &gt; 30</code>. The new <code>age</code> we want to compare to 30 isn’t
+shadowing the existing <code>age</code> variable. This means we need to place the <code>if age &gt;  30</code> condition within that block: we can’t combine these two conditions into <code>if  let Ok(age) = age &amp;&amp; age &gt; 30</code>. The new <code>age</code> we want to compare to 30 isn’t
 valid until the new scope starts with the curly bracket.</p>
 <p>你可以看到 <code>if let</code> 也可以引入遮蔽现有变量的新变量，其方式与 <code>match</code> 分支相同：行 <code>if let Ok(age) = age</code> 引入了一个新的 <code>age</code> 变量，该变量包含 <code>Ok</code> 变体中的值，遮蔽了现有的 <code>age</code> 变量。这意味着我们需要将 <code>if age &gt; 30</code> 条件放在该代码块内：我们不能将这两个条件组合成 <code>if let Ok(age) = age &amp;&amp; age &gt; 30</code>。我们想要与 30 比较的新 <code>age</code> 在新作用域（以大括号开始）之前是无效的。</p>
 <p>The downside of using <code>if let</code> expressions is that the compiler doesn’t check
@@ -27938,7 +27938,7 @@ these two concepts next.</p>
 for any possible value passed are <em>irrefutable</em>. An example would be <code>x</code> in the
 statement <code>let x = 5;</code> because <code>x</code> matches anything and therefore cannot fail
 to match. Patterns that can fail to match for some possible value are
-<em>refutable</em>. An example would be <code>Some(x)</code> in the expression <code>if let Some(x) = a_value</code> because if the value in the <code>a_value</code> variable is <code>None</code> rather than
+<em>refutable</em>. An example would be <code>Some(x)</code> in the expression <code>if let Some(x) =  a_value</code> because if the value in the <code>a_value</code> variable is <code>None</code> rather than
 <code>Some</code>, the <code>Some(x)</code> pattern will not match.</p>
 <p>模式有两种形式：可反驳的和不可反驳的。将匹配任何可能传递的值的模式是<em>不可反驳的</em>。例如，语句 <code>let x = 5;</code> 中的 <code>x</code> 是不可反驳的，因为 <code>x</code> 匹配任何内容，因此不可能匹配失败。对于某些可能的值可能匹配失败的模式是<em>可反驳的</em>。例如，表达式 <code>if let Some(x) = a_value</code> 中的 <code>Some(x)</code> 是可反驳的，因为如果 <code>a_value</code> 变量中的值是 <code>None</code> 而不是 <code>Some</code>，则 <code>Some(x)</code> 模式将不匹配。</p>
 <p>Function parameters, <code>let</code> statements, and <code>for</code> loops can only accept
@@ -28118,7 +28118,7 @@ that arm executes and prints <code>Matched, y = 5</code>.</p>
 two arms wouldn’t have matched, so the value would have matched to the
 underscore. We didn’t introduce the <code>x</code> variable in the pattern of the
 underscore arm, so the <code>x</code> in the expression is still the outer <code>x</code> that hasn’t
-been shadowed. In this hypothetical case, the <code>match</code> would print <code>Default case, x = None</code>.</p>
+been shadowed. In this hypothetical case, the <code>match</code> would print <code>Default case,  x = None</code>.</p>
 <p>若 <code>x</code> 是 <code>None</code> 值而非 <code>Some(5)</code>，前两个分支的模式不会匹配，因此值会匹配下划线分支。未在下划线分支的模式中引入 <code>x</code> 变量，因此表达式中的 <code>x</code> 仍是未被遮蔽的外部 <code>x</code>。在此假设情况下，<code>match</code> 会打印 <code>Default case, x = None</code>。</p>
 <p>When the <code>match</code> expression is done, its scope ends, and so does the scope of
 the inner <code>y</code>. The last <code>println!</code> produces <code>at the end: x = Some(5), y = 10</code>.</p>
@@ -28162,7 +28162,7 @@ range, that arm will execute:</p>
 <span class="boring">}</span></code></pre></pre>
 <p>If <code>x</code> is <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code>, or <code>5</code>, the first arm will match. This syntax is
 more convenient for multiple match values than using the <code>|</code> operator to
-express the same idea; if we were to use <code>|</code>, we would have to specify <code>1 | 2 | 3 | 4 | 5</code>. Specifying a range is much shorter, especially if we want to match,
+express the same idea; if we were to use <code>|</code>, we would have to specify <code>1 | 2 |  3 | 4 | 5</code>. Specifying a range is much shorter, especially if we want to match,
 say, any number between 1 and 1,000!</p>
 <p>若 <code>x</code> 为 <code>1</code>、<code>2</code>、<code>3</code>、<code>4</code> 或 <code>5</code>，第一个分支将匹配。对于多匹配值，此语法比用 <code>|</code> 运算符表达相同概念更便捷；若使用 <code>|</code>，则需指定 <code>1 | 2 | 3 | 4 | 5</code>。指定范围更简短，尤其当需匹配如 1 到 1000 的任意数字时！</p>
 <p>The compiler checks that the range isn’t empty at compile time, and because the
@@ -28180,7 +28180,7 @@ numeric values, ranges are only allowed with numeric or <code>char</code> values
         _ =&gt; println!("something else"),
     }
 <span class="boring">}</span></code></pre></pre>
-<p>Rust can tell that <code>'c'</code> is within the first pattern’s range and prints <code>early ASCII letter</code>.</p>
+<p>Rust can tell that <code>'c'</code> is within the first pattern’s range and prints <code>early  ASCII letter</code>.</p>
 <p>Rust 可判断 <code>'c'</code> 在第一个模式的范围内，因此打印 <code>early ASCII letter</code>。</p>
 <h3 id="destructuring-to-break-apart-values-解构以分解值"><a class="header" href="#destructuring-to-break-apart-values-解构以分解值">Destructuring to Break Apart Values 解构以分解值</a></h3>
 <p>We can also use patterns to destructure structs, enums, and tuples to use
@@ -28576,7 +28576,7 @@ the values in the <code>y</code> and <code>z</code> fields.</p>
 than having to list <code>y: _</code> and <code>z: _</code>, particularly when we’re working with
 structs that have lots of fields in situations where only one or two fields are
 relevant.</p>
-<p><span class="highlight">[note]<span class="highlight">[note]列出 <code>x</code> 值后仅包含 <code>..</code> 模式。这比单独列出 <code>y: _</code> 和 <code>z: _</code> 更便捷</span>，尤其当处理多字段结构体且仅一两个字段相关时。</p>
+<p><span class="highlight">[note]列出 <code>x</code> 值后仅包含 <code>..</code> 模式。这比单独列出 <code>y: _</code> 和 <code>z: _</code> 更便捷</span>，尤其当处理多字段结构体且仅一两个字段相关时。</p>
 <p>The syntax <code>..</code> will expand to as many values as it needs to be. Listing 19-24
 shows how to use <code>..</code> with a tuple.</p>
 <p><code>..</code> 语法将扩展为所需数量的值。示例19-24展示如何<span class="highlight">[note]在元组中使用 <code>..</code></span>。</p>
@@ -28914,7 +28914,7 @@ some abstractions that provide a safe interface to unsafe code.</p>
 <p>In Chapter 4, in “Dangling References”, we
 mentioned that the compiler ensures references are always valid. Unsafe Rust has
 two new types called <em>raw pointers</em> that are similar to references. As with
-references, raw pointers can be immutable or mutable and are written as <code>*const T</code> and <code>*mut T</code>, respectively. The asterisk isn’t the dereference operator; it’s
+references, raw pointers can be immutable or mutable and are written as <code>*const  T</code> and <code>*mut T</code>, respectively. The asterisk isn’t the dereference operator; it’s
 part of the type name. In the context of raw pointers, <em>immutable</em> means that
 the pointer can’t be directly assigned to after being dereferenced.</p>
 <p>在第 4 章的“悬垂引用“中，我们提到编译器确保引用始终有效。不安全 Rust 有两种称为<strong>原始指针</strong>的新类型，类似于引用。原始指针可以是不可变或可变的，分别写作 <code>*const T</code> 和 <code>*mut T</code>。星号不是解引用运算符，而是类型名的一部分。在原始指针语境中，“不可变“表示指针解引用后不能被直接赋值。</p>
@@ -28954,7 +28954,7 @@ raw pointers in safe code; we just can’t dereference raw pointers outside an
 unsafe block, as you’ll see in a bit.</p>
 <p>注意此代码未使用 <code>unsafe</code> 关键字。我们可在安全代码中创建原始指针，但稍后会看到，不能在 <code>unsafe</code> 块外解引用原始指针。</p>
 <p>We’ve created raw pointers by using the raw borrow operators: <code>&amp;raw const num</code>
-creates a <code>*const i32</code> immutable raw pointer, and <code>&amp;raw mut num</code> creates a <code>*mut i32</code> mutable raw pointer. Because we created them directly from a local
+creates a <code>*const i32</code> immutable raw pointer, and <code>&amp;raw mut num</code> creates a <code>*mut  i32</code> mutable raw pointer. Because we created them directly from a local
 variable, we know these particular raw pointers are valid, but we can’t make
 that assumption about just any raw pointer.</p>
 <p>我们使用原始借用运算符创建原始指针：<code>&amp;raw const num</code> 创建 <code>*const i32</code> 不可变原始指针，<code>&amp;raw mut num</code> 创建 <code>*mut i32</code> 可变原始指针。由于直接从局部变量创建，可知这些特定原始指针有效，但不能假设任意原始指针均有效。</p>
@@ -28996,7 +28996,7 @@ dereference operator <code>*</code> on a raw pointer that requires an <code>unsa
 <p>Creating a pointer does no harm; it’s only when we try to access the value that
 it points at that we might end up dealing with an invalid value.</p>
 <p>创建指针无害；仅当尝试访问其指向的值时才可能处理无效值。</p>
-<p>Note also that in Listings 20-1 and 20-3, we created <code>*const i32</code> and <code>*mut i32</code> raw pointers that both pointed to the same memory location, where <code>num</code> is
+<p>Note also that in Listings 20-1 and 20-3, we created <code>*const i32</code> and <code>*mut  i32</code> raw pointers that both pointed to the same memory location, where <code>num</code> is
 stored. If we instead tried to create an immutable and a mutable reference to
 <code>num</code>, the code would not have compiled because Rust’s ownership rules don’t
 allow a mutable reference at the same time as any immutable references. With
@@ -29435,7 +29435,7 @@ how Rust should work.</p>
 <p>编写不安全代码时，可能需要检查所写内容是否安全正确。最佳方法之一是使用 Miri（Rust 官方检测未定义行为的工具）。借用检查器是编译时工作的<strong>静态</strong>工具，而 Miri 是运行时工作的<strong>动态</strong>工具。它通过运行程序或其测试套件来检查代码，并在违反 Rust 规则时检测出来。</p>
 <p>Using Miri requires a nightly build of Rust (which we talk about more in
 Appendix G: How Rust is Made and “Nightly Rust”). You
-can install both a nightly version of Rust and the Miri tool by typing <code>rustup +nightly component add miri</code>. This does not change what version of Rust your
+can install both a nightly version of Rust and the Miri tool by typing <code>rustup  +nightly component add miri</code>. This does not change what version of Rust your
 project uses; it only adds the tool to your system so you can use it when you
 want to. You can run Miri on a project by typing <code>cargo +nightly miri run</code> or
 <code>cargo +nightly miri test</code>.</p>
@@ -31056,7 +31056,7 @@ other forms different.</p>
 making our users implement the <code>HelloMacro</code> trait for each of their types,
 we’ll provide a procedural macro so users can annotate their type with
 <code>#[derive(HelloMacro)]</code> to get a default implementation of the <code>hello_macro</code>
-function. The default implementation will print <code>Hello, Macro! My name is TypeName!</code> where <code>TypeName</code> is the name of the type on which this trait has
+function. The default implementation will print <code>Hello, Macro! My name is  TypeName!</code> where <code>TypeName</code> is the name of the type on which this trait has
 been defined. In other words, we’ll write a crate that enables another
 programmer to write code like Listing 20-37 using our crate.</p>
 <p>让我们创建一个名为 <code>hello_macro</code> 的 crate，其中定义了一个名为 <code>HelloMacro</code> 的 trait，该 trait 有一个名为 <code>hello_macro</code> 的关联函数。我们不是让用户为每个类型实现 <code>HelloMacro</code> trait，而是提供一个过程式宏，以便用户可以通过 <code>#[derive(HelloMacro)]</code> 注解其类型，从而获得 <code>hello_macro</code> 函数的默认实现。默认实现将打印 <code>Hello, Macro! My name is TypeName!</code>，其中 <code>TypeName</code> 是定义此 trait 的类型的名称。换句话说，我们将编写一个 crate，使其他程序员能够使用我们的 crate 编写如代码清单 20-37 所示的代码。</p>
@@ -31470,7 +31470,7 @@ $ cd hello
 <p>Now enter the code in Listing 21-1 in <em>src/main.rs</em> to start. This code will
 listen at the local address <code>127.0.0.1:7878</code> for incoming TCP streams. When it
 gets an incoming stream, it will print <code>Connection established!</code>.</p>
-<p>现在在_src/main.rs_中输入代码清单21-1中的代码。此代码将在本地地址<code>127.0.0.1:7878</code>监听传入的TCP流。当它接收到传入流时，会打印<code>Connection established!</code>。</p>
+<p>现在在 <code>src/main.rs</code> 中输入代码清单21-1中的代码。此代码将在本地地址<code>127.0.0.1:7878</code>监听传入的TCP流。当它接收到传入流时，会打印<code>Connection established!</code>。</p>
 <figure class="listing" id="listing-21-1">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><pre class="playground"><code class="language-rust no_run">use std::net::TcpListener;
@@ -31536,7 +31536,7 @@ connections are closed.</p>
 like “Connection reset” because the server isn’t currently sending back any
 data. But when you look at your terminal, you should see several messages that
 were printed when the browser connected to the server!</p>
-<p>让我们尝试运行此代码！在终端中调用<code>cargo run</code>，然后在Web浏览器中加载_127.0.0.1:7878_。浏览器应显示类似“Connection reset“的错误消息，因为服务器当前没有返回任何数据。但是当你查看终端时，应该看到浏览器连接到服务器时打印的几条消息！</p>
+<p>让我们尝试运行此代码！在终端中调用<code>cargo run</code>，然后在Web浏览器中加载 <code>127.0.0.1:7878</code>。浏览器应显示类似“Connection reset“的错误消息，因为服务器当前没有返回任何数据。但是当你查看终端时，应该看到浏览器连接到服务器时打印的几条消息！</p>
 <pre><code class="language-text">     Running `target/debug/hello`
 Connection established!
 Connection established!
@@ -31546,7 +31546,7 @@ Connection established!
 reason might be that the browser is making a request for the page as well as a
 request for other resources, like the <em>favicon.ico</em> icon that appears in the
 browser tab.</p>
-<p>有时你会看到针对一个浏览器请求打印多条消息；原因可能是浏览器正在请求页面以及其他资源，例如浏览器标签中出现的_favicon.ico_图标。</p>
+<p>有时你会看到针对一个浏览器请求打印多条消息；原因可能是浏览器正在请求页面以及其他资源，例如浏览器标签中出现的 <code>favicon.ico</code> 图标。</p>
 <p>It could also be that the browser is trying to connect to the server multiple
 times because the server isn’t responding with any data. When <code>stream</code> goes out
 of scope and is dropped at the end of the loop, the connection is closed as
@@ -31610,23 +31610,23 @@ to traits and types that let us read from and write to the stream. In the <code>
 loop in the <code>main</code> function, instead of printing a message that says we made a
 connection, we now call the new <code>handle_connection</code> function and pass the
 <code>stream</code> to it.</p>
-<p>我们将<code>std::io::prelude</code>和<code>std::io::BufReader</code>引入作用域，以获取允许我们从流读取和写入的特征和类型。在<code>main</code>函数的<code>for</code>循环中，我们现在不再打印已建立连接的消息，而是调用新的<code>handle_connection</code>函数并将<code>stream</code>传递给它。</p>
+<p>我们<span class="highlight">[note]将<code>std::io::prelude</code>和<code>std::io::BufReader</code>引入作用域，以获取允许我们从流读取和写入的特征和类型</span>。在<code>main</code>函数的<code>for</code>循环中，我们现在不再打印已建立连接的消息，而是调用新的<code>handle_connection</code>函数并将<code>stream</code>传递给它。</p>
 <p>In the <code>handle_connection</code> function, we create a new <code>BufReader</code> instance that
 wraps a reference to the <code>stream</code>. The <code>BufReader</code> adds buffering by managing calls
 to the <code>std::io::Read</code> trait methods for us.</p>
-<p>在<code>handle_connection</code>函数中，我们创建一个新的<code>BufReader</code>实例，该实例包装了对<code>stream</code>的引用。<code>BufReader</code>通过管理对<code>std::io::Read</code>特征方法的调用来为我们添加缓冲。</p>
+<p>在<code>handle_connection</code>函数中，我们创建一个新的<code>BufReader</code>实例，该实例包装了对<code>stream</code>的引用。<span class="highlight">[note]<code>BufReader</code>通过管理对<code>std::io::Read</code>特征方法的调用来为我们添加缓冲。</span></p>
 <p>We create a variable named <code>http_request</code> to collect the lines of the request
 the browser sends to our server. We indicate that we want to collect these
 lines in a vector by adding the <code>Vec&lt;_&gt;</code> type annotation.</p>
 <p>我们创建一个名为<code>http_request</code>的变量来收集浏览器发送给我们服务器的请求行。我们通过添加<code>Vec&lt;_&gt;</code>类型注释来表明我们希望在向量中收集这些行。</p>
 <p><code>BufReader</code> implements the <code>std::io::BufRead</code> trait, which provides the <code>lines</code>
-method. The <code>lines</code> method returns an iterator of <code>Result&lt;String, std::io::Error&gt;</code> by splitting the stream of data whenever it sees a newline
+method. The <code>lines</code> method returns an iterator of <code>Result&lt;String,  std::io::Error&gt;</code> by splitting the stream of data whenever it sees a newline
 byte. To get each <code>String</code>, we map and <code>unwrap</code> each <code>Result</code>. The <code>Result</code>
 might be an error if the data isn’t valid UTF-8 or if there was a problem
 reading from the stream. Again, a production program should handle these errors
 more gracefully, but we’re choosing to stop the program in the error case for
 simplicity.</p>
-<p><code>BufReader</code>实现了<code>std::io::BufRead</code>特征，该特征提供了<code>lines</code>方法。<code>lines</code>方法返回一个<code>Result&lt;String, std::io::Error&gt;</code>的迭代器，通过在每次看到换行字节时分割数据流来生成。为了获取每个<code>String</code>，我们对每个<code>Result</code>进行映射和<code>unwrap</code>。如果数据不是有效的UTF-8或者从流中读取时出现问题，则<code>Result</code>可能是一个错误。再次强调，生产程序应该更优雅地处理这些错误，但为了简单起见，我们选择在错误情况下停止程序。</p>
+<p><span class="highlight">[note]<code>BufReader</code>实现了<code>std::io::BufRead</code>特征，该特征提供了<code>lines</code>方法。</span><code>lines</code>方法返回一个<code>Result&lt;String, std::io::Error&gt;</code>的迭代器，通过在每次看到换行字节时分割数据流来生成。为了获取每个<code>String</code>，我们对每个<code>Result</code>进行映射和<code>unwrap</code>。如果数据不是有效的UTF-8或者从流中读取时出现问题，则<code>Result</code>可能是一个错误。再次强调，生产程序应该更优雅地处理这些错误，但为了简单起见，我们选择在错误情况下停止程序。</p>
 <p>The browser signals the end of an HTTP request by sending two newline
 characters in a row, so to get one request from the stream, we take lines until
 we get a line that is the empty string. Once we’ve collected the lines into the
@@ -31664,7 +31664,7 @@ from one browser request by looking at the path after <code>GET</code> in the fi
 of the request. If the repeated connections are all requesting <em>/</em>, we know the
 browser is trying to fetch <em>/</em> repeatedly because it’s not getting a response
 from our program.</p>
-<p>根据浏览器的不同，你可能会得到略有不同的输出。现在我们正在打印请求数据，通过查看请求第一行中<code>GET</code>之后的路径，我们可以看到为什么从一个浏览器请求获得多个连接。如果重复的连接都请求_/<em>，我们知道浏览器正在尝试重复获取</em>/_，因为它没有从我们的程序获得响应。</p>
+<p>根据浏览器的不同，你可能会得到略有不同的输出。现在我们正在打印请求数据，通过查看请求第一行中<code>GET</code>之后的路径，我们可以看到为什么从一个浏览器请求获得多个连接。如果重复的连接都请求 <code>/</code>，我们知道浏览器正在尝试重复获取 <code>/</code>，因为它没有从我们的程序获得响应。</p>
 <p>Let’s break down this request data to understand what the browser is asking of
 our program.</p>
 <p>让我们分解这些请求数据以了解浏览器对我们的程序提出了什么要求。</p>
@@ -31686,7 +31686,7 @@ identifier</em> <em>(URI)</em> the client is requesting: a URI is almost, but no
 the same as a <em>uniform resource locator</em> <em>(URL)</em>. The difference between URIs
 and URLs isn’t important for our purposes in this chapter, but the HTTP spec
 uses the term URI, so we can just mentally substitute <em>URL</em> for <em>URI</em> here.</p>
-<p>请求行的下一部分是_/<em>，表示客户端请求的统一资源标识符(URI)：URI几乎与统一资源定位符(URL)相同，但不完全相同。URI和URL之间的区别在本章中并不重要，但HTTP规范使用术语URI，因此我们可以在这里在心理上用_URL_替代_URI</em>。</p>
+<p>请求行的下一部分是 <code>/</code>，表示客户端请求的统一资源标识符(URI)：URI几乎与统一资源定位符(URL)相同，但不完全相同。URI和URL之间的区别在本章中并不重要，但HTTP规范使用术语URI，因此我们可以在这里在心理上用 URL 替代 URI。</p>
 <p>The last part is the HTTP version the client uses, and then the request line
 ends in a CRLF sequence. (CRLF stands for <em>carriage return</em> and <em>line feed</em>,
 which are terms from the typewriter days!) The CRLF sequence can also be
@@ -31697,13 +31697,13 @@ Note that when the CRLF is printed, we see a new line start rather than <code>\r
 <p>Looking at the request line data we received from running our program so far,
 we see that <code>GET</code> is the method, <em>/</em> is the request URI, and <code>HTTP/1.1</code> is the
 version.</p>
-<p>查看我们到目前为止运行程序收到的请求行数据，我们看到<code>GET</code>是方法，_/_是请求URI，<code>HTTP/1.1</code>是版本。</p>
+<p>查看我们到目前为止运行程序收到的请求行数据，我们看到<code>GET</code>是方法，<code>/</code> 是请求URI，<code>HTTP/1.1</code>是版本。</p>
 <p>After the request line, the remaining lines starting from <code>Host:</code> onward are
 headers. <code>GET</code> requests have no body.</p>
 <p>在请求行之后，从<code>Host:</code>开始的行是头部。<code>GET</code>请求没有正文。</p>
 <p>Try making a request from a different browser or asking for a different
 address, such as <em>127.0.0.1:7878/test</em>, to see how the request data changes.</p>
-<p>尝试从不同的浏览器发出请求或请求不同的地址，例如_127.0.0.1:7878/test_，以查看请求数据如何变化。</p>
+<p>尝试从不同的浏览器发出请求或请求不同的地址，例如 <code>127.0.0.1:7878/test</code>，以查看请求数据如何变化。</p>
 <p>Now that we know what the browser is asking for, let’s send back some data!</p>
 <p>现在我们知道了浏览器请求的内容，让我们发回一些数据！</p>
 <h3 id="writing-a-response-编写响应"><a class="header" href="#writing-a-response-编写响应">Writing a Response 编写响应</a></h3>
@@ -31774,13 +31774,13 @@ printing any data to the terminal, so we won’t see any output other than the
 output from Cargo. When you load <em>127.0.0.1:7878</em> in a web browser, you should
 get a blank page instead of an error. You’ve just handcoded receiving an HTTP
 request and sending a response!</p>
-<p>通过这些更改，让我们运行代码并发出请求。我们不再向终端打印任何数据，因此除了Cargo的输出外，不会看到任何输出。当你在Web浏览器中加载_127.0.0.1:7878_时，应该得到一个空白页面而不是错误。你刚刚手动编写了接收HTTP请求和发送响应的代码！</p>
+<p>通过这些更改，让我们运行代码并发出请求。我们不再向终端打印任何数据，因此除了Cargo的输出外，不会看到任何输出。当你在Web浏览器中加载 <code>127.0.0.1:7878</code> 时，应该得到一个空白页面而不是错误。你刚刚手动编写了接收HTTP请求和发送响应的代码！</p>
 <h3 id="returning-real-html-返回真实的html"><a class="header" href="#returning-real-html-返回真实的html">Returning Real HTML 返回真实的HTML</a></h3>
 <p>Let’s implement the functionality for returning more than a blank page. Create
 the new file <em>hello.html</em> in the root of your project directory, not in the
 <em>src</em> directory. You can input any HTML you want; Listing 21-4 shows one
 possibility.</p>
-<p>让我们实现返回超过空白页面的功能。在你的项目目录的根目录（而不是_src_目录）中创建新文件_hello.html_。你可以输入任何你想要的HTML；代码清单21-4展示了一种可能性。</p>
+<p>让我们实现返回超过空白页面的功能。在你的项目目录的根目录（而不是 <code>src</code> 目录）中创建新文件 <code>hello.html</code>。你可以输入任何你想要的HTML；代码清单21-4展示了一种可能性。</p>
 <figure class="listing" id="listing-21-4">
 <span class="file-name">Filename: hello.html</span>
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
@@ -31852,7 +31852,7 @@ which is set to the size of our response body, in this case the size of
 <p>接下来，我们使用<code>format!</code>将文件的内容添加为成功响应的正文。为确保有效的HTTP响应，我们添加了<code>Content-Length</code>头部，该头部设置为响应正文的大小，即<code>hello.html</code>的大小。</p>
 <p>Run this code with <code>cargo run</code> and load <em>127.0.0.1:7878</em> in your browser; you
 should see your HTML rendered!</p>
-<p>使用<code>cargo run</code>运行此代码，并在浏览器中加载_127.0.0.1:7878_；你应该看到HTML被渲染！</p>
+<p>使用<code>cargo run</code>运行此代码，并在浏览器中加载 <code>127.0.0.1:7878</code>；你应该看到HTML被渲染！</p>
 <p>Currently, we’re ignoring the request data in <code>http_request</code> and just sending
 back the contents of the HTML file unconditionally. That means if you try
 requesting <em>127.0.0.1:7878/something-else</em> in your browser, you’ll still get
@@ -31860,7 +31860,7 @@ back this same HTML response. At the moment, our server is very limited and
 does not do what most web servers do. We want to customize our responses
 depending on the request and only send back the HTML file for a well-formed
 request to <em>/</em>.</p>
-<p>目前，我们忽略了<code>http_request</code>中的请求数据，只是无条件地发送回HTML文件的内容。这意味着如果你在浏览器中尝试请求_127.0.0.1:7878/something-else_，你仍将获得相同的HTML响应。目前，我们的服务器非常有限，没有执行大多数Web服务器的操作。我们希望根据请求自定义响应，并且仅对格式正确的_/_请求发送回HTML文件。</p>
+<p>目前，我们忽略了<code>http_request</code>中的请求数据，只是无条件地发送回HTML文件的内容。这意味着如果你在浏览器中尝试请求_127.0.0.1:7878/something-else_，你仍将获得相同的HTML响应。目前，我们的服务器非常有限，没有执行大多数Web服务器的操作。我们希望根据请求自定义响应，并且仅对格式正确的 <code>/</code> 请求发送回HTML文件。</p>
 <h3 id="validating-the-request-and-selectively-responding-验证请求并有选择地响应"><a class="header" href="#validating-the-request-and-selectively-responding-验证请求并有选择地响应">Validating the Request and Selectively Responding 验证请求并有选择地响应</a></h3>
 <p>Right now, our web server will return the HTML in the file no matter what the
 client requested. Let’s add functionality to check that the browser is
@@ -31869,7 +31869,7 @@ browser requests anything else. For this we need to modify <code>handle_connecti
 as shown in Listing 21-6. This new code checks the content of the request
 received against what we know a request for <em>/</em> looks like and adds <code>if</code> and
 <code>else</code> blocks to treat requests differently.</p>
-<p>目前，无论客户端请求什么，我们的Web服务器都将返回文件中的HTML。让我们添加功能来检查浏览器是否请求_/<em>，然后再返回HTML文件，如果浏览器请求其他任何内容，则返回错误。为此，我们需要修改<code>handle_connection</code>，如代码清单21-6所示。这段新代码将接收到的请求内容与我们已知的</em>/_请求进行比较，并添加<code>if</code>和<code>else</code>块以区别处理请求。</p>
+<p>目前，无论客户端请求什么，我们的Web服务器都将返回文件中的HTML。让我们添加功能来检查浏览器是否请求 <code>/</code>，然后再返回HTML文件，如果浏览器请求其他任何内容，则返回错误。为此，我们需要修改<code>handle_connection</code>，如代码清单21-6所示。这段新代码将接收到的请求内容与我们已知的 <code>/</code> 请求进行比较，并添加<code>if</code>和<code>else</code>块以区别处理请求。</p>
 <figure class="listing" id="listing-21-6">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><pre class="playground"><code class="language-rust no_run"><span class="boring">use std::{
@@ -31919,16 +31919,16 @@ Listing 21-2.</p>
 <p>Next, we check the <code>request_line</code> to see if it equals the request line of a GET
 request to the <em>/</em> path. If it does, the <code>if</code> block returns the contents of our
 HTML file.</p>
-<p>接下来，我们检查<code>request_line</code>是否等于对_/_路径的GET请求行。如果是，<code>if</code>块返回HTML文件的内容。</p>
+<p>接下来，我们检查<code>request_line</code>是否等于对 <code>/</code> 路径的GET请求行。如果是，<code>if</code>块返回HTML文件的内容。</p>
 <p>If the <code>request_line</code> does <em>not</em> equal the GET request to the <em>/</em> path, it
 means we’ve received some other request. We’ll add code to the <code>else</code> block in
 a moment to respond to all other requests.</p>
-<p>如果<code>request_line</code>不等于对_/_路径的GET请求，则意味着我们收到了其他请求。我们将很快在<code>else</code>块中添加代码以响应所有其他请求。</p>
+<p>如果<code>request_line</code>不等于对 <code>/</code> 路径的GET请求，则意味着我们收到了其他请求。我们将很快在<code>else</code>块中添加代码以响应所有其他请求。</p>
 <p>Run this code now and request <em>127.0.0.1:7878</em>; you should get the HTML in
 <em>hello.html</em>. If you make any other request, such as
 <em>127.0.0.1:7878/something-else</em>, you’ll get a connection error like those you
 saw when running the code in Listing 21-1 and Listing 21-2.</p>
-<p>现在运行此代码并请求_127.0.0.1:7878_；你应该获得_hello.html_中的HTML。如果你发出任何其他请求，例如_127.0.0.1:7878/something-else_，你将得到连接错误，类似于运行代码清单21-1和21-2中的代码时看到的错误。</p>
+<p>现在运行此代码并请求 <code>127.0.0.1:7878</code>；你应该获得 <code>hello.html</code> 中的HTML。如果你发出任何其他请求，例如 <code>127.0.0.1:7878/something-else</code>，你将得到连接错误，类似于运行代码清单21-1和21-2中的代码时看到的错误。</p>
 <p>Now let’s add the code in Listing 21-7 to the <code>else</code> block to return a response
 with the status code 404, which signals that the content for the request was
 not found. We’ll also return some HTML for a page to render in the browser
@@ -31986,7 +31986,7 @@ indicating the response to the end user.</p>
 You’ll need to create a <em>404.html</em> file next to <em>hello.html</em> for the error
 page; again feel free to use any HTML you want or use the example HTML in
 Listing 21-8.</p>
-<p>这里，我们的响应有一个状态行，状态码为404，原因短语为<code>NOT FOUND</code>。响应的正文将是文件_404.html_中的HTML。你需要在_hello.html_旁边创建一个_404.html_文件作为错误页面；同样，你可以使用任何你想要的HTML，或使用代码清单21-8中的示例HTML。</p>
+<p>这里，我们的响应有一个状态行，状态码为404，原因短语为<code>NOT FOUND</code>。响应的正文将是文件<code>404.html</code> 中的HTML。你需要在 <code>hello.html</code> 旁边创建一个 <code>404.html</code> 文件作为错误页面；同样，你可以使用任何你想要的HTML，或使用代码清单21-8中的示例HTML。</p>
 <figure class="listing" id="listing-21-8">
 <span class="file-name">Filename: 404.html</span>
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
@@ -32006,7 +32006,7 @@ Listing 21-8.</p>
 <p>With these changes, run your server again. Requesting <em>127.0.0.1:7878</em> should
 return the contents of <em>hello.html</em>, and any other request, like
 <em>127.0.0.1:7878/foo</em>, should return the error HTML from <em>404.html</em>.</p>
-<p>通过这些更改，再次运行你的服务器。请求_127.0.0.1:7878_应返回_hello.html_的内容，而任何其他请求（如_127.0.0.1:7878/foo_）应返回_404.html_中的错误HTML。</p>
+<p>通过这些更改，再次运行你的服务器。请求 <code>127.0.0.1:7878</code> 应返回 <code>hello.html</code> 的内容，而任何其他请求（如 <code>127.0.0.1:7878/foo</code>）应返回 <code>404.html</code> 中的错误HTML。</p>
 <h3 id="a-touch-of-refactoring-重构一下"><a class="header" href="#a-touch-of-refactoring-重构一下">A Touch of Refactoring 重构一下</a></h3>
 <p>At the moment, the <code>if</code> and <code>else</code> blocks have a lot of repetition: they’re both
 reading files and writing the contents of the files to the stream. The only
@@ -32203,7 +32203,7 @@ interface first can help guide your design. Write the API of the code so it’s
 structured in the way you want to call it; then implement the functionality
 within that structure rather than implementing the functionality and then
 designing the public API.</p>
-<p>在开始实现线程池前，我们先讨论使用池的预期形式。设计代码时，先编写客户端接口有助于指导设计。编写代码的API使其符合调用方式，然后在该结构中实现功能，而不是先实现功能再设计公共API。</p>
+<p>在开始实现线程池前，我们先讨论使用池的预期形式。<span class="highlight">[note]设计代码时，先编写客户端接口有助于指导设计。编写代码的API使其符合调用方式，然后在该结构中实现功能，而不是先实现功能再设计公共API。</span></p>
 <p>Similar to how we used test-driven development in the project in Chapter 12,
 we’ll use compiler-driven development here. We’ll write the code that calls the
 functions we want, and then we’ll look at errors from the compiler to determine
@@ -33403,9 +33403,9 @@ lock. However, this implementation can also result in the lock being held
 longer than intended if we aren’t mindful of the lifetime of the
 <code>MutexGuard&lt;T&gt;</code>.</p>
 <p>此代码能编译运行，但不会产生预期的线程行为：慢请求仍会导致其他请求等待处理。原因有些微妙：<code>Mutex</code> 结构体没有公共 <code>unlock</code> 方法，因为锁的所有权基于 <code>lock</code> 方法返回的 <code>LockResult&lt;MutexGuard&lt;T&gt;&gt;</code> 中的 <code>MutexGuard&lt;T&gt;</code> 的生命周期。在编译时，借用检查器可以强制执行规则：除非持有锁，否则无法访问由 <code>Mutex</code> 保护的资源。但如果未注意 <code>MutexGuard&lt;T&gt;</code> 的生命周期，此实现也可能导致锁持有时间超过预期。</p>
-<p>The code in Listing 21-20 that uses <code>let job = receiver.lock().unwrap().recv().unwrap();</code> works because with <code>let</code>, any
+<p>The code in Listing 21-20 that uses <code>let job =  receiver.lock().unwrap().recv().unwrap();</code> works because with <code>let</code>, any
 temporary values used in the expression on the right hand side of the equal
-sign are immediately dropped when the <code>let</code> statement ends. However, <code>while let</code> (and <code>if let</code> and <code>match</code>) does not drop temporary values until the end of
+sign are immediately dropped when the <code>let</code> statement ends. However, <code>while  let</code> (and <code>if let</code> and <code>match</code>) does not drop temporary values until the end of
 the associated block. In Listing 21-21, the lock remains held for the duration
 of the call to <code>job()</code>, meaning other <code>Worker</code> instances cannot receive jobs.</p>
 <p>代码清单21-20使用 <code>let job = receiver.lock().unwrap().recv().unwrap();</code> 是可行的，因为对于 <code>let</code>，等号右侧表达式中的任何临时值在 <code>let</code> 语句结束时立即被丢弃。但 <code>while let</code>（以及 <code>if let</code> 和 <code>match</code>）直到关联块结束才丢弃临时值。在代码清单21-21中，锁在调用 <code>job()</code> 期间保持持有，意味着其他 <code>Worker</code> 实例无法接收任务。</p>
@@ -33562,7 +33562,7 @@ They can make your code cleaner and less error-prone.</p>
 a range parameter to specify which items to remove from the <code>Vec</code>, and returns
 an iterator of those items. Passing the <code>..</code> range syntax will remove <em>every</em>
 value from the <code>Vec</code>.</p>
-<p>此处存在更佳方案：<code>Vec::drain</code> 方法。它接受范围参数指定要移除的项，并返回这些项的迭代器。使用 <code>..</code> 范围语法将移除 <code>Vec</code> 中的全部值。</p>
+<p>此处存在更佳方案：<span class="highlight">[note]<code>Vec::drain</code> 方法。它接受范围参数指定要移除的项，并返回这些项的迭代器。</span>使用 <code>..</code> 范围语法将移除 <code>Vec</code> 中的全部值。</p>
 <p>So we need to update the <code>ThreadPool</code> <code>drop</code> implementation like this:</p>
 <p>因此需如下更新 <code>ThreadPool</code> 的 <code>drop</code> 实现：</p>
 <figure class="listing">
@@ -34865,7 +34865,7 @@ warning: variable does not need to be mutable
   = note: `#[warn(unused_mut)]` on by default
 </code></pre>
 <p>The warning suggests that we remove the <code>mut</code> keyword. We can automatically
-apply that suggestion using the <code>rustfix</code> tool by running the command <code>cargo fix</code>:</p>
+apply that suggestion using the <code>rustfix</code> tool by running the command <code>cargo  fix</code>:</p>
 <p>该建议提示我们移除 <code>mut</code> 关键字。通过运行 <code>cargo fix</code> 命令，我们可以使用 <code>rustfix</code> 工具自动应用此建议：</p>
 <pre><code class="language-console">$ cargo fix
     Checking myprogram v0.1.0 (file:///projects/myprogram)

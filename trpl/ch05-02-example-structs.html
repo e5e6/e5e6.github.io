@@ -364,7 +364,7 @@ implementation of <code>Display</code> to use with <code>println!</code> and the
 <pre><code class="language-text">   = help: the trait `std::fmt::Display` is not implemented for `Rectangle`
    = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
 </code></pre>
-<p>Let’s try it! The <code>println!</code> macro call will now look like <code>println!("rect1 is  {rect1:?}");</code>. Putting the specifier <code>:?</code> inside the curly brackets tells
+<p>Let’s try it! The <code>println!</code> macro call will now look like <code>println!("rect1 is {rect1:?}");</code>. Putting the specifier <code>:?</code> inside the curly brackets tells
 <code>println!</code> we want to use an output format called <code>Debug</code>. The <code>Debug</code> trait
 enables us to print our struct in a way that is useful for developers so we can
 see its value while we’re debugging our code.</p>

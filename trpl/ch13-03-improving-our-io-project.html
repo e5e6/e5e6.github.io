@@ -692,7 +692,7 @@ another vector with <code>collect</code>. Much simpler! Feel free to make the sa
 to use iterator methods in the <code>search_case_insensitive</code> function as well.</p>
 <p>回顾 <code>search</code> 函数的目的是返回 <code>contents</code> 中包含 <code>query</code> 的所有行。类似于示例 13-16 的 <code>filter</code> 用法，此代码使用 <code>filter</code> 适配器仅保留满足 <code>line.contains(query)</code> 的行。接着用 <code>collect</code> 将匹配行收集到新向量中。如此简洁多了！可对 <code>search_case_insensitive</code> 函数进行相同修改以使用迭代器方法。</p>
 <p>For a further improvement, return an iterator from the <code>search</code> function by
-removing the call to <code>collect</code> and changing the return type to <code>impl Iterator&lt;Item = &amp;'a str&gt;</code> so that the function becomes an iterator adapter.
+removing the call to <code>collect</code> and changing the return type to <code>impl  Iterator&lt;Item = &amp;'a str&gt;</code> so that the function becomes an iterator adapter.
 Note that you’ll also need to update the tests! Search through a large file
 using your <code>minigrep</code> tool before and after making this change to observe the
 difference in behavior. Before this change, the program won’t print any results

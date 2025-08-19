@@ -210,7 +210,7 @@ $ cd hello
 <p>Now enter the code in Listing 21-1 in <em>src/main.rs</em> to start. This code will
 listen at the local address <code>127.0.0.1:7878</code> for incoming TCP streams. When it
 gets an incoming stream, it will print <code>Connection established!</code>.</p>
-<p>现在在_src/main.rs_中输入代码清单21-1中的代码。此代码将在本地地址<code>127.0.0.1:7878</code>监听传入的TCP流。当它接收到传入流时，会打印<code>Connection established!</code>。</p>
+<p>现在在 <code>src/main.rs</code> 中输入代码清单21-1中的代码。此代码将在本地地址<code>127.0.0.1:7878</code>监听传入的TCP流。当它接收到传入流时，会打印<code>Connection established!</code>。</p>
 <figure class="listing" id="listing-21-1">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><pre class="playground"><code class="language-rust no_run">use std::net::TcpListener;
@@ -276,7 +276,7 @@ connections are closed.</p>
 like “Connection reset” because the server isn’t currently sending back any
 data. But when you look at your terminal, you should see several messages that
 were printed when the browser connected to the server!</p>
-<p>让我们尝试运行此代码！在终端中调用<code>cargo run</code>，然后在Web浏览器中加载_127.0.0.1:7878_。浏览器应显示类似“Connection reset“的错误消息，因为服务器当前没有返回任何数据。但是当你查看终端时，应该看到浏览器连接到服务器时打印的几条消息！</p>
+<p>让我们尝试运行此代码！在终端中调用<code>cargo run</code>，然后在Web浏览器中加载 <code>127.0.0.1:7878</code>。浏览器应显示类似“Connection reset“的错误消息，因为服务器当前没有返回任何数据。但是当你查看终端时，应该看到浏览器连接到服务器时打印的几条消息！</p>
 <pre><code class="language-text">     Running `target/debug/hello`
 Connection established!
 Connection established!
@@ -286,7 +286,7 @@ Connection established!
 reason might be that the browser is making a request for the page as well as a
 request for other resources, like the <em>favicon.ico</em> icon that appears in the
 browser tab.</p>
-<p>有时你会看到针对一个浏览器请求打印多条消息；原因可能是浏览器正在请求页面以及其他资源，例如浏览器标签中出现的_favicon.ico_图标。</p>
+<p>有时你会看到针对一个浏览器请求打印多条消息；原因可能是浏览器正在请求页面以及其他资源，例如浏览器标签中出现的 <code>favicon.ico</code> 图标。</p>
 <p>It could also be that the browser is trying to connect to the server multiple
 times because the server isn’t responding with any data. When <code>stream</code> goes out
 of scope and is dropped at the end of the loop, the connection is closed as
@@ -350,23 +350,23 @@ to traits and types that let us read from and write to the stream. In the <code>
 loop in the <code>main</code> function, instead of printing a message that says we made a
 connection, we now call the new <code>handle_connection</code> function and pass the
 <code>stream</code> to it.</p>
-<p>我们将<code>std::io::prelude</code>和<code>std::io::BufReader</code>引入作用域，以获取允许我们从流读取和写入的特征和类型。在<code>main</code>函数的<code>for</code>循环中，我们现在不再打印已建立连接的消息，而是调用新的<code>handle_connection</code>函数并将<code>stream</code>传递给它。</p>
+<p>我们<span class="highlight">[note]将<code>std::io::prelude</code>和<code>std::io::BufReader</code>引入作用域，以获取允许我们从流读取和写入的特征和类型</span>。在<code>main</code>函数的<code>for</code>循环中，我们现在不再打印已建立连接的消息，而是调用新的<code>handle_connection</code>函数并将<code>stream</code>传递给它。</p>
 <p>In the <code>handle_connection</code> function, we create a new <code>BufReader</code> instance that
 wraps a reference to the <code>stream</code>. The <code>BufReader</code> adds buffering by managing calls
 to the <code>std::io::Read</code> trait methods for us.</p>
-<p>在<code>handle_connection</code>函数中，我们创建一个新的<code>BufReader</code>实例，该实例包装了对<code>stream</code>的引用。<code>BufReader</code>通过管理对<code>std::io::Read</code>特征方法的调用来为我们添加缓冲。</p>
+<p>在<code>handle_connection</code>函数中，我们创建一个新的<code>BufReader</code>实例，该实例包装了对<code>stream</code>的引用。<span class="highlight">[note]<code>BufReader</code>通过管理对<code>std::io::Read</code>特征方法的调用来为我们添加缓冲。</span></p>
 <p>We create a variable named <code>http_request</code> to collect the lines of the request
 the browser sends to our server. We indicate that we want to collect these
 lines in a vector by adding the <code>Vec&lt;_&gt;</code> type annotation.</p>
 <p>我们创建一个名为<code>http_request</code>的变量来收集浏览器发送给我们服务器的请求行。我们通过添加<code>Vec&lt;_&gt;</code>类型注释来表明我们希望在向量中收集这些行。</p>
 <p><code>BufReader</code> implements the <code>std::io::BufRead</code> trait, which provides the <code>lines</code>
-method. The <code>lines</code> method returns an iterator of <code>Result&lt;String, std::io::Error&gt;</code> by splitting the stream of data whenever it sees a newline
+method. The <code>lines</code> method returns an iterator of <code>Result&lt;String,  std::io::Error&gt;</code> by splitting the stream of data whenever it sees a newline
 byte. To get each <code>String</code>, we map and <code>unwrap</code> each <code>Result</code>. The <code>Result</code>
 might be an error if the data isn’t valid UTF-8 or if there was a problem
 reading from the stream. Again, a production program should handle these errors
 more gracefully, but we’re choosing to stop the program in the error case for
 simplicity.</p>
-<p><code>BufReader</code>实现了<code>std::io::BufRead</code>特征，该特征提供了<code>lines</code>方法。<code>lines</code>方法返回一个<code>Result&lt;String, std::io::Error&gt;</code>的迭代器，通过在每次看到换行字节时分割数据流来生成。为了获取每个<code>String</code>，我们对每个<code>Result</code>进行映射和<code>unwrap</code>。如果数据不是有效的UTF-8或者从流中读取时出现问题，则<code>Result</code>可能是一个错误。再次强调，生产程序应该更优雅地处理这些错误，但为了简单起见，我们选择在错误情况下停止程序。</p>
+<p><span class="highlight">[note]<code>BufReader</code>实现了<code>std::io::BufRead</code>特征，该特征提供了<code>lines</code>方法。</span><code>lines</code>方法返回一个<code>Result&lt;String, std::io::Error&gt;</code>的迭代器，通过在每次看到换行字节时分割数据流来生成。为了获取每个<code>String</code>，我们对每个<code>Result</code>进行映射和<code>unwrap</code>。如果数据不是有效的UTF-8或者从流中读取时出现问题，则<code>Result</code>可能是一个错误。再次强调，生产程序应该更优雅地处理这些错误，但为了简单起见，我们选择在错误情况下停止程序。</p>
 <p>The browser signals the end of an HTTP request by sending two newline
 characters in a row, so to get one request from the stream, we take lines until
 we get a line that is the empty string. Once we’ve collected the lines into the
@@ -404,7 +404,7 @@ from one browser request by looking at the path after <code>GET</code> in the fi
 of the request. If the repeated connections are all requesting <em>/</em>, we know the
 browser is trying to fetch <em>/</em> repeatedly because it’s not getting a response
 from our program.</p>
-<p>根据浏览器的不同，你可能会得到略有不同的输出。现在我们正在打印请求数据，通过查看请求第一行中<code>GET</code>之后的路径，我们可以看到为什么从一个浏览器请求获得多个连接。如果重复的连接都请求_/<em>，我们知道浏览器正在尝试重复获取</em>/_，因为它没有从我们的程序获得响应。</p>
+<p>根据浏览器的不同，你可能会得到略有不同的输出。现在我们正在打印请求数据，通过查看请求第一行中<code>GET</code>之后的路径，我们可以看到为什么从一个浏览器请求获得多个连接。如果重复的连接都请求 <code>/</code>，我们知道浏览器正在尝试重复获取 <code>/</code>，因为它没有从我们的程序获得响应。</p>
 <p>Let’s break down this request data to understand what the browser is asking of
 our program.</p>
 <p>让我们分解这些请求数据以了解浏览器对我们的程序提出了什么要求。</p>
@@ -426,7 +426,7 @@ identifier</em> <em>(URI)</em> the client is requesting: a URI is almost, but no
 the same as a <em>uniform resource locator</em> <em>(URL)</em>. The difference between URIs
 and URLs isn’t important for our purposes in this chapter, but the HTTP spec
 uses the term URI, so we can just mentally substitute <em>URL</em> for <em>URI</em> here.</p>
-<p>请求行的下一部分是_/<em>，表示客户端请求的统一资源标识符(URI)：URI几乎与统一资源定位符(URL)相同，但不完全相同。URI和URL之间的区别在本章中并不重要，但HTTP规范使用术语URI，因此我们可以在这里在心理上用_URL_替代_URI</em>。</p>
+<p>请求行的下一部分是 <code>/</code>，表示客户端请求的统一资源标识符(URI)：URI几乎与统一资源定位符(URL)相同，但不完全相同。URI和URL之间的区别在本章中并不重要，但HTTP规范使用术语URI，因此我们可以在这里在心理上用 URL 替代 URI。</p>
 <p>The last part is the HTTP version the client uses, and then the request line
 ends in a CRLF sequence. (CRLF stands for <em>carriage return</em> and <em>line feed</em>,
 which are terms from the typewriter days!) The CRLF sequence can also be
@@ -437,13 +437,13 @@ Note that when the CRLF is printed, we see a new line start rather than <code>\r
 <p>Looking at the request line data we received from running our program so far,
 we see that <code>GET</code> is the method, <em>/</em> is the request URI, and <code>HTTP/1.1</code> is the
 version.</p>
-<p>查看我们到目前为止运行程序收到的请求行数据，我们看到<code>GET</code>是方法，_/_是请求URI，<code>HTTP/1.1</code>是版本。</p>
+<p>查看我们到目前为止运行程序收到的请求行数据，我们看到<code>GET</code>是方法，<code>/</code> 是请求URI，<code>HTTP/1.1</code>是版本。</p>
 <p>After the request line, the remaining lines starting from <code>Host:</code> onward are
 headers. <code>GET</code> requests have no body.</p>
 <p>在请求行之后，从<code>Host:</code>开始的行是头部。<code>GET</code>请求没有正文。</p>
 <p>Try making a request from a different browser or asking for a different
 address, such as <em>127.0.0.1:7878/test</em>, to see how the request data changes.</p>
-<p>尝试从不同的浏览器发出请求或请求不同的地址，例如_127.0.0.1:7878/test_，以查看请求数据如何变化。</p>
+<p>尝试从不同的浏览器发出请求或请求不同的地址，例如 <code>127.0.0.1:7878/test</code>，以查看请求数据如何变化。</p>
 <p>Now that we know what the browser is asking for, let’s send back some data!</p>
 <p>现在我们知道了浏览器请求的内容，让我们发回一些数据！</p>
 <h3 id="writing-a-response-编写响应"><a class="header" href="#writing-a-response-编写响应">Writing a Response 编写响应</a></h3>
@@ -514,13 +514,13 @@ printing any data to the terminal, so we won’t see any output other than the
 output from Cargo. When you load <em>127.0.0.1:7878</em> in a web browser, you should
 get a blank page instead of an error. You’ve just handcoded receiving an HTTP
 request and sending a response!</p>
-<p>通过这些更改，让我们运行代码并发出请求。我们不再向终端打印任何数据，因此除了Cargo的输出外，不会看到任何输出。当你在Web浏览器中加载_127.0.0.1:7878_时，应该得到一个空白页面而不是错误。你刚刚手动编写了接收HTTP请求和发送响应的代码！</p>
+<p>通过这些更改，让我们运行代码并发出请求。我们不再向终端打印任何数据，因此除了Cargo的输出外，不会看到任何输出。当你在Web浏览器中加载 <code>127.0.0.1:7878</code> 时，应该得到一个空白页面而不是错误。你刚刚手动编写了接收HTTP请求和发送响应的代码！</p>
 <h3 id="returning-real-html-返回真实的html"><a class="header" href="#returning-real-html-返回真实的html">Returning Real HTML 返回真实的HTML</a></h3>
 <p>Let’s implement the functionality for returning more than a blank page. Create
 the new file <em>hello.html</em> in the root of your project directory, not in the
 <em>src</em> directory. You can input any HTML you want; Listing 21-4 shows one
 possibility.</p>
-<p>让我们实现返回超过空白页面的功能。在你的项目目录的根目录（而不是_src_目录）中创建新文件_hello.html_。你可以输入任何你想要的HTML；代码清单21-4展示了一种可能性。</p>
+<p>让我们实现返回超过空白页面的功能。在你的项目目录的根目录（而不是 <code>src</code> 目录）中创建新文件 <code>hello.html</code>。你可以输入任何你想要的HTML；代码清单21-4展示了一种可能性。</p>
 <figure class="listing" id="listing-21-4">
 <span class="file-name">Filename: hello.html</span>
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
@@ -592,7 +592,7 @@ which is set to the size of our response body, in this case the size of
 <p>接下来，我们使用<code>format!</code>将文件的内容添加为成功响应的正文。为确保有效的HTTP响应，我们添加了<code>Content-Length</code>头部，该头部设置为响应正文的大小，即<code>hello.html</code>的大小。</p>
 <p>Run this code with <code>cargo run</code> and load <em>127.0.0.1:7878</em> in your browser; you
 should see your HTML rendered!</p>
-<p>使用<code>cargo run</code>运行此代码，并在浏览器中加载_127.0.0.1:7878_；你应该看到HTML被渲染！</p>
+<p>使用<code>cargo run</code>运行此代码，并在浏览器中加载 <code>127.0.0.1:7878</code>；你应该看到HTML被渲染！</p>
 <p>Currently, we’re ignoring the request data in <code>http_request</code> and just sending
 back the contents of the HTML file unconditionally. That means if you try
 requesting <em>127.0.0.1:7878/something-else</em> in your browser, you’ll still get
@@ -600,7 +600,7 @@ back this same HTML response. At the moment, our server is very limited and
 does not do what most web servers do. We want to customize our responses
 depending on the request and only send back the HTML file for a well-formed
 request to <em>/</em>.</p>
-<p>目前，我们忽略了<code>http_request</code>中的请求数据，只是无条件地发送回HTML文件的内容。这意味着如果你在浏览器中尝试请求_127.0.0.1:7878/something-else_，你仍将获得相同的HTML响应。目前，我们的服务器非常有限，没有执行大多数Web服务器的操作。我们希望根据请求自定义响应，并且仅对格式正确的_/_请求发送回HTML文件。</p>
+<p>目前，我们忽略了<code>http_request</code>中的请求数据，只是无条件地发送回HTML文件的内容。这意味着如果你在浏览器中尝试请求_127.0.0.1:7878/something-else_，你仍将获得相同的HTML响应。目前，我们的服务器非常有限，没有执行大多数Web服务器的操作。我们希望根据请求自定义响应，并且仅对格式正确的 <code>/</code> 请求发送回HTML文件。</p>
 <h3 id="validating-the-request-and-selectively-responding-验证请求并有选择地响应"><a class="header" href="#validating-the-request-and-selectively-responding-验证请求并有选择地响应">Validating the Request and Selectively Responding 验证请求并有选择地响应</a></h3>
 <p>Right now, our web server will return the HTML in the file no matter what the
 client requested. Let’s add functionality to check that the browser is
@@ -609,7 +609,7 @@ browser requests anything else. For this we need to modify <code>handle_connecti
 as shown in Listing 21-6. This new code checks the content of the request
 received against what we know a request for <em>/</em> looks like and adds <code>if</code> and
 <code>else</code> blocks to treat requests differently.</p>
-<p>目前，无论客户端请求什么，我们的Web服务器都将返回文件中的HTML。让我们添加功能来检查浏览器是否请求_/<em>，然后再返回HTML文件，如果浏览器请求其他任何内容，则返回错误。为此，我们需要修改<code>handle_connection</code>，如代码清单21-6所示。这段新代码将接收到的请求内容与我们已知的</em>/_请求进行比较，并添加<code>if</code>和<code>else</code>块以区别处理请求。</p>
+<p>目前，无论客户端请求什么，我们的Web服务器都将返回文件中的HTML。让我们添加功能来检查浏览器是否请求 <code>/</code>，然后再返回HTML文件，如果浏览器请求其他任何内容，则返回错误。为此，我们需要修改<code>handle_connection</code>，如代码清单21-6所示。这段新代码将接收到的请求内容与我们已知的 <code>/</code> 请求进行比较，并添加<code>if</code>和<code>else</code>块以区别处理请求。</p>
 <figure class="listing" id="listing-21-6">
 <span class="file-name">Filename: src/main.rs</span>
 <pre><pre class="playground"><code class="language-rust no_run"><span class="boring">use std::{
@@ -659,16 +659,16 @@ Listing 21-2.</p>
 <p>Next, we check the <code>request_line</code> to see if it equals the request line of a GET
 request to the <em>/</em> path. If it does, the <code>if</code> block returns the contents of our
 HTML file.</p>
-<p>接下来，我们检查<code>request_line</code>是否等于对_/_路径的GET请求行。如果是，<code>if</code>块返回HTML文件的内容。</p>
+<p>接下来，我们检查<code>request_line</code>是否等于对 <code>/</code> 路径的GET请求行。如果是，<code>if</code>块返回HTML文件的内容。</p>
 <p>If the <code>request_line</code> does <em>not</em> equal the GET request to the <em>/</em> path, it
 means we’ve received some other request. We’ll add code to the <code>else</code> block in
 a moment to respond to all other requests.</p>
-<p>如果<code>request_line</code>不等于对_/_路径的GET请求，则意味着我们收到了其他请求。我们将很快在<code>else</code>块中添加代码以响应所有其他请求。</p>
+<p>如果<code>request_line</code>不等于对 <code>/</code> 路径的GET请求，则意味着我们收到了其他请求。我们将很快在<code>else</code>块中添加代码以响应所有其他请求。</p>
 <p>Run this code now and request <em>127.0.0.1:7878</em>; you should get the HTML in
 <em>hello.html</em>. If you make any other request, such as
 <em>127.0.0.1:7878/something-else</em>, you’ll get a connection error like those you
 saw when running the code in Listing 21-1 and Listing 21-2.</p>
-<p>现在运行此代码并请求_127.0.0.1:7878_；你应该获得_hello.html_中的HTML。如果你发出任何其他请求，例如_127.0.0.1:7878/something-else_，你将得到连接错误，类似于运行代码清单21-1和21-2中的代码时看到的错误。</p>
+<p>现在运行此代码并请求 <code>127.0.0.1:7878</code>；你应该获得 <code>hello.html</code> 中的HTML。如果你发出任何其他请求，例如 <code>127.0.0.1:7878/something-else</code>，你将得到连接错误，类似于运行代码清单21-1和21-2中的代码时看到的错误。</p>
 <p>Now let’s add the code in Listing 21-7 to the <code>else</code> block to return a response
 with the status code 404, which signals that the content for the request was
 not found. We’ll also return some HTML for a page to render in the browser
@@ -726,7 +726,7 @@ indicating the response to the end user.</p>
 You’ll need to create a <em>404.html</em> file next to <em>hello.html</em> for the error
 page; again feel free to use any HTML you want or use the example HTML in
 Listing 21-8.</p>
-<p>这里，我们的响应有一个状态行，状态码为404，原因短语为<code>NOT FOUND</code>。响应的正文将是文件_404.html_中的HTML。你需要在_hello.html_旁边创建一个_404.html_文件作为错误页面；同样，你可以使用任何你想要的HTML，或使用代码清单21-8中的示例HTML。</p>
+<p>这里，我们的响应有一个状态行，状态码为404，原因短语为<code>NOT FOUND</code>。响应的正文将是文件<code>404.html</code> 中的HTML。你需要在 <code>hello.html</code> 旁边创建一个 <code>404.html</code> 文件作为错误页面；同样，你可以使用任何你想要的HTML，或使用代码清单21-8中的示例HTML。</p>
 <figure class="listing" id="listing-21-8">
 <span class="file-name">Filename: 404.html</span>
 <pre><code class="language-html">&lt;!DOCTYPE html&gt;
@@ -746,7 +746,7 @@ Listing 21-8.</p>
 <p>With these changes, run your server again. Requesting <em>127.0.0.1:7878</em> should
 return the contents of <em>hello.html</em>, and any other request, like
 <em>127.0.0.1:7878/foo</em>, should return the error HTML from <em>404.html</em>.</p>
-<p>通过这些更改，再次运行你的服务器。请求_127.0.0.1:7878_应返回_hello.html_的内容，而任何其他请求（如_127.0.0.1:7878/foo_）应返回_404.html_中的错误HTML。</p>
+<p>通过这些更改，再次运行你的服务器。请求 <code>127.0.0.1:7878</code> 应返回 <code>hello.html</code> 的内容，而任何其他请求（如 <code>127.0.0.1:7878/foo</code>）应返回 <code>404.html</code> 中的错误HTML。</p>
 <h3 id="a-touch-of-refactoring-重构一下"><a class="header" href="#a-touch-of-refactoring-重构一下">A Touch of Refactoring 重构一下</a></h3>
 <p>At the moment, the <code>if</code> and <code>else</code> blocks have a lot of repetition: they’re both
 reading files and writing the contents of the files to the stream. The only

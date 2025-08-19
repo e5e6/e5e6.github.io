@@ -184,7 +184,7 @@
 for any possible value passed are <em>irrefutable</em>. An example would be <code>x</code> in the
 statement <code>let x = 5;</code> because <code>x</code> matches anything and therefore cannot fail
 to match. Patterns that can fail to match for some possible value are
-<em>refutable</em>. An example would be <code>Some(x)</code> in the expression <code>if let Some(x) = a_value</code> because if the value in the <code>a_value</code> variable is <code>None</code> rather than
+<em>refutable</em>. An example would be <code>Some(x)</code> in the expression <code>if let Some(x) =  a_value</code> because if the value in the <code>a_value</code> variable is <code>None</code> rather than
 <code>Some</code>, the <code>Some(x)</code> pattern will not match.</p>
 <p>模式有两种形式：可反驳的和不可反驳的。将匹配任何可能传递的值的模式是<em>不可反驳的</em>。例如，语句 <code>let x = 5;</code> 中的 <code>x</code> 是不可反驳的，因为 <code>x</code> 匹配任何内容，因此不可能匹配失败。对于某些可能的值可能匹配失败的模式是<em>可反驳的</em>。例如，表达式 <code>if let Some(x) = a_value</code> 中的 <code>Some(x)</code> 是可反驳的，因为如果 <code>a_value</code> 变量中的值是 <code>None</code> 而不是 <code>Some</code>，则 <code>Some(x)</code> 模式将不匹配。</p>
 <p>Function parameters, <code>let</code> statements, and <code>for</code> loops can only accept

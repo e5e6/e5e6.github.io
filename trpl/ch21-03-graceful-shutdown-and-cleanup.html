@@ -332,7 +332,7 @@ They can make your code cleaner and less error-prone.</p>
 a range parameter to specify which items to remove from the <code>Vec</code>, and returns
 an iterator of those items. Passing the <code>..</code> range syntax will remove <em>every</em>
 value from the <code>Vec</code>.</p>
-<p>此处存在更佳方案：<code>Vec::drain</code> 方法。它接受范围参数指定要移除的项，并返回这些项的迭代器。使用 <code>..</code> 范围语法将移除 <code>Vec</code> 中的全部值。</p>
+<p>此处存在更佳方案：<span class="highlight">[note]<code>Vec::drain</code> 方法。它接受范围参数指定要移除的项，并返回这些项的迭代器。</span>使用 <code>..</code> 范围语法将移除 <code>Vec</code> 中的全部值。</p>
 <p>So we need to update the <code>ThreadPool</code> <code>drop</code> implementation like this:</p>
 <p>因此需如下更新 <code>ThreadPool</code> 的 <code>drop</code> 实现：</p>
 <figure class="listing">

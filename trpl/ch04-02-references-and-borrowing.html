@@ -213,7 +213,7 @@ function return value is gone. Second, note that we pass <code>&amp;s1</code> in
 to some value without taking ownership of it. Figure 4-6 depicts this concept.</p>
 <p>首先注意变量声明和函数返回值中的所有元组代码都消失了。其次，我们向<code>calculate_length</code>传递<code>&amp;s1</code>，在函数定义中接收<code>&amp;String</code>而非<code>String</code>。这些<code>&amp;</code>符号表示<strong>引用</strong>，它们允许你引用某个值而不获取其所有权。图4-6描绘了这一概念。</p>
 <img alt="" src="img/trpl04-06.svg" class="center" />
-<p><span class="caption">Figure 4-6: A diagram of <code>&amp;String s</code> pointing at <code>String  s1</code> 指向<code>String s1</code>的<code>&amp;String s</code>示意图</span></p>
+<p><span class="caption">Figure 4-6: A diagram of <code>&amp;String s</code> pointing at <code>String s1</code> 指向<code>String s1</code>的<code>&amp;String s</code>示意图</span></p>
 <section class="note" aria-role="note">
 <p>Note: The opposite of referencing by using <code>&amp;</code> is <em>dereferencing</em>, which is
 accomplished with the dereference operator, <code>*</code>. We’ll see some uses of the
@@ -317,7 +317,7 @@ fn change(some_string: &amp;mut String) {
     some_string.push_str(", world");
 }</code></pre></pre>
 </figure>
-<p>First we change <code>s</code> to be <code>mut</code>. Then we create a mutable reference with <code>&amp;mut  s</code> where we call the <code>change</code> function, and update the function signature to
+<p>First we change <code>s</code> to be <code>mut</code>. Then we create a mutable reference with <code>&amp;mut s</code> where we call the <code>change</code> function, and update the function signature to
 accept a mutable reference with <code>some_string: &amp;mut String</code>. This makes it very
 clear that the <code>change</code> function will mutate the value it borrows.</p>
 <p>首先将<code>s</code>改为<code>mut</code>。在调用<code>change</code>函数时用<code>&amp;mut s</code>创建可变引用，并将函数签名更新为<code>some_string: &amp;mut String</code>以接收可变引用。这明确表示<code>change</code>函数将修改其借用的值。</p>

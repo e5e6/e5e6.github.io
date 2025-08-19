@@ -383,7 +383,7 @@ other forms different.</p>
 making our users implement the <code>HelloMacro</code> trait for each of their types,
 we’ll provide a procedural macro so users can annotate their type with
 <code>#[derive(HelloMacro)]</code> to get a default implementation of the <code>hello_macro</code>
-function. The default implementation will print <code>Hello, Macro! My name is TypeName!</code> where <code>TypeName</code> is the name of the type on which this trait has
+function. The default implementation will print <code>Hello, Macro! My name is  TypeName!</code> where <code>TypeName</code> is the name of the type on which this trait has
 been defined. In other words, we’ll write a crate that enables another
 programmer to write code like Listing 20-37 using our crate.</p>
 <p>让我们创建一个名为 <code>hello_macro</code> 的 crate，其中定义了一个名为 <code>HelloMacro</code> 的 trait，该 trait 有一个名为 <code>hello_macro</code> 的关联函数。我们不是让用户为每个类型实现 <code>HelloMacro</code> trait，而是提供一个过程式宏，以便用户可以通过 <code>#[derive(HelloMacro)]</code> 注解其类型，从而获得 <code>hello_macro</code> 函数的默认实现。默认实现将打印 <code>Hello, Macro! My name is TypeName!</code>，其中 <code>TypeName</code> 是定义此 trait 的类型的名称。换句话说，我们将编写一个 crate，使其他程序员能够使用我们的 crate 编写如代码清单 20-37 所示的代码。</p>

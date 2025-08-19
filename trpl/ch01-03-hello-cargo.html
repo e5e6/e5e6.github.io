@@ -201,7 +201,7 @@ following in your terminal:</p>
 <p>由于绝大多数 Rust 项目都使用 Cargo，本书后续内容也假定你在使用 Cargo。如果你使用了“安装”章节中讨论的官方安装程序，安装 Rust 时会附带安装 Cargo。如果你通过其他方式安装了 Rust，请在终端中输入以下命令来检查是否安装了 Cargo：</p>
 <pre><code class="language-console">$ cargo --version
 </code></pre>
-<p>If you see a version number, you have it! If you see an error, such as <code>command  not found</code>, look at the documentation for your method of installation to
+<p>If you see a version number, you have it! If you see an error, such as <code>command not found</code>, look at the documentation for your method of installation to
 determine how to install Cargo separately.</p>
 <p>如果你看到版本号，说明已安装！如果看到错误（例如 <code>command not found</code>），请查阅你所用安装方式的文档以确定如何单独安装 Cargo。</p>
 <h3 id="creating-a-project-with-cargo-使用-cargo-创建项目"><a class="header" href="#creating-a-project-with-cargo-使用-cargo-创建项目">Creating a Project with Cargo 使用 Cargo 创建项目</a></h3>
@@ -301,7 +301,7 @@ a directory named <em>debug</em>. You can run the executable with this command:<
 <pre><code class="language-console">$ ./target/debug/hello_cargo # or .\target\debug\hello_cargo.exe on Windows
 Hello, world!
 </code></pre>
-<p>If all goes well, <code>Hello, world!</code> should print to the terminal. Running <code>cargo  build</code> for the first time also causes Cargo to create a new file at the top
+<p>If all goes well, <code>Hello, world!</code> should print to the terminal. Running <code>cargo build</code> for the first time also causes Cargo to create a new file at the top
 level: <em>Cargo.lock</em>. This file keeps track of the exact versions of
 dependencies in your project. This project doesn’t have dependencies, so the
 file is a bit sparse. You won’t ever need to change this file manually; Cargo
@@ -316,7 +316,7 @@ code and then run the resultant executable all in one command:</p>
      Running `target/debug/hello_cargo`
 Hello, world!
 </code></pre>
-<p>Using <code>cargo run</code> is more convenient than having to remember to run <code>cargo  build</code> and then use the whole path to the binary, so most developers use <code>cargo  run</code>.</p>
+<p>Using <code>cargo run</code> is more convenient than having to remember to run <code>cargo build</code> and then use the whole path to the binary, so most developers use <code>cargo run</code>.</p>
 <p>使用 <code>cargo run</code> 比必须记住先运行 <code>cargo build</code> 然后再使用二进制文件的完整路径更方便，因此大多数开发者使用 <code>cargo run</code>。</p>
 <p>Notice that this time we didn’t see output indicating that Cargo was compiling
 <code>hello_cargo</code>. Cargo figured out that the files hadn’t changed, so it didn’t
@@ -366,7 +366,7 @@ matter which operating system you’re working on. So, at this point, we’ll no
 longer provide specific instructions for Linux and macOS versus Windows.</p>
 <p>使用 Cargo 的另一个优点是，无论你在哪个操作系统上工作，命令都是相同的。因此，从现在开始，我们将不再提供针对 Linux、macOS 与 Windows 的具体说明。</p>
 <h3 id="building-for-release-构建发布版本"><a class="header" href="#building-for-release-构建发布版本">Building for Release 构建发布版本</a></h3>
-<p>When your project is finally ready for release, you can use <code>cargo build  --release</code> to compile it with optimizations. This command will create an
+<p>When your project is finally ready for release, you can use <code>cargo build --release</code> to compile it with optimizations. This command will create an
 executable in <em>target/release</em> instead of <em>target/debug</em>. The optimizations
 make your Rust code run faster, but turning them on lengthens the time it takes
 for your program to compile. This is why there are two different profiles: one
